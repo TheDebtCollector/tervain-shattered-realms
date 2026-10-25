@@ -64,7 +64,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 - Dirt takes 0.28 seconds to mine, wood 0.4 seconds, stone 0.6 seconds, and iron ore 0.8 seconds.
 - Changing the target or hotbar slot interrupts unfinished mining.
 - Mining reaches 192 pixels (8 blocks) from the player body centre and ignores intervening blocks. The correct equipped tool is also required: pickaxe for dirt/stone/iron ore and axe for wood. Bedrock and background walls remain unmineable. Building reaches 160 pixels (about 6.7 blocks) and still requires a clear path.
-- Placed blocks need an adjacent foreground block or a background wall in the target cell. They cannot overlap the player or a living enemy.
+- Placed blocks need an adjacent solid foreground block or a background wall in the target cell. They cannot overlap the player or a living enemy.
 - Mined material drops fall under gravity and settle on solid foreground blocks. Removing their support makes them fall again. Nearby drops still attract to the player for collection.
 - Successful placement spends one item. Rejected placement spends nothing.
 - Sand falls when unsupported and settles as terrain. Other blocks retain their current support behaviour; general structural collapse is outside this milestone.
@@ -73,6 +73,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 - Mouse actions over the HUD do not modify terrain.
 - One creature starts to the right of spawn. It waits until the player comes within 180 pixels, leaving room to gather first.
 - Pickaxe, axe, and sword can all swing with left click or J, with or without a harvestable target. Tools deal 15 damage and the sword deals 25. Holding left click repeats tool swings and harvests valid blocks at the same time. Switching equipment cancels the previous action. Building materials cannot attack.
+- Natural trees, pines, cacti, and shrubs are passable vegetation. Harvested wood placed for construction remains solid; replanted cactus remains passable.
 - Solid terrain blocks melee damage in both directions, including newly placed blocks. Mining away a barrier opens the attack path again.
 - Defeating the creature leaves the world and inventory intact. R restores terrain, inventory, player, and enemy together.
 - Enemy navigation is still basic: it walks and collides with terrain, without jumping or finding routes around constructed barriers.
@@ -244,3 +245,12 @@ Focused verification uses -- --ctrl-mining-test and is included in the full sand
 ## Snow and tundra biome — 2026-10-25
 
 The world extends to 128×32 cells with a snow/tundra biome after the desert, beginning at column 96. Snow, ice, and frozen earth require the pickaxe; pine wood requires the axe. Tundra shrubs break from any connected tool or weapon hit and drop nothing. Pines preserve their background after harvesting. The fifteen-slot hotbar scrolls to follow selection, and the mouse wheel reaches all new material stacks. Existing shortcuts remain unchanged. See [[Tundra Prototype]] for the complete implementation and validation.
+
+
+## Passable vegetation — 2026-10-25
+
+Natural forest trunks, tundra pine trunks, and all cacti now have no solid collider, matching the existing non-solid bushes and shrubs. Players, creatures, resource drops, attacks, and construction visibility rays pass through them. Trees and cacti remain occupied, harvestable cells with their existing axe requirements, mining times, resource drops, and generated background scenery. Ctrl mining still targets them according to its normal tool rules.
+
+Wood and tundra wood placed for construction create solid blocks. Replanted cactus remains vegetation. Passable vegetation does not support falling sand or floating construction; generated background walls still provide building anchors after harvesting. Sand that settles into a vegetation cell crushes that segment and releases its material once above the new sand surface, preventing sand from becoming stuck in an occupied non-solid cell. Bushes continue to drop nothing.
+
+Focused checks use `-- --vegetation-test` and are included in the full sandbox suite. They verify walking through forest trees/cacti/pines without destroying them, no solid collision or ray obstruction, solid wooden construction, passable replanted cactus, solid support requirements, sand settling through vegetation with one resource release, drops falling through pines, and creatures walking through trunks. Existing harvesting and combat checks verify that tools and solid cover retain their behaviour.

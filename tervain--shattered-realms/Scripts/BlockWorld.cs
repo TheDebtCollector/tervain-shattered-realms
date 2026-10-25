@@ -22,6 +22,9 @@ public partial class BlockWorld : Node2D
     // Generated scenery only: kept independently of foreground blocks, with no physics bodies.
     private readonly Dictionary<Vector2I, BlockKind> _walls = new();
     private readonly Dictionary<Vector2I, StaticBody2D> _bodies = new();
+    private readonly HashSet<Vector2I> _vegetation = new();
+    public event System.Action<Vector2, BlockKind>? MaterialReleased;
+    public bool IsVegetation(Vector2I cell) => _vegetation.Contains(cell);
     private readonly HashSet<Vector2I> _bushes = new();
     private readonly List<FallingSand> _fallingSand = new();
     private bool _sandDirty;
@@ -77,7 +80,7 @@ public partial class BlockWorld : Node2D
                 SetBlock(new Vector2I(x, y), kind);
             }
         foreach (int x in TreeColumns)
-            for (int y = 13; y < SurfaceRow; y++) SetBlock(new Vector2I(x, y), BlockKind.Wood);
+            for (int y = 13; y < SurfaceRow; y++) SetBlock(new Vector2I(x, y), BlockKind.Wood, vegetation: true);
         // Surface stone outcrops offer stone without forcing a deep excavation.
         for (int x = 39; x <= 43; x++) SetBlock(new Vector2I(x, SurfaceRow - 1), BlockKind.Stone);
         for (int x = 80; x <= 84; x++) SetBlock(new Vector2I(x, SurfaceRow - 1), BlockKind.Sand);
@@ -85,7 +88,7 @@ public partial class BlockWorld : Node2D
         foreach (int x in new[] { 74, 82, 90 }) _bushes.Add(new Vector2I(x, x == 82 ? SurfaceRow - 2 : SurfaceRow - 1));
         for (int x = 116; x <= 118; x++) SetBlock(new Vector2I(x, SurfaceRow - 1), BlockKind.Snow);
         foreach (int x in PineColumns)
-            for (int y = 17; y < SurfaceRow; y++) SetBlock(new Vector2I(x, y), BlockKind.TundraWood);
+            for (int y = 17; y < SurfaceRow; y++) SetBlock(new Vector2I(x, y), BlockKind.TundraWood, vegetation: true);
         foreach (int x in new[] { 97, 112, 119, 126 }) _bushes.Add(new Vector2I(x, SurfaceRow - 1));
         // Snapshot only generated solid cells. Open sky, cave air, and later player builds
         // do not create walls; mining the foreground leaves this scenery intact.
@@ -102,11 +105,17 @@ public partial class BlockWorld : Node2D
         AddChild(body);
     }
 
-    private void SetBlock(Vector2I cell, BlockKind kind)
+    private void SetBlock(Vector2I cell, BlockKind kind, bool vegetation = false)
     {
         if (_blocks.ContainsKey(cell)) return;
         _blocks[cell] = kind;
         _sandDirty = true;
+        if (vegetation || kind == BlockKind.Cactus)
+        {
+            _vegetation.Add(cell);
+            QueueRedraw();
+            return;
+        }
         var body = new StaticBody2D { Position = Center(cell), CollisionLayer = 1, CollisionMask = 0 };
         body.AddChild(new CollisionShape2D { Shape = new RectangleShape2D { Size = Vector2.One * TileSize } });
         _bodies[cell] = body;
@@ -181,8 +190,8 @@ public partial class BlockWorld : Node2D
         if (_fallingSand.Any(sand => CellRect(cell).Intersects(sand.BodyBounds))) return false;
         foreach (Node node in GetTree().GetNodesInGroup("enemies"))
             if (node is Enemy enemy && !enemy.IsDead && CellRect(cell).Intersects(enemy.BodyBounds)) return false;
-        return HasWall(cell) || HasBlock(cell + Vector2I.Down) || HasBlock(cell + Vector2I.Up) ||
-            HasBlock(cell + Vector2I.Left) || HasBlock(cell + Vector2I.Right);
+        return HasWall(cell) || _bodies.ContainsKey(cell + Vector2I.Down) || _bodies.ContainsKey(cell + Vector2I.Up) ||
+            _bodies.ContainsKey(cell + Vector2I.Left) || _bodies.ContainsKey(cell + Vector2I.Right);
     }
 
     public bool TryPlace(Vector2I cell, BlockKind material, Player player, SandboxInventory inventory)
@@ -196,23 +205,26 @@ public partial class BlockWorld : Node2D
     private void RemoveBlock(Vector2I cell)
     {
         _blocks.Remove(cell);
-        _bodies[cell].CollisionLayer = 0;
-        _bodies[cell].QueueFree();
-        _bodies.Remove(cell);
+        _vegetation.Remove(cell);
+        if (_bodies.Remove(cell, out StaticBody2D? body))
+        {
+            body.CollisionLayer = 0;
+            body.QueueFree();
+        }
         _sandDirty = true;
     }
 
     public override void _PhysicsProcess(double delta)
     {
         foreach (Vector2I bush in _bushes.ToArray())
-            if (!HasBlock(bush + Vector2I.Down)) { _bushes.Remove(bush); QueueRedraw(); }
+            if (!_bodies.ContainsKey(bush + Vector2I.Down)) { _bushes.Remove(bush); QueueRedraw(); }
         if (!_sandDirty) return;
         _sandDirty = false;
         foreach (Vector2I cell in _blocks.Where(pair => pair.Value == BlockKind.Sand)
                      .Select(pair => pair.Key).OrderByDescending(cell => cell.Y).ToArray())
         {
             // Scenery does not support sand. Release a whole unsupported column.
-            if (_blocks.ContainsKey(cell + Vector2I.Down)) continue;
+            if (_bodies.ContainsKey(cell + Vector2I.Down)) continue;
             RemoveBlock(cell);
             var falling = new FallingSand { World = this, Position = Center(cell) };
             _fallingSand.Add(falling);
@@ -225,13 +237,21 @@ public partial class BlockWorld : Node2D
     {
         if (!_fallingSand.Contains(sand) || sand.IsQueuedForDeletion()) return;
         Vector2I cell = CellAt(sand.GlobalPosition);
-        if (!InBounds(cell) || _blocks.ContainsKey(cell) || !_blocks.ContainsKey(cell + Vector2I.Down)) return;
+        if (!InBounds(cell) || (_blocks.ContainsKey(cell) && !_vegetation.Contains(cell))
+            || !_bodies.ContainsKey(cell + Vector2I.Down)) return;
         if (sand.GlobalPosition.DistanceTo(Center(cell)) > 0.5f) return;
         Rect2 bounds = CellRect(cell);
         foreach (Node node in GetTree().GetNodesInGroup("player"))
             if (node is Player player && bounds.Intersects(player.BodyBounds)) return;
         foreach (Node node in GetTree().GetNodesInGroup("enemies"))
             if (node is Enemy enemy && !enemy.IsDead && bounds.Intersects(enemy.BodyBounds)) return;
+        if (_vegetation.Contains(cell))
+        {
+            BlockKind material = _blocks[cell];
+            RemoveBlock(cell);
+            // Environmental crushing releases the resource above the new sand surface.
+            MaterialReleased?.Invoke(Center(cell) - new Vector2(0, TileSize / 2f + 6), material);
+        }
         _fallingSand.Remove(sand);
         sand.CollisionLayer = 0;
         sand.QueueFree();

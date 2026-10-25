@@ -31,7 +31,7 @@ The four resources have separate inventory stacks and can be placed and recovere
 
 Snow, ice, and frozen earth use ordinary solid-terrain collision and preserve the accepted movement and jump feel. Snow does not inherit sand gravity. Ice has no added sliding or melting mechanic in this milestone.
 
-Each pine has two solid tundra-wood trunk cells. Its snow-pine sprite is drawn with nearest filtering at an integer scale, cropped to remove transparent padding so it sits on the surface. Harvesting the trunk leaves darkened wooden background cells and a dim pine silhouette, with no collision or extra harvestable wood. Generated background walls support foreground building as before.
+Each pine has two harvestable, non-solid tundra-wood trunk cells that players and creatures can walk through. Tundra wood placed for construction remains solid. Its snow-pine sprite is drawn with nearest filtering at an integer scale, cropped to remove transparent padding so it sits on the surface. Harvesting the trunk leaves darkened wooden background cells and a dim pine silhouette, with no collision or extra harvestable wood. Generated background walls support foreground building as before.
 
 Shrubs share the dead-bush hit logic: pickaxe, axe, sword, enemy strike, or falling-sand contact can clear them. Mining their support or building in their cell also removes them. They never create resource drops or background-wall silhouettes.
 

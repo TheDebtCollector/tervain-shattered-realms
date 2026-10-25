@@ -27,7 +27,7 @@ All seven new desert Aseprite assets are preserved with their PNG exports: `sand
 | Cactus | Axe | 0.4 s | One cactus block |
 | Dead bush | Any pickaxe, axe, or sword hit | One connected swing | Nothing |
 
-Cacti use the existing solid-block harvesting and placement rules; a pickaxe or sword cannot harvest them. Cactus resources have their own stack, can be placed, and can be recovered with the axe. No new contact damage is introduced.
+Cacti are passable vegetation with the existing timed harvesting and placement rules; a pickaxe or sword cannot harvest them. Cactus resources have their own stack, can be replanted as passable vegetation, and can be recovered with the axe. They do not support construction or falling sand. No new contact damage is introduced.
 
 Dead bushes are non-solid scenery with a real melee hit response. Player attacks and enemy strikes clear bushes inside their hit bounds, subject to solid-terrain obstruction. Falling sand also destroys bushes it touches. Removing their ground support or placing a block in their cell clears them without drops. They are not inventory items and cannot be harvested repeatedly.
 

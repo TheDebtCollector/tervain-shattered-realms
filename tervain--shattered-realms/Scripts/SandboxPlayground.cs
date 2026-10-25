@@ -36,11 +36,14 @@ public partial class SandboxPlayground : Node2D
         BindMouse("use_secondary", MouseButton.Right);
         _player = GetNode<Player>("Player");
         _world = GetNode<BlockWorld>("World");
+        _world.MaterialReleased += (position, material) => AddChild(new MaterialDrop
+            { Kind = material, Position = position, Player = _player, Inventory = _inventory });
         _enemy = GetNode<Enemy>("TrainingCreature");
         SelectSlot(0);
         _hud = new SandboxHud { SlotSelected = SelectSlot };
         AddChild(_hud);
         RenderingServer.SetDefaultClearColor(new Color("182f37"));
+        if (HasArgument("--vegetation-test")) CallDeferred(MethodName.RunVegetationTests);
         if (HasArgument("--ctrl-mining-test")) CallDeferred(MethodName.RunCtrlMiningTests);
         if (HasArgument("--tundra-test")) CallDeferred(MethodName.RunTundraTests);
         if (HasArgument("--desert-test")) CallDeferred(MethodName.RunDesertTests);
@@ -450,10 +453,112 @@ public partial class SandboxPlayground : Node2D
             await TestDesert();
             await TestCtrlMining();
             await TestTundra();
+            await TestVegetation();
             _testingRestart = true;
             Check(GetTree().ReloadCurrentScene() == Error.Ok, "Sandbox can restart.");
         }
         catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async void RunVegetationTests()
+    {
+        try
+        {
+            _enemy.ProcessMode = ProcessModeEnum.Disabled;
+            _enemy.Position = new Vector2(2000, GroundY);
+            await TestVegetation();
+            GD.Print("VEGETATION TESTS PASSED.");
+            GetTree().Quit();
+        }
+        catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async Task TestVegetation()
+    {
+        foreach (var cell in new[] { new Vector2I(9, 18), new Vector2I(93, 18), new Vector2I(99, 18) })
+        {
+            _player.Position = new Vector2(BlockWorld.Center(cell).X - 48, GroundY);
+            _player.Velocity = Vector2.Zero;
+            await Frames(5);
+            Check(_world.IsVegetation(cell), "Natural trees, cacti, and pines are marked as vegetation.");
+            Input.ActionPress("move_right");
+            await Frames(30);
+            Input.ActionRelease("move_right");
+            Check(_player.Position.X > BlockWorld.Center(cell).X + 30 && _player.IsOnFloor() && _world.HasBlock(cell),
+                "The player walks through vegetation without destroying it.");
+            var point = new PhysicsPointQueryParameters2D { Position = BlockWorld.Center(cell), CollisionMask = 1 };
+            Check(_world.GetWorld2D().DirectSpaceState.IntersectPoint(point).Count == 0,
+                "Vegetation cells have no solid collision.");
+            var ray = PhysicsRayQueryParameters2D.Create(BlockWorld.Center(cell) + Vector2.Left * 40,
+                BlockWorld.Center(cell) + Vector2.Right * 40, 1);
+            Check(_world.GetWorld2D().DirectSpaceState.IntersectRay(ray).Count == 0,
+                "Vegetation does not obstruct melee visibility or construction rays.");
+        }
+
+        _player.Position = new Vector2(540, GroundY);
+        _player.Velocity = Vector2.Zero;
+        _inventory.Add(BlockKind.Wood);
+        Vector2I wall = new(24, 18);
+        Check(_world.TryPlace(wall, BlockKind.Wood, _player, _inventory), "Harvested wood can still become a construction block.");
+        await Frames(3);
+        Input.ActionPress("move_right");
+        await Frames(30);
+        Input.ActionRelease("move_right");
+        Check(!_world.IsVegetation(wall) && _player.Position.X <= 562.2f && _player.IsOnWall(),
+            "Player-built wooden walls remain solid and stop movement.");
+        SelectSlot(1);
+        Check(_world.TryMine(wall, _player, out _), "Built wood remains recoverable with an axe.");
+        await Frames(2);
+        _player.Position = new Vector2(540, GroundY);
+        _player.Velocity = Vector2.Zero;
+        _inventory.Add(BlockKind.Cactus);
+        Check(_world.TryPlace(wall, BlockKind.Cactus, _player, _inventory), "Cactus can be replanted.");
+        await Frames(3);
+        Input.ActionPress("move_right");
+        await Frames(30);
+        Input.ActionRelease("move_right");
+        Check(_world.IsVegetation(wall) && _player.Position.X > 620, "Replanted cacti remain passable vegetation.");
+
+        _player.Position = new Vector2(90.5f * BlockWorld.TileSize, GroundY);
+        _player.Velocity = Vector2.Zero;
+        await Frames(3);
+        Check(!_world.CanPlace(new Vector2I(93, 17), _player), "Vegetation alone cannot support a floating construction block.");
+        _inventory.Add(BlockKind.Wood, 2);
+        Check(_world.TryPlace(new Vector2I(92, 18), BlockKind.Wood, _player, _inventory)
+            && _world.TryPlace(new Vector2I(92, 17), BlockKind.Wood, _player, _inventory),
+            "A solid side support can be built beside a cactus.");
+        _player.Position = new Vector2(95.5f * BlockWorld.TileSize, GroundY);
+        _player.Velocity = Vector2.Zero;
+        int released = 0;
+        void Released(Vector2 position, BlockKind kind) { if (kind == BlockKind.Cactus) released++; }
+        _world.MaterialReleased += Released;
+        int cactusBefore = _inventory.Count(BlockKind.Cactus);
+        _inventory.Add(BlockKind.Sand);
+        Check(_world.TryPlace(new Vector2I(93, 17), BlockKind.Sand, _player, _inventory), "Sand can be placed above vegetation using the side support.");
+        await Frames(60);
+        _world.MaterialReleased -= Released;
+        Check(_world.FallingSandCount == 0 && _world.TryGetBlock(new Vector2I(93, 18), out BlockKind settled)
+            && settled == BlockKind.Sand && !_world.IsVegetation(new Vector2I(93, 18))
+            && released == 1 && _inventory.Count(BlockKind.Cactus) == cactusBefore + 1,
+            "Sand falls through vegetation, settles on the ground, and releases the crushed material once.");
+
+        var drop = new MaterialDrop { Kind = BlockKind.Wood, Position = new Vector2(103.5f * BlockWorld.TileSize, GroundY - 110),
+            Player = _player, Inventory = new SandboxInventory() };
+        AddChild(drop);
+        await Frames(55);
+        Check(drop.IsOnFloor() && Mathf.Abs(drop.Position.Y - (GroundY - 6)) < 1,
+            "Resource drops fall through pine branches and trunks onto the terrain.");
+        drop.QueueFree();
+
+        _player.Position = new Vector2(107 * BlockWorld.TileSize, GroundY);
+        _player.Velocity = Vector2.Zero;
+        var creature = new Enemy { Position = new Vector2(BlockWorld.Center(new Vector2I(99, 18)).X - 60, GroundY) };
+        AddChild(creature);
+        await Frames(84);
+        Check(creature.Position.X > BlockWorld.Center(new Vector2I(99, 18)).X + 40,
+            "Creatures also walk through natural vegetation.");
+        creature.QueueFree();
+        await Frames(2);
     }
 
     private async void RunTundraTests()
@@ -780,8 +885,11 @@ public partial class SandboxPlayground : Node2D
         Check(!_world.CanPlace(new Vector2I(69, 21), _player), "Settled sand remains solid occupied terrain.");
 
         _inventory.Add(BlockKind.Sand);
-        _player.Position = new Vector2(67.5f * 24, GroundY);
+        _player.Position = new Vector2(71.5f * 24, GroundY);
         _player.Velocity = Vector2.Zero;
+        _inventory.Add(BlockKind.Wood);
+        Check(_world.TryPlace(new Vector2I(68, 18), BlockKind.Wood, _player, _inventory),
+            "A solid side block anchors the sand-placement check; vegetation is not structural support.");
         SelectSlot(7);
         int sandBefore = _inventory.Count(BlockKind.Sand);
         // Use the exposed background as an anchor, then let the placed sand fall.

@@ -398,10 +398,42 @@ public partial class SandboxPlayground : Node2D
             await TestCombinedSystems();
             await TestIronOre();
             await TestTreeBackground();
+            await TestDropGravity();
             _testingRestart = true;
             Check(GetTree().ReloadCurrentScene() == Error.Ok, "Sandbox can restart.");
         }
         catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async Task TestDropGravity()
+    {
+        _player.Position = new Vector2(1018, GroundY);
+        _player.Velocity = Vector2.Zero;
+        var inventory = new SandboxInventory();
+        var drop = new MaterialDrop { Kind = BlockKind.Stone, Position = new Vector2(852, GroundY - 100),
+            Player = _player, Inventory = inventory };
+        AddChild(drop);
+        await Frames(8);
+        Check(drop.Position.Y > GroundY - 95 && drop.Velocity.Y > 0 && inventory.Count(BlockKind.Stone) == 0,
+            "Uncollected block drops accelerate downward outside pickup range.");
+        await Frames(45);
+        Check(drop.IsOnFloor() && Mathf.Abs(drop.Position.Y - (GroundY - 6)) < 1,
+            "Drops settle on foreground terrain with their bottom edge on the ground.");
+        float restingY = drop.Position.Y;
+        await Frames(15);
+        Check(Mathf.Abs(drop.Position.Y - restingY) < 0.1f,
+            "Resting drops stay on the surface instead of bobbing or sinking through it.");
+        SelectSlot(0);
+        Check(_world.TryMine(new Vector2I(35, BlockWorld.SurfaceRow), _player, out _),
+            "The block supporting a resting drop can be mined.");
+        await Frames(30);
+        Check(drop.IsOnFloor() && Mathf.Abs(drop.Position.Y - (GroundY + BlockWorld.TileSize - 6)) < 1,
+            "Removing support makes a resting drop fall to the next solid block, through its scenery wall.");
+        _player.Position = new Vector2(drop.Position.X + 48, GroundY);
+        _player.Velocity = Vector2.Zero;
+        await Frames(35);
+        Check(!GodotObject.IsInstanceValid(drop) && inventory.Count(BlockKind.Stone) == 1,
+            "Approaching a settled drop attracts and collects exactly one material.");
     }
 
     private async Task TestTreeBackground()

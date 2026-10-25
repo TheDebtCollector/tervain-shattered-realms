@@ -63,6 +63,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 - Changing the target or hotbar slot interrupts unfinished mining.
 - Mining reaches 192 pixels (8 blocks) from the player body centre and ignores intervening blocks. The correct equipped tool is also required: pickaxe for dirt/stone/iron ore and axe for wood. Bedrock and background walls remain unmineable. Building reaches 160 pixels (about 6.7 blocks) and still requires a clear path.
 - Placed blocks need an adjacent foreground block or a background wall in the target cell. They cannot overlap the player or a living enemy.
+- Mined material drops fall under gravity and settle on solid foreground blocks. Removing their support makes them fall again. Nearby drops still attract to the player for collection.
 - Successful placement spends one item. Rejected placement spends nothing.
 - Blocks remain suspended if their support is later removed; structural collapse is outside this milestone.
 - An unmineable bedrock floor and side boundaries keep the test area contained.
@@ -82,7 +83,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 | `Scripts/BlockWorld.cs` | Foreground terrain, generated background walls, collision, reach/visibility checks, mining, placement, target rendering |
 | `Scripts/SandboxInventory.cs` | Material stack counts and spending |
 | `Scripts/Equipment.cs` | Shared seven-slot equipment mapping and tool/material rules |
-| `Scripts/MaterialDrop.cs` | Dropped material attraction and collection |
+| `Scripts/MaterialDrop.cs` | Dropped material gravity, terrain collision, attraction, and collection |
 | `Scripts/SandboxHud.cs` | Hotbar, counts, status, and controls |
 | `Scripts/SandboxPlayground.cs` | Tool selection, combat/tool priority, integration checks, and optional scene switching |
 | `Scripts/CombatRules.cs` | Shared terrain visibility check for melee damage |
@@ -204,3 +205,11 @@ A four-block iron ore deposit sits beside the right edge of the underground cavi
 Back walls now use the developer’s new dirt and cave background tiles at their original brightness. Dirt uses the dirt background; stone and ore use the cave background. Trees keep darkened wooden wall cells after harvesting, and their canopy now remains as dim scenery even when the top trunk block is removed. These backgrounds have no collision, cannot be mined, and support foreground placement. Original air cells remain without block walls. See [[Artwork]] for assets and export instructions.
 
 Build and sandbox checks passed, including harvesting every trunk segment, preserving each background cell, preventing extra wood harvests, verifying no wall collision, and placing/removing foreground wood on a tree background. Rendered excavation and harvested-tree previews were inspected.
+
+## Gravity for mined drops — 2026-10-25
+
+Broken blocks now produce physical drops that fall and rest on the terrain. Drops have a 12×12 collider matching their artwork, accelerate at 900 pixels per second squared, and cap their falling speed at 600 pixels per second. They collide with foreground terrain while falling; players, enemies, other drops, and background walls do not support them. Removing a supporting block makes a settled drop fall to the next solid surface. The old visual bobbing is removed so grounded drops visibly sit on that surface.
+
+The existing pickup behaviour remains: after 0.12 seconds, drops within 120 pixels of a living player's body centre are attracted at 340 pixels per second and collected within 24 pixels. Close-range attraction still passes through terrain to preserve buried-block gathering. Gravity continues when the player is dead, while attraction and collection are disabled.
+
+C# compilation passed without warnings or errors. Sandbox checks passed for falling outside pickup range, landing on the correct surface, remaining settled, falling again when support is mined, passing through background scenery, and attracting/collecting exactly one item when approached. Existing mining, inventory, equipment, building, tree backgrounds, combat, and reset checks also passed.

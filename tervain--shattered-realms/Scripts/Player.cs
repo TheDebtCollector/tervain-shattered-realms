@@ -21,7 +21,8 @@ public partial class Player : CharacterBody2D
     public float DodgeReadyIn => _dodgeCooldownLeft;
     public bool IsDead => Health <= 0;
     public EquipmentKind EquippedItem { get; private set; } = EquipmentKind.Sword;
-    public const float BodyHeight = 72;
+    // Four pixels of clearance in a three-tile (72px) tunnel.
+    public const float BodyHeight = 68;
     public Vector2 BodyCenter => GlobalPosition + new Vector2(0, -BodyHeight / 2);
     public Rect2 BodyBounds => new(GlobalPosition + new Vector2(-14, -BodyHeight), new Vector2(28, BodyHeight));
     public Rect2 AttackBounds => new(
@@ -146,13 +147,13 @@ public partial class Player : CharacterBody2D
         if (_hurtLeft > 0) coat = Colors.White;
         if (_invulnerableLeft > 0 && (int)(_invulnerableLeft * 20) % 2 == 0) coat.A = 0.5f;
         DrawCircle(new Vector2(0, 1), 17, new Color(0, 0, 0, 0.2f));
-        DrawRect(new Rect2(-13, -51, 26, 47), coat);
-        DrawCircle(new Vector2(0, -60), 12, new Color("edcfaa"));
-        DrawRect(new Rect2(-12, -72, 24, 10), new Color("263d49"));
-        DrawCircle(new Vector2(Facing * 5, -60), 2, new Color("182b36"));
+        DrawRect(new Rect2(-13, -47, 26, 43), coat);
+        DrawCircle(new Vector2(0, -56), 12, new Color("edcfaa"));
+        DrawRect(new Rect2(-12, -BodyHeight, 24, 10), new Color("263d49"));
+        DrawCircle(new Vector2(Facing * 5, -56), 2, new Color("182b36"));
         DrawLine(new Vector2(-7, -5), new Vector2(-7, 0), new Color("243a46"), 7);
         DrawLine(new Vector2(7, -5), new Vector2(7, 0), new Color("243a46"), 7);
-        Vector2 hand = new(Facing * 17, -36);
+        Vector2 hand = new(Facing * 17, -BodyHeight / 2);
         // Animation follows the swing itself, including swings into empty air.
         float toolAngle = IsAttacking ? Mathf.Lerp(-0.65f, 1.15f, 1 - _attackLeft / 0.38f) : 0;
         DrawSetTransform(hand, toolAngle * Facing, new Vector2(Facing, 1));

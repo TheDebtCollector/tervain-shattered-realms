@@ -286,8 +286,9 @@ public partial class SandboxPlayground : Node2D
                 "Generated terrain and wood blocks receive background walls.");
             Check(!_world.HasWall(new Vector2I(14, BlockWorld.SurfaceRow - 5)) && !_world.HasWall(new Vector2I(47, 26)),
                 "Open sky and generated cave air keep scenery without block walls.");
-            Check(BlockWorld.TileSize == 24 && _player.BodyBounds.Size.Y == BlockWorld.TileSize * 3,
-                "The player is exactly three 24px blocks tall.");
+            Check(BlockWorld.TileSize == 24 && _player.BodyBounds.Size.Y == 68
+                && BlockWorld.TileSize * 3 - _player.BodyBounds.Size.Y == 4,
+                "The 68px player has four pixels of clearance in a three-block tunnel.");
             Check(BlockWorld.Width * BlockWorld.TileSize == 2304 && BlockWorld.Height * BlockWorld.TileSize == 768,
                 "The grid preserves the world's physical dimensions.");
             float newSpeed = _player.JumpSpeed;
@@ -340,7 +341,7 @@ public partial class SandboxPlayground : Node2D
             Check(!_world.TryPlace(new Vector2I(17, BlockWorld.SurfaceRow - 1), BlockKind.Dirt, _player, _inventory), "Empty inventory cannot create free blocks.");
             _inventory.Add(BlockKind.Wood, 10);
             Check(!_world.TryPlace(placedCell, BlockKind.Wood, _player, _inventory), "Occupied cells reject placement.");
-            Check(!_world.TryPlace(new Vector2I(13, BlockWorld.SurfaceRow - 2), BlockKind.Wood, _player, _inventory), "Placement respects the full 72px player body.");
+            Check(!_world.TryPlace(new Vector2I(13, BlockWorld.SurfaceRow - 2), BlockKind.Wood, _player, _inventory), "Placement respects the full 68px player body.");
             Check(!_world.TryPlace(new Vector2I(14, BlockWorld.SurfaceRow - 5), BlockKind.Wood, _player, _inventory), "Floating unsupported blocks are rejected.");
             Check(!_world.TryPlace(new Vector2I(27, BlockWorld.SurfaceRow - 1), BlockKind.Wood, _player, _inventory), "Building still uses its shorter reach.");
             SelectSlot(0);
@@ -415,11 +416,45 @@ public partial class SandboxPlayground : Node2D
             await TestIronOre();
             await TestTreeBackground();
             await TestDropGravity();
+            await TestTunnelClearance();
             await TestDesert();
             _testingRestart = true;
             Check(GetTree().ReloadCurrentScene() == Error.Ok, "Sandbox can restart.");
         }
         catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async Task TestTunnelClearance()
+    {
+        // Isolated geometry avoids changing the authored biome and earlier mining fixtures.
+        var tunnel = new Node2D { Position = new Vector2(2600, 300) };
+        AddChild(tunnel);
+        void Solid(Rect2 rect)
+        {
+            var body = new StaticBody2D { Position = rect.Position, CollisionLayer = 1, CollisionMask = 0 };
+            body.AddChild(new CollisionShape2D { Position = rect.Size / 2,
+                Shape = new RectangleShape2D { Size = rect.Size } });
+            tunnel.AddChild(body);
+        }
+        Solid(new Rect2(0, 0, 340, BlockWorld.TileSize));
+        Solid(new Rect2(80, -BlockWorld.TileSize * 4, BlockWorld.TileSize * 6, BlockWorld.TileSize));
+        _player.Position = tunnel.Position + new Vector2(32, 0);
+        _player.Velocity = Vector2.Zero;
+        await Frames(5);
+        Input.ActionPress("move_right");
+        await Frames(30);
+        Check(_player.Position.X > tunnel.Position.X + 120 && _player.IsOnFloor() && !_player.IsOnCeiling(),
+            "The player walks into a 72px-high tunnel without catching the ceiling.");
+        await Frames(30);
+        Input.ActionRelease("move_right");
+        Check(_player.Position.X > tunnel.Position.X + 240 && _player.IsOnFloor(),
+            "The player walks completely through the three-block-high tunnel.");
+        Input.ActionPress("move_left");
+        await Frames(72); // Include the established deceleration/reversal time before crossing back.
+        Input.ActionRelease("move_left");
+        Check(_player.Position.X < tunnel.Position.X + 66 && _player.IsOnFloor(),
+            "The player can enter and cross the same tunnel in the opposite direction.");
+        tunnel.QueueFree();
     }
 
     private async void RunDesertTests()

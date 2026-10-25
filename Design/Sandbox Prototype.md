@@ -49,7 +49,7 @@ Press **F5** in the Godot .NET project. The main scene is now `Scenes/SandboxPla
 2. Move near the dropped item to collect it; nearby drops are drawn toward the character.
 3. Select dirt and place it on the ground nearby.
 4. Select the axe (2) to harvest tree trunks for wood. Stone is available underground and in the surface outcrop to the right of spawn.
-5. Build walls and a roof. The player is three blocks tall; leave a four-block-high entrance for comfortable headroom.
+5. Build walls and a roof. The player is 68 pixels tall, slightly under three 24px blocks; a three-block-high entrance or tunnel provides four pixels of headroom.
 6. Try jumping onto your construction, mining underfoot, and recovering placed blocks.
 7. Approach the creature to the right of spawn. Read its wind-up, dodge with Shift, select the sword (3), and attack with left click or J. Try building a barrier, mining it away, fighting, and then continuing construction in the same world.
 
@@ -220,3 +220,10 @@ C# compilation passed without warnings or errors. Sandbox checks passed for fall
 ## Desert area and falling sand — 2026-10-25
 
 The right side of the prototype world now contains a desert with sand, sandstone, cracked earth, cacti, and dead bushes using the new artwork. Sand falls as a full block when unsupported and settles back into terrain, including after player placement. Cacti require the axe and yield cactus resources. Dead bushes break from a connected pickaxe, axe, or sword hit and drop nothing. See [[Desert Prototype]] for the complete rules and validation. New material shortcuts are 8 (sand), 9 (sandstone), 0 (cracked earth), and Minus (cactus).
+
+
+## Three-block tunnel clearance — 2026-10-25
+
+The player body and collision shape are now 68 pixels high (about 2.83 blocks), leaving four pixels of clearance in a 72-pixel, three-block-high tunnel. The head, hat, coat, and held-item position match the shorter body. Width stays 28 pixels. Movement, jump speed, dodge settings, melee range, damage, and swing timings retain their existing values. The shared body bounds also keep placement overlap checks and pickup/mining origins aligned with the new height.
+
+Validation includes the exact clearance, unchanged full jump height, and walking into, through, and back through a physical three-block-high tunnel. The sandbox and standalone combat suites are checked before publishing the checkpoint.

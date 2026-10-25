@@ -6,7 +6,7 @@ An open-source 2D side-view sandbox built with **Godot .NET and C#**. Build a ho
 
 - Responsive movement, variable jumping, dodging, and deliberate melee combat. A four-block-tall character explores a 16px block grid.
 - A combat playground with a telegraphed enemy attack and recovery windows.
-- One combined sandbox with mineable dirt, stone, and wood, collectible drops, a four-slot hotbar, block placement, and an enemy encounter. Terrain provides cover during combat. Mining reaches 24 blocks and can target buried blocks directly.
+- One combined sandbox with mineable dirt, stone, and wood, collectible drops, a four-slot hotbar, block placement, and an enemy encounter. Terrain provides cover during combat. Mining reaches 24 blocks and can target buried blocks directly. Generated blocks leave non-solid background walls after mining; foreground blocks can be attached to those walls without neighbouring blocks.
 
 Realm travel, procedural world generation, crafting, and save/load are planned. The current sandbox terrain is authored; prototype play progress is not saved.
 

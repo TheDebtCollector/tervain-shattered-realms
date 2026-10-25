@@ -58,7 +58,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 - Dirt takes 0.28 seconds to mine, wood 0.4 seconds, and stone 0.6 seconds.
 - Changing the target or hotbar slot interrupts unfinished mining.
 - Mining reaches 384 pixels (24 blocks) from the player body centre and ignores intervening blocks. Only distance, world bounds, player state, and protected bedrock determine whether a target can be mined. Building reaches 160 pixels (10 blocks) and still requires a clear path.
-- Placed blocks need an existing neighbour and cannot overlap the player or a living enemy.
+- Placed blocks need an adjacent foreground block or a background wall in the target cell. They cannot overlap the player or a living enemy.
 - Successful placement spends one item. Rejected placement spends nothing.
 - Blocks remain suspended if their support is later removed; structural collapse is outside this milestone.
 - An unmineable bedrock floor and side boundaries keep the test area contained.
@@ -74,7 +74,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 
 | File | Responsibility |
 | --- | --- |
-| `Scripts/BlockWorld.cs` | Block terrain, collision, reach/visibility checks, mining, placement, target rendering |
+| `Scripts/BlockWorld.cs` | Foreground terrain, generated background walls, collision, reach/visibility checks, mining, placement, target rendering |
 | `Scripts/SandboxInventory.cs` | Material stack counts and spending |
 | `Scripts/MaterialDrop.cs` | Dropped material attraction and collection |
 | `Scripts/SandboxHud.cs` | Hotbar, counts, status, and controls |
@@ -102,7 +102,7 @@ Run the original combat checks with:
 
 ## Not included yet
 
-Crafting, a separate inventory window, background walls, doors, furniture, automatic shelter detection, save/load, generated terrain, realm travel, audio, and final art.
+Crafting, a separate inventory window, placing or mining background walls, doors, furniture, automatic shelter detection, save/load, generated terrain, realm travel, audio, and final art.
 
 ## Feedback to gather
 
@@ -125,3 +125,15 @@ The developer requested a finer 16px block grid, a four-block-tall player, a jum
 - World width and height in pixels, spawn positions, and the overall landscape footprint are preserved by doubling the grid dimensions.
 
 The C# build passed without warnings or errors. Godot checks measured the jump increase and verified player/grid scale, distant buried mining, range boundaries, protected bedrock, item collection, resized placement/collision, and combined combat/building. The original combat suite passed, and the rendered proportions were inspected.
+
+## Generated background walls — 2026-10-25
+
+Generated foreground blocks now receive a separate background wall of the same material, drawn darker and behind characters and foreground blocks. This includes the generated terrain, wood trunks, stone outcrops, and bedrock. Original open sky and cave air retain scenery with no block-wall layer.
+
+Mining a generated foreground block reveals its background wall and leaves it intact. Background walls have no collision bodies, cannot be mined, produce no drops, and do not block movement, melee attacks, mining, or building visibility checks.
+
+A wall in the target cell is an alternative to an adjacent foreground block when placing a block. This lets players attach an isolated foreground block to an exposed wall so it appears to float. Normal material costs, building range, visibility, and character overlap checks still apply. Player-built foreground blocks do not generate additional background walls.
+
+To try it, excavate a chamber in the terrain, select dirt, stone, or wood, and place a block on a darker wall away from other foreground blocks. Mining that block returns its material and reveals the original wall again. In original open air, construction still needs an adjacent foreground block.
+
+Verification passed in Godot for generation only behind original solid cells, unchanged sky/cave air, persistent walls after mining, unmineable wall-only cells, zero wall collision, walking through exposed walls, isolated wall-supported placement and material cost, normal collision on the new foreground block, and recovering that block without removing the wall. Existing sandbox and combined combat checks also passed. The C# build had zero warnings and errors, and an excavated chamber with an isolated foreground block was rendered and inspected.

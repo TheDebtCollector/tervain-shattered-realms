@@ -13,6 +13,8 @@ public partial class BlockWorld : Node2D
     public const float MiningReach = 384;
     private static readonly int[] TreeColumns = { 8, 14, 40, 48, 84, 94, 120, 130 };
     private readonly Dictionary<Vector2I, BlockKind> _blocks = new();
+    // Generated scenery only: kept independently of foreground blocks, with no physics bodies.
+    private readonly Dictionary<Vector2I, BlockKind> _walls = new();
     private readonly Dictionary<Vector2I, StaticBody2D> _bodies = new();
     public int BlockCount => _blocks.Count;
     public Vector2I? HighlightCell { get; set; }
@@ -25,6 +27,7 @@ public partial class BlockWorld : Node2D
     public static bool InBounds(Vector2I cell) => cell.X >= 0 && cell.X < Width && cell.Y >= 6 && cell.Y < Height;
     public bool TryGetBlock(Vector2I cell, out BlockKind kind) => _blocks.TryGetValue(cell, out kind);
     public bool HasBlock(Vector2I cell) => _blocks.ContainsKey(cell);
+    public bool HasWall(Vector2I cell) => _walls.ContainsKey(cell);
     public static Color Colour(BlockKind kind) => new(kind switch
     {
         BlockKind.Dirt => "947356", BlockKind.Stone => "7c9093", BlockKind.Wood => "bd8c56", _ => "36434b"
@@ -46,6 +49,9 @@ public partial class BlockWorld : Node2D
         // Surface stone outcrops offer stone without forcing a deep excavation.
         for (int x = 58; x <= 65; x++)
             for (int y = 26; y < 28; y++) SetBlock(new Vector2I(x, y), BlockKind.Stone);
+        // Snapshot only generated solid cells. Open sky, cave air, and later player builds
+        // do not create walls; mining the foreground leaves this scenery intact.
+        foreach (var block in _blocks) _walls[block.Key] = block.Value;
         AddBoundary(new Rect2(-32, -1000, 32, 2000));
         AddBoundary(new Rect2(Width * TileSize, -1000, 32, 2000));
     }
@@ -102,7 +108,7 @@ public partial class BlockWorld : Node2D
         if (CellRect(cell).Intersects(player.BodyBounds)) return false;
         foreach (Node node in GetTree().GetNodesInGroup("enemies"))
             if (node is Enemy enemy && !enemy.IsDead && CellRect(cell).Intersects(enemy.BodyBounds)) return false;
-        return HasBlock(cell + Vector2I.Down) || HasBlock(cell + Vector2I.Up) ||
+        return HasWall(cell) || HasBlock(cell + Vector2I.Down) || HasBlock(cell + Vector2I.Up) ||
             HasBlock(cell + Vector2I.Left) || HasBlock(cell + Vector2I.Right);
     }
 
@@ -129,6 +135,17 @@ public partial class BlockWorld : Node2D
                 DrawCircle(new Vector2(x * TileSize + 16, 302), 57, new Color("426951"));
                 DrawCircle(new Vector2(x * TileSize - 10, 290), 35, new Color("4d7658"));
             }
+        foreach (var entry in _walls)
+        {
+            if (HasBlock(entry.Key)) continue; // Opaque foreground already covers this scenery.
+            Rect2 rect = CellRect(entry.Key);
+            Color colour = Colour(entry.Value).Darkened(0.58f);
+            DrawRect(rect, colour);
+            DrawLine(rect.Position, rect.Position + new Vector2(TileSize, 0), colour.Lightened(0.08f), 1);
+            DrawLine(rect.Position, rect.Position + new Vector2(0, TileSize), colour.Darkened(0.15f), 1);
+            // Recessed seams distinguish scenery from the brighter foreground grid.
+            DrawLine(rect.Position + new Vector2(4, 8), rect.Position + new Vector2(12, 8), colour.Darkened(0.14f), 1);
+        }
         foreach (var entry in _blocks)
         {
             Rect2 rect = CellRect(entry.Key);

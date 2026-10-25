@@ -48,7 +48,7 @@ public partial class SandboxPlayground : Node2D
             }
             else CallDeferred(MethodName.RunSandboxTests);
         }
-        if (HasArgument("--sandbox-preview")) CallDeferred(MethodName.SavePreview);
+        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview")) CallDeferred(MethodName.SavePreview);
     }
 
     private static bool HasArgument(string arg) => Array.Exists(OS.GetCmdlineUserArgs(), value => value == arg);
@@ -110,6 +110,8 @@ public partial class SandboxPlayground : Node2D
         if (_world.TryGetBlock(cell, out BlockKind material) && !overUi)
             target = material == BlockKind.Bedrock ? "BEDROCK  /  This foundation cannot be mined."
                 : $"{material.ToString().ToUpperInvariant()}  /  " + (mine ? valid ? "Hold left mouse to mine." : "Move closer; mining reaches 24 blocks through terrain." : "This space is occupied.");
+        else if (mine && !overUi && _world.HasWall(cell))
+            target = "BACKGROUND WALL  /  Select a material to attach a block here.";
         if (mine && primary && valid)
         {
             if (_miningCell != cell) { _miningCell = cell; _mineElapsed = 0; }
@@ -129,7 +131,7 @@ public partial class SandboxPlayground : Node2D
             if (_world.TryPlace(cell, (BlockKind)(_selected - 1), _player, _inventory)) _placeCooldown = 0.16f;
             else if (Input.IsActionJustPressed("use_primary") || Input.IsActionJustPressed("use_secondary"))
                 _hud.Notify(_inventory.Count((BlockKind)(_selected - 1)) == 0 ? "Mine and collect this material first."
-                    : "Place within reach, against an existing block, with a clear path and room for characters.");
+                    : "Build within reach, on a block or background wall, with a clear path and room for characters.");
         }
         _world.MiningProgress = _miningCell != null ? Mathf.Clamp(_mineElapsed / BlockWorld.MineDuration(material), 0, 1) : 0;
         _world.QueueRedraw();
@@ -151,9 +153,23 @@ public partial class SandboxPlayground : Node2D
     }
     private async void SavePreview()
     {
+        bool wallPreview = HasArgument("--wall-preview");
+        if (wallPreview)
+        {
+            _enemy.ProcessMode = ProcessModeEnum.Disabled;
+            _player.Position = new Vector2(392, 448);
+            _player.Velocity = Vector2.Zero;
+            for (int x = 20; x <= 30; x++)
+                for (int y = 28; y <= 35; y++) _world.TryMine(new Vector2I(x, y), _player, out _);
+            await Frames(2);
+            _player.Position = new Vector2(392, 576);
+            _player.Velocity = Vector2.Zero;
+            _inventory.Add(BlockKind.Wood);
+            _world.TryPlace(new Vector2I(28, 30), BlockKind.Wood, _player, _inventory);
+        }
         await Frames(30);
         await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
-        Error result = GetViewport().GetTexture().GetImage().SavePng("res://.godot/sandbox-preview.png");
+        Error result = GetViewport().GetTexture().GetImage().SavePng(wallPreview ? "res://.godot/wall-preview.png" : "res://.godot/sandbox-preview.png");
         GD.Print("Sandbox preview: " + result);
         GetTree().Quit(result == Error.Ok ? 0 : 1);
     }
@@ -195,6 +211,10 @@ public partial class SandboxPlayground : Node2D
             _enemy.Position = new Vector2(2000, 448);
             await Frames(30);
             Check(_player.IsOnFloor(), "Player stands on the finer terrain grid.");
+            Check(_world.HasWall(new Vector2I(22, 28)) && _world.HasWall(new Vector2I(8, 20)),
+                "Generated terrain and wood blocks receive background walls.");
+            Check(!_world.HasWall(new Vector2I(21, 20)) && !_world.HasWall(new Vector2I(71, 40)),
+                "Open sky and generated cave air keep scenery without block walls.");
             Check(BlockWorld.TileSize == 16 && _player.BodyBounds.Size.Y == BlockWorld.TileSize * 4,
                 "The player is exactly four 16px blocks tall.");
             Check(BlockWorld.Width * BlockWorld.TileSize == 2304 && BlockWorld.Height * BlockWorld.TileSize == 768,
@@ -215,6 +235,7 @@ public partial class SandboxPlayground : Node2D
             Vector2I placedCell = new(24, 27);
             await UseTool(placedCell, 3);
             Check(_world.HasBlock(placedCell) && _inventory.Count(BlockKind.Dirt) == 0, "Placement consumes one material.");
+            Check(!_world.HasWall(placedCell), "Player-built blocks in original air do not generate background walls.");
             Check(!_world.TryPlace(new Vector2I(25, 27), BlockKind.Dirt, _player, _inventory), "Empty inventory cannot create free blocks.");
             _inventory.Add(BlockKind.Wood, 10);
             Check(!_world.TryPlace(placedCell, BlockKind.Wood, _player, _inventory), "Occupied cells reject placement.");
@@ -277,11 +298,57 @@ public partial class SandboxPlayground : Node2D
             Vector2 screenPosition = _player.GetGlobalTransformWithCanvas().Origin;
             Check(screenPosition.Y > 170 && screenPosition.Y < GetViewportRect().Size.Y - 150,
                 "Underground exploration stays clear of the HUD.");
+            await TestBackgroundWalls();
             await TestCombinedSystems();
             _testingRestart = true;
             Check(GetTree().ReloadCurrentScene() == Error.Ok, "Sandbox can restart.");
         }
         catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async Task TestBackgroundWalls()
+    {
+        _player.Position = new Vector2(1448, 448);
+        _player.Velocity = Vector2.Zero;
+        await Frames(3);
+        int excavated = 0;
+        for (int x = 87; x <= 93; x++)
+            for (int y = 29; y <= 36; y++)
+                if (_world.TryMine(new Vector2I(x, y), _player, out _)) excavated++;
+        Check(excavated == 56, "Excavation clears foreground blocks for background-wall checks.");
+        await Frames(3);
+        Vector2I anchor = new(90, 34);
+        Check(_world.HasWall(anchor) && !_world.HasBlock(anchor), "Mining reveals and preserves the generated background wall.");
+        Check(!_world.CanMine(anchor, _player) && !_world.TryMine(anchor, _player, out _)
+            && _world.HasWall(anchor), "The exposed background wall cannot be mined.");
+        var point = new PhysicsPointQueryParameters2D { Position = BlockWorld.Center(anchor), CollisionMask = 1 };
+        Check(_world.GetWorld2D().DirectSpaceState.IntersectPoint(point).Count == 0, "Background walls have no solid collision.");
+        _player.Position = new Vector2(1416, 592);
+        _player.Velocity = Vector2.Zero;
+        await Frames(3);
+        Input.ActionPress("move_right");
+        await Frames(20);
+        Input.ActionRelease("move_right");
+        Check(_player.Position.X > BlockWorld.Center(anchor).X && _player.IsOnFloor(), "The player can walk through exposed background walls.");
+        _player.Position = new Vector2(1416, 592);
+        _player.Velocity = Vector2.Zero;
+        await Frames(3);
+        Check(!_world.HasBlock(anchor + Vector2I.Up) && !_world.HasBlock(anchor + Vector2I.Down)
+            && !_world.HasBlock(anchor + Vector2I.Left) && !_world.HasBlock(anchor + Vector2I.Right),
+            "The wall-supported target has no adjacent foreground blocks.");
+        _inventory.Add(BlockKind.Wood);
+        int before = _inventory.Count(BlockKind.Wood);
+        SelectSlot(3);
+        await UseTool(anchor, 3);
+        Check(_world.HasBlock(anchor) && _inventory.Count(BlockKind.Wood) == before - 1,
+            "Tool input places a floating foreground block on the background wall and spends one material.");
+        Check(_world.GetWorld2D().DirectSpaceState.IntersectPoint(point).Count > 0, "The new foreground block provides collision.");
+        SelectSlot(0);
+        await UseTool(anchor, 30);
+        await Frames(20);
+        Check(!_world.HasBlock(anchor) && _world.HasWall(anchor) && _inventory.Count(BlockKind.Wood) == before,
+            "Mining recovers the foreground block while preserving the original background wall.");
+        Check(_world.GetWorld2D().DirectSpaceState.IntersectPoint(point).Count == 0, "Only the non-solid background remains after mining.");
     }
 
     private async Task TestCombinedSystems()

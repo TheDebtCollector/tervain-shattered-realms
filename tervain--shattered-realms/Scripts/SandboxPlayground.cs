@@ -26,6 +26,7 @@ public partial class SandboxPlayground : Node2D
         Bind("jump", Key.Space, Key.W, Key.Up);
         Bind("dodge", Key.Shift);
         Bind("attack", Key.J);
+        Bind("mine_forward", Key.Ctrl);
         Bind("restart", Key.R);
         Bind("combat_playground", Key.F2);
         // Left click is a tool action in the sandbox. The original combat room keeps its own binding.
@@ -40,6 +41,7 @@ public partial class SandboxPlayground : Node2D
         _hud = new SandboxHud { SlotSelected = SelectSlot };
         AddChild(_hud);
         RenderingServer.SetDefaultClearColor(new Color("182f37"));
+        if (HasArgument("--ctrl-mining-test")) CallDeferred(MethodName.RunCtrlMiningTests);
         if (HasArgument("--desert-test")) CallDeferred(MethodName.RunDesertTests);
         if (HasArgument("--sandbox-test"))
         {
@@ -112,7 +114,13 @@ public partial class SandboxPlayground : Node2D
         bool building = EquipmentRules.TryGetMaterial(item, out BlockKind buildingMaterial);
         bool sword = item == EquipmentKind.Sword;
         bool canSwing = EquipmentRules.CanSwing(item);
-        bool primary = Input.IsActionPressed("use_primary");
+        bool mineForward = miningTool && Input.IsActionPressed("mine_forward");
+        if (mineForward)
+        {
+            cell = _world.ClosestBlockAhead(_player) ?? new Vector2I(-1, -1);
+            overUi = false; // Keyboard mining is independent of the cursor and UI hover.
+        }
+        bool primary = Input.IsActionPressed("use_primary") || (mineForward && BlockWorld.InBounds(cell));
         bool secondary = Input.IsActionPressed("use_secondary");
         if (canSwing && !overUi && (miningTool ? primary : Input.IsActionJustPressed("use_primary")))
             _player.TryStartAttack();
@@ -133,7 +141,7 @@ public partial class SandboxPlayground : Node2D
             string instruction = building ? "This space is occupied."
                 : block == BlockKind.Bedrock ? "This foundation cannot be mined."
                 : !EquipmentRules.CanMine(item, block) ? block is BlockKind.Wood or BlockKind.Cactus ? "Requires axe (2)." : "Requires pickaxe (1)."
-                : valid ? "Hold left mouse to harvest."
+                : valid ? mineForward ? "CTRL  /  Mining the closest block ahead." : "Hold left mouse or Ctrl to harvest."
                 : $"Move closer; tool reach is {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks through terrain.";
             target = $"{(block == BlockKind.IronOre ? "IRON ORE" : block.ToString().ToUpperInvariant())}  /  {instruction}";
         }
@@ -418,10 +426,92 @@ public partial class SandboxPlayground : Node2D
             await TestDropGravity();
             await TestTunnelClearance();
             await TestDesert();
+            await TestCtrlMining();
             _testingRestart = true;
             Check(GetTree().ReloadCurrentScene() == Error.Ok, "Sandbox can restart.");
         }
         catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async void RunCtrlMiningTests()
+    {
+        try
+        {
+            _enemy.ProcessMode = ProcessModeEnum.Disabled;
+            _enemy.Position = new Vector2(2000, GroundY);
+            await TestCtrlMining();
+            GD.Print("CTRL MINING TESTS PASSED.");
+            GetTree().Quit();
+        }
+        catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async Task TestCtrlMining()
+    {
+        _player.Position = new Vector2(252, GroundY);
+        _player.Velocity = Vector2.Zero;
+        SelectSlot(0);
+        await Frames(5);
+        Input.ActionPress("move_right");
+        await Frames(2);
+        Input.ActionRelease("move_right");
+        await Frames(8);
+        Check(_player.Facing == 1, "The Ctrl-mining fixture faces right.");
+        _inventory.Add(BlockKind.Dirt, 3);
+        foreach (int y in new[] { 18, 17, 16 })
+            Check(_world.TryPlace(new Vector2I(12, y), BlockKind.Dirt, _player, _inventory),
+                "A three-block wall is built in front of the player.");
+        Check(_world.ClosestBlockAhead(_player) == new Vector2I(12, 17),
+            "Automatic mining selects the closest block ahead, ignoring the nearer tree behind.");
+        _testTarget = BlockWorld.Center(new Vector2I(10, 19)); // Deliberately point at the floor instead.
+        int dirtBefore = _inventory.Count(BlockKind.Dirt);
+        Input.ParseInputEvent(new InputEventKey { Keycode = Key.Ctrl, PhysicalKeycode = Key.Ctrl, CtrlPressed = true, Pressed = true });
+        await Frames(2);
+        Check(Input.IsActionPressed("mine_forward") && _world.HighlightCell == new Vector2I(12, 17),
+            "Pressing the real Ctrl key targets ahead independently of the mouse.");
+        await Frames(18);
+        Check(!_world.HasBlock(new Vector2I(12, 17)) && _world.HasBlock(new Vector2I(12, 18))
+            && _world.HasBlock(new Vector2I(12, 16)), "Ctrl mines the nearest block first at normal mining speed.");
+        await Frames(60);
+        Check(!_world.HasBlock(new Vector2I(12, 16)) && !_world.HasBlock(new Vector2I(12, 18))
+            && _inventory.Count(BlockKind.Dirt) == dirtBefore + 3,
+            "Holding Ctrl advances to the next nearest blocks and collects their normal drops.");
+        Check(_world.HasBlock(new Vector2I(10, 19)) && _world.HasBlock(new Vector2I(9, 17))
+            && _world.HighlightCell == null, "Ctrl leaves the floor and blocks behind intact, and stops when nothing ahead is in range.");
+        Input.ParseInputEvent(new InputEventKey { Keycode = Key.Ctrl, PhysicalKeycode = Key.Ctrl, Pressed = false });
+        await Frames(2);
+        Check(!Input.IsActionPressed("mine_forward"), "Releasing Ctrl ends keyboard mining.");
+
+        Input.ActionPress("move_left");
+        await Frames(2);
+        Input.ActionRelease("move_left");
+        await Frames(8);
+        Check(_player.Facing == -1 && _world.ClosestBlockAhead(_player) == new Vector2I(9, 17),
+            "Facing left selects the closest block on the left.");
+        Input.ActionPress("mine_forward");
+        await Frames(35);
+        Check(_world.HasBlock(new Vector2I(9, 17)) && _player.EquippedItem == EquipmentKind.Pickaxe,
+            "A wrong-tool target is not harvested or skipped and the tool is not changed automatically.");
+        SelectSlot(1);
+        await Frames(28);
+        Input.ActionRelease("mine_forward");
+        await Frames(40);
+        Check(!_world.HasBlock(new Vector2I(9, 17)) && _world.HasBlock(new Vector2I(9, 16))
+            && _world.HasBlock(new Vector2I(9, 18)), "The axe harvests ahead; releasing Ctrl cancels the next unfinished harvest.");
+
+        SelectSlot(2);
+        Input.ActionPress("mine_forward");
+        await Frames(25);
+        Check(!_player.IsAttacking && _world.HasBlock(new Vector2I(10, 19)),
+            "Ctrl with a sword does not mine or trigger attacks.");
+        SelectSlot(3);
+        int count = _world.BlockCount;
+        await Frames(20);
+        Check(_world.BlockCount == count, "Ctrl with a building material does not place blocks.");
+        Input.ActionRelease("mine_forward");
+        SelectSlot(0);
+        await UseTool(new Vector2I(10, 19), 24);
+        Check(!_world.HasBlock(new Vector2I(10, 19)), "Mouse-targeted mining works again after Ctrl is released.");
     }
 
     private async Task TestTunnelClearance()

@@ -114,6 +114,32 @@ public partial class BlockWorld : Node2D
     }
 
     // Mining ignores visibility; the correct tool, range, and protection rules still apply.
+    public Vector2I? ClosestBlockAhead(Player player)
+    {
+        if (player.IsDead) return null;
+        Vector2 origin = player.BodyCenter;
+        Rect2 body = player.BodyBounds;
+        Vector2I? closest = null;
+        float bestDistance = MiningReach * MiningReach;
+        void Consider(Vector2I cell)
+        {
+            Rect2 rect = CellRect(cell);
+            Vector2 center = Center(cell);
+            if (!InBounds(cell) || (center.X - origin.X) * player.Facing <= 0) return;
+            // Stay within the body's height; a horizontal mining shortcut should not dig out its floor.
+            if (rect.End.Y <= body.Position.Y || rect.Position.Y >= body.End.Y) return;
+            float distance = origin.DistanceSquaredTo(center);
+            if (distance > bestDistance) return;
+            if (closest.HasValue && distance == bestDistance && cell.Y >= closest.Value.Y) return;
+            closest = cell;
+            bestDistance = distance;
+        }
+        foreach (Vector2I cell in _blocks.Keys) Consider(cell);
+        foreach (FallingSand sand in _fallingSand) Consider(CellAt(sand.GlobalPosition));
+        // Tool and protection checks happen after selection: never skip a nearer wrong-tool block.
+        return closest;
+    }
+
     public bool CanMine(Vector2I cell, Player player) => !player.IsDead && InBounds(cell) &&
         TryGetBlock(cell, out BlockKind kind) && EquipmentRules.CanMine(player.EquippedItem, kind) &&
         player.BodyCenter.DistanceTo(Center(cell)) <= MiningReach;

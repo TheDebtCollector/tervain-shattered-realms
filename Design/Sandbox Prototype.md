@@ -27,6 +27,7 @@ Press **F5** in the Godot .NET project. The main scene is now `Scenes/SandboxPla
 | Space, W, or Up | Jump |
 | Shift | Dodge |
 | J | Swing the equipped pickaxe, axe, or sword |
+| Hold Ctrl | Mine the closest block ahead with the equipped pickaxe or axe |
 | 1 | Select pickaxe |
 | 2 | Select axe |
 | 3 | Select sword |
@@ -227,3 +228,14 @@ The right side of the prototype world now contains a desert with sand, sandstone
 The player body and collision shape are now 68 pixels high (about 2.83 blocks), leaving four pixels of clearance in a 72-pixel, three-block-high tunnel. The head, hat, coat, and held-item position match the shorter body. Width stays 28 pixels. Movement, jump speed, dodge settings, melee range, damage, and swing timings retain their existing values. The shared body bounds also keep placement overlap checks and pickup/mining origins aligned with the new height.
 
 Validation includes the exact clearance, unchanged full jump height, and walking into, through, and back through a physical three-block-high tunnel. The sandbox and standalone combat suites are checked before publishing the checkpoint.
+
+
+## Ctrl mining ahead — 2026-10-25
+
+Hold Ctrl to mine without aiming the mouse. With a pickaxe or axe selected, the game chooses the nearest foreground block on the side the player faces, within the existing 192-pixel mining reach and intersecting the player body’s vertical span. Floor and ceiling cells outside that strip are excluded, making this useful for clearing a horizontal passage. Falling sand is included; background walls and dead bushes are not mining targets.
+
+Selection considers the nearest block before checking its tool requirement: a pickaxe facing wood stops at the wood and shows the axe requirement rather than skipping to another resource. Bedrock remains protected. There is no automatic tool swap. Normal harvest times, resource drops, pickup attraction, swing damage, and dodge/death restrictions apply. Holding Ctrl continues to the next nearest block after each harvest. Releasing it stops unfinished harvesting unless left mouse is also held on a valid mouse-selected target. Equipment changes and target changes reset unfinished mining.
+
+Keyboard mining ignores cursor position and mouse hover over the HUD. Ctrl by itself does not attack with a sword or build with material slots. Normal mouse-targeted mining and building remain available when Ctrl is released.
+
+Focused verification uses -- --ctrl-mining-test and is included in the full sandbox suite. Checks cover the actual Ctrl input binding, nearest-first harvesting and drops, both facing directions, ignoring a closer block behind, preserving the floor, stopping outside reach, wrong-tool restrictions, axe harvesting, release cancellation, no sword/building actions from Ctrl, and returning to mouse mining.

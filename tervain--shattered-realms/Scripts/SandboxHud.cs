@@ -75,8 +75,8 @@ public partial class SandboxHud : CanvasLayer
             _slots[i] = button;
             hotbar.AddChild(button);
         }
-        var controls = Text("A/D Move   SPACE Jump   SHIFT Dodge   1–9 / 0 / − / Wheel Select   LMB Use   J Swing   RMB Build",
-            Vector2.Zero, 15, "dfddc8");
+        var controls = Text("A/D Move   SPACE Jump   SHIFT Dodge   CTRL Mine ahead   1–9 / 0 / − / Wheel Select   LMB Use   J Swing   RMB Build",
+            Vector2.Zero, 14, "dfddc8");
         controls.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
         controls.OffsetLeft = 28; controls.OffsetTop = -52; controls.OffsetRight = -20; controls.OffsetBottom = -28;
         var warning = Text("R Reset world  /  Prototype progress is not saved  /  F2 Combat test room",

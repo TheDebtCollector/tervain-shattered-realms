@@ -140,5 +140,5 @@ Resolve movement and combat questions through the prototype before committing to
 ## Development status — 2026-10-25
 
 - Movement and combat playground: implemented and accepted after developer playtesting. See [[Combat Prototype]].
-- Combined sandbox foundation: mining, collectible materials, hotbar stacks, block placement, generated background walls with wall-supported construction, and a combat encounter now work in the same scene; awaiting playtest feedback. Simple crafting remains. See [[Sandbox Prototype]].
+- Combined sandbox foundation: mining, collectible materials, hotbar stacks, block placement, generated background walls with wall-supported construction, separate pickaxe/axe/sword equipment, and a combat encounter now work in the same scene; awaiting playtest feedback. Simple crafting remains. See [[Sandbox Prototype]].
 - Realm travel, persistence, and procedural world generation: not started.

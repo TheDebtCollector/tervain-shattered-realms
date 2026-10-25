@@ -6,7 +6,7 @@ namespace Tervain;
 public partial class SandboxHud : CanvasLayer
 {
     public Action<int>? SlotSelected { get; set; }
-    private readonly Button[] _slots = new Button[4];
+    private readonly Button[] _slots = new Button[EquipmentRules.SlotCount];
     private Label _status = null!, _target = null!, _notice = null!, _enemyStatus = null!;
     private float _noticeLeft;
     public override void _Ready()
@@ -28,7 +28,7 @@ public partial class SandboxHud : CanvasLayer
         }
         Text("TERVAIN / BUILD · EXPLORE · FIGHT", new Vector2(28, 14), 13, "94bcb0");
         Text("A place to call home", new Vector2(26, 33), 28, "f1e5cb");
-        Text("Gather, build, and face the creature to your right. J attacks with any slot.", new Vector2(28, 77), 16, "b5c7bd");
+        Text("1 Pickaxe: dirt / stone   2 Axe: wood   3 Sword: combat", new Vector2(28, 77), 16, "b5c7bd");
         _status = Text("", new Vector2(825, 27), 16, "b3e9d8");
         _enemyStatus = Text("", new Vector2(825, 83), 12, "f4c396");
         _target = Text("", new Vector2(28, 124), 17, "e4e3c8");
@@ -40,20 +40,23 @@ public partial class SandboxHud : CanvasLayer
         root.AddChild(footer);
         var hotbar = new HBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
         hotbar.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterBottom);
-        hotbar.OffsetLeft = -242;
-        hotbar.OffsetRight = 242;
+        float halfWidth = (EquipmentRules.SlotCount * 115 + (EquipmentRules.SlotCount - 1) * 8) / 2f;
+        hotbar.OffsetLeft = -halfWidth;
+        hotbar.OffsetRight = halfWidth;
         hotbar.OffsetTop = -132;
         hotbar.OffsetBottom = -62;
         hotbar.AddThemeConstantOverride("separation", 8);
         root.AddChild(hotbar);
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < EquipmentRules.SlotCount; i++)
         {
             int slot = i;
             var button = new Button
             {
                 CustomMinimumSize = new Vector2(115, 68), ToggleMode = true,
                 FocusMode = Control.FocusModeEnum.None,
-                TooltipText = i == 0 ? $"Hold left mouse to mine within {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks, through terrain." : "Left or right click to place the selected material."
+                TooltipText = i < 2 ? $"{EquipmentRules.Purpose((EquipmentKind)i)}. Hold left mouse to harvest within {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks."
+                    : i == 2 ? "Left click or J to swing the equipped sword."
+                    : "Left or right click to place the selected material."
             };
             button.AddThemeFontSizeOverride("font_size", 15);
             button.AddThemeStyleboxOverride("normal", Box("263e43", "46615e", 1));
@@ -64,7 +67,7 @@ public partial class SandboxHud : CanvasLayer
             _slots[i] = button;
             hotbar.AddChild(button);
         }
-        var controls = Text("A/D Move   SPACE Jump   SHIFT Dodge   J Attack   1–4 / Wheel Select   LMB Use   RMB Build",
+        var controls = Text("A/D Move   SPACE Jump   SHIFT Dodge   1–6 / Wheel Select   LMB Use   J Sword   RMB Build",
             Vector2.Zero, 15, "dfddc8");
         controls.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
         controls.OffsetLeft = 28; controls.OffsetTop = -52; controls.OffsetRight = -20; controls.OffsetBottom = -28;
@@ -86,13 +89,14 @@ public partial class SandboxHud : CanvasLayer
         _status.Text = $"HEALTH  {player.Health}/100\n" + (player.DodgeReadyIn <= 0 ? "DODGE  Ready" : $"DODGE  {player.DodgeReadyIn:0.0}s");
         _target.Text = player.IsDead ? "You fell. Press R to reset this unsaved world." : target;
         _enemyStatus.Text = $"CREATURE {enemy.Health}/100 · {enemy.StateText}";
-        _slots[0].Text = "1  PICKAXE\nMine blocks";
-        for (int i = 1; i <= 3; i++)
+        for (int i = 0; i < EquipmentRules.SlotCount; i++)
         {
-            var kind = (BlockKind)(i - 1);
-            _slots[i].Text = $"{i + 1}  {kind.ToString().ToUpperInvariant()}\n{inventory.Count(kind)}";
+            EquipmentKind item = (EquipmentKind)i;
+            string detail = EquipmentRules.TryGetMaterial(item, out BlockKind material)
+                ? inventory.Count(material).ToString() : EquipmentRules.Purpose(item);
+            _slots[i].Text = $"{i + 1}  {item.ToString().ToUpperInvariant()}\n{detail}";
+            _slots[i].SetPressedNoSignal(i == selected);
         }
-        for (int i = 0; i < 4; i++) _slots[i].SetPressedNoSignal(i == selected);
     }
 
     public void Notify(string message) { _notice.Text = message; _noticeLeft = 2.5f; }

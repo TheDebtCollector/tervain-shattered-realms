@@ -6,7 +6,7 @@ An open-source 2D side-view sandbox built with **Godot .NET and C#**. Build a ho
 
 - Responsive movement, variable jumping, dodging, and deliberate melee combat. A three-block-tall character explores a 24px block grid.
 - A combat playground with a telegraphed enemy attack and recovery windows.
-- One combined sandbox with mineable dirt, stone, and wood, collectible drops, a four-slot hotbar, block placement, and an enemy encounter. Terrain provides cover during combat. Mining reaches 8 blocks (192px) and can target buried blocks directly. Generated blocks leave non-solid background walls after mining; foreground blocks can be attached to those walls without neighbouring blocks.
+- One combined sandbox with mineable dirt, stone, and wood, collectible drops, a six-slot equipment/material hotbar, block placement, and an enemy encounter. Terrain provides cover during combat. Mining reaches 8 blocks (192px) and can target buried blocks directly. Generated blocks leave non-solid background walls after mining; foreground blocks can be attached to those walls without neighbouring blocks.
 
 Realm travel, procedural world generation, crafting, and save/load are planned. The current sandbox terrain is authored; prototype play progress is not saved.
 
@@ -16,7 +16,7 @@ Realm travel, procedural world generation, crafting, and save/load are planned. 
 2. Import `tervain--shattered-realms/project.godot` into Godot.
 3. Press **F5** to play the sandbox.
 
-Move with A/D, jump with Space, dodge with Shift, and attack with J from any hotbar slot. Approach the creature to the right of spawn to fight in the same world where you mine and build. Select the pickaxe with 1 and hold left mouse to mine. Select dirt, stone, or wood with 2/3/4 and click to place. F2 opens the combat room; F3 returns to a fresh sandbox. R resets the current scene.
+Move with A/D, jump with Space, dodge with Shift, and equip the sword (3) to attack with left click or J. Approach the creature to the right of spawn to fight in the same world where you mine and build. Select pickaxe (1) to mine dirt/stone or axe (2) to harvest wood by holding left mouse. Select dirt, stone, or wood with 4/5/6 and click to place. All three tools are supplied at spawn. F2 opens the combat room; F3 returns to a fresh sandbox. R resets the current scene.
 
 ## Design and development
 

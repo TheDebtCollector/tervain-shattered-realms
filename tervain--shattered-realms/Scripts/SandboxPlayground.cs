@@ -36,6 +36,7 @@ public partial class SandboxPlayground : Node2D
         _player = GetNode<Player>("Player");
         _world = GetNode<BlockWorld>("World");
         _enemy = GetNode<Enemy>("TrainingCreature");
+        SelectSlot(0);
         _hud = new SandboxHud { SlotSelected = SelectSlot };
         AddChild(_hud);
         RenderingServer.SetDefaultClearColor(new Color("182f37"));
@@ -44,12 +45,14 @@ public partial class SandboxPlayground : Node2D
             if (_testingRestart)
             {
                 Check(_inventory.Count(BlockKind.Dirt) == 0 && _world.HasBlock(new Vector2I(15, BlockWorld.SurfaceRow))
-                    && _player.Health == 100 && _enemy.Health == 100, "Reset restores terrain, inventory, and both combatants.");
+                    && _player.Health == 100 && _enemy.Health == 100 && _player.EquippedItem == EquipmentKind.Pickaxe,
+                    "Reset restores terrain, inventory, both combatants, and the starter pickaxe.");
                 GetTree().ChangeSceneToFile("res://Scenes/CombatPlayground.tscn");
             }
             else CallDeferred(MethodName.RunSandboxTests);
         }
-        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview")) CallDeferred(MethodName.SavePreview);
+        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview") || HasArgument("--equipment-preview"))
+            CallDeferred(MethodName.SavePreview);
     }
 
     private static bool HasArgument(string arg) => Array.Exists(OS.GetCmdlineUserArgs(), value => value == arg);
@@ -68,9 +71,11 @@ public partial class SandboxPlayground : Node2D
 
     private void SelectSlot(int slot)
     {
-        _selected = Mathf.PosMod(slot, 4);
+        _selected = Mathf.PosMod(slot, EquipmentRules.SlotCount);
         _miningCell = null;
         _mineElapsed = 0;
+        _player.Equip((EquipmentKind)_selected);
+        _player.ToolUseProgress = 0;
     }
 
     public override void _UnhandledInput(InputEvent input)
@@ -78,7 +83,7 @@ public partial class SandboxPlayground : Node2D
         if (input is InputEventKey { Pressed: true, Echo: false } key)
         {
             Key code = key.PhysicalKeycode != Key.None ? key.PhysicalKeycode : key.Keycode;
-            if (code >= Key.Key1 && code <= Key.Key4)
+            if (code >= Key.Key1 && code <= Key.Key6)
             { SelectSlot((int)(code - Key.Key1)); GetViewport().SetInputAsHandled(); }
         }
         if (input is InputEventMouseButton { Pressed: true } mouse)
@@ -93,31 +98,43 @@ public partial class SandboxPlayground : Node2D
         if (_combatSwitchPending) return;
         float dt = (float)delta;
         _placeCooldown = Mathf.Max(0, _placeCooldown - dt);
-        Vector2 point = _testTarget ?? GetGlobalMousePosition();
-        Vector2I cell = BlockWorld.CellAt(point);
+        Vector2I cell = BlockWorld.CellAt(_testTarget ?? GetGlobalMousePosition());
         bool overUi = _testTarget == null && (GetViewport().GuiGetHoveredControl() != null ||
             GetViewport().GetMousePosition().Y < 114 || GetViewport().GetMousePosition().Y > GetViewportRect().Size.Y - 142);
-        // This parent runs before Player. Reserve held combat inputs too, so a tool action
-        // cannot spend a block before Player starts an attack or dodge on the same frame.
-        bool busy = _player.IsDead || _player.IsDodging || _player.IsAttacking ||
-            Input.IsActionPressed("attack") || Input.IsActionPressed("dodge");
+        EquipmentKind item = _player.EquippedItem;
+        bool miningTool = EquipmentRules.IsMiningTool(item);
+        bool building = EquipmentRules.TryGetMaterial(item, out BlockKind buildingMaterial);
+        bool sword = item == EquipmentKind.Sword;
         bool primary = Input.IsActionPressed("use_primary");
         bool secondary = Input.IsActionPressed("use_secondary");
-        bool mine = _selected == 0;
-        bool valid = !overUi && !busy && (mine ? _world.CanMine(cell, _player) : _world.CanPlace(cell, _player) && _inventory.Count((BlockKind)(_selected - 1)) > 0);
-        _world.HighlightCell = overUi || !BlockWorld.InBounds(cell) ? null : cell;
+        if (sword && !overUi && Input.IsActionJustPressed("use_primary")) _player.TryStartAttack();
+        if (!sword && Input.IsActionJustPressed("attack")) _hud.Notify("Select the sword (3) to attack.");
+        bool busy = _player.IsDead || _player.IsDodging || _player.IsAttacking ||
+            (sword && Input.IsActionPressed("attack")) || Input.IsActionPressed("dodge");
+        bool valid = !overUi && !busy && (miningTool ? _world.CanMine(cell, _player)
+            : building && _world.CanPlace(cell, _player) && _inventory.Count(buildingMaterial) > 0);
+        _world.HighlightCell = overUi || (!miningTool && !building) || !BlockWorld.InBounds(cell) ? null : cell;
         _world.HighlightValid = valid;
-        string target = mine ? $"PICKAXE  /  Hold left mouse to mine within {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks, including buried blocks." : $"{((BlockKind)(_selected - 1)).ToString().ToUpperInvariant()}  /  Hold left or right mouse to build.";
-        if (_world.TryGetBlock(cell, out BlockKind material) && !overUi)
-            target = material == BlockKind.Bedrock ? "BEDROCK  /  This foundation cannot be mined."
-                : $"{material.ToString().ToUpperInvariant()}  /  " + (mine ? valid ? "Hold left mouse to mine." : $"Move closer; mining reaches {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks through terrain." : "This space is occupied.");
-        else if (mine && !overUi && _world.HasWall(cell))
-            target = "BACKGROUND WALL  /  Select a material to attach a block here.";
-        if (mine && primary && valid)
+        bool hasBlock = _world.TryGetBlock(cell, out BlockKind block);
+        string target = sword ? "SWORD  /  Left click or J to attack. Shift to dodge."
+            : building ? $"{item.ToString().ToUpperInvariant()}  /  Hold left or right mouse to build."
+            : $"{item.ToString().ToUpperInvariant()}  /  Hold left mouse to harvest {EquipmentRules.Purpose(item).ToLowerInvariant()} within {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks.";
+        if (!overUi && hasBlock && (miningTool || building))
+        {
+            string instruction = building ? "This space is occupied."
+                : block == BlockKind.Bedrock ? "This foundation cannot be mined."
+                : !EquipmentRules.CanMine(item, block) ? block == BlockKind.Wood ? "Requires axe (2)." : "Requires pickaxe (1)."
+                : valid ? "Hold left mouse to harvest."
+                : $"Move closer; tool reach is {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks through terrain.";
+            target = $"{block.ToString().ToUpperInvariant()}  /  {instruction}";
+        }
+        else if (miningTool && !overUi && _world.HasWall(cell))
+            target = "BACKGROUND WALL  /  Select a building material to attach a block here.";
+        if (miningTool && primary && valid)
         {
             if (_miningCell != cell) { _miningCell = cell; _mineElapsed = 0; }
             _mineElapsed += dt;
-            if (_mineElapsed >= BlockWorld.MineDuration(material))
+            if (_mineElapsed >= BlockWorld.MineDuration(block))
             {
                 if (_world.TryMine(cell, _player, out BlockKind mined))
                     AddChild(new MaterialDrop { Kind = mined, Position = BlockWorld.Center(cell), Player = _player, Inventory = _inventory });
@@ -126,15 +143,15 @@ public partial class SandboxPlayground : Node2D
             }
         }
         else { _mineElapsed = 0; _miningCell = null; }
-
-        if (!mine && (primary || secondary) && !overUi && !busy && _placeCooldown <= 0)
+        if (building && (primary || secondary) && !overUi && !busy && _placeCooldown <= 0)
         {
-            if (_world.TryPlace(cell, (BlockKind)(_selected - 1), _player, _inventory)) _placeCooldown = 0.16f;
+            if (_world.TryPlace(cell, buildingMaterial, _player, _inventory)) _placeCooldown = 0.16f;
             else if (Input.IsActionJustPressed("use_primary") || Input.IsActionJustPressed("use_secondary"))
-                _hud.Notify(_inventory.Count((BlockKind)(_selected - 1)) == 0 ? "Mine and collect this material first."
+                _hud.Notify(_inventory.Count(buildingMaterial) == 0 ? "Gather and collect this material first."
                     : "Build within reach, on a block or background wall, with a clear path and room for characters.");
         }
-        _world.MiningProgress = _miningCell != null ? Mathf.Clamp(_mineElapsed / BlockWorld.MineDuration(material), 0, 1) : 0;
+        _world.MiningProgress = _miningCell != null ? Mathf.Clamp(_mineElapsed / BlockWorld.MineDuration(block), 0, 1) : 0;
+        _player.ToolUseProgress = _world.MiningProgress;
         _world.QueueRedraw();
         _hud.Refresh(_player, _enemy, _inventory, _selected, target);
         if (Input.IsActionJustPressed("restart")) GetTree().ReloadCurrentScene();
@@ -144,7 +161,6 @@ public partial class SandboxPlayground : Node2D
             GetTree().ChangeSceneToFile("res://Scenes/CombatPlayground.tscn");
         }
     }
-
     private async Task Frames(int count)
     { for (int i = 0; i < count; i++) await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame); }
     private static void Check(bool condition, string message)
@@ -154,6 +170,20 @@ public partial class SandboxPlayground : Node2D
     }
     private async void SavePreview()
     {
+        if (HasArgument("--equipment-preview"))
+        {
+            for (int slot = 0; slot < 3; slot++)
+            {
+                SelectSlot(slot);
+                await Frames(15);
+                await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+                Error capture = GetViewport().GetTexture().GetImage().SavePng($"res://.godot/equipment-{_player.EquippedItem}.png");
+                if (capture != Error.Ok) { GetTree().Quit(1); return; }
+            }
+            GD.Print("Equipment previews: Ok");
+            GetTree().Quit();
+            return;
+        }
         bool wallPreview = HasArgument("--wall-preview");
         if (wallPreview)
         {
@@ -228,11 +258,24 @@ public partial class SandboxPlayground : Node2D
             Check(_player.MoveSpeed == 280 && _player.DodgeDuration == 0.18f, "Run and dodge settings are preserved.");
 
             Vector2I minedCell = new(15, BlockWorld.SurfaceRow);
+            Check(_player.EquippedItem == EquipmentKind.Pickaxe, "The sandbox starts with the pickaxe equipped.");
+            GetViewport().PushInput(new InputEventKey { PhysicalKeycode = Key.Key6, Pressed = true });
+            await Frames(2);
+            Check(_player.EquippedItem == EquipmentKind.Wood, "The sixth hotbar slot can be selected with the keyboard.");
+            GetViewport().PushInput(new InputEventKey { PhysicalKeycode = Key.Key6, Pressed = false });
+            GetViewport().PushInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelDown, Pressed = true });
+            await Frames(2);
+            Check(_player.EquippedItem == EquipmentKind.Pickaxe, "Mouse wheel selection wraps across all six equipment slots.");
+            SelectSlot(2);
+            await UseTool(minedCell, 28);
+            Check(_world.HasBlock(minedCell) && _inventory.Count(BlockKind.Dirt) == 0,
+                "The sword swings without mining dirt or generating material drops.");
+            SelectSlot(0);
             await UseTool(minedCell, 24);
             await Frames(20);
             Check(!_world.HasBlock(minedCell) && _inventory.Count(BlockKind.Dirt) == 1,
                 "Mining removes a 24px block and collects one material.");
-            SelectSlot(1);
+            SelectSlot(3);
             Vector2I placedCell = new(16, BlockWorld.SurfaceRow - 1);
             await UseTool(placedCell, 3);
             Check(_world.HasBlock(placedCell) && _inventory.Count(BlockKind.Dirt) == 0, "Placement consumes one material.");
@@ -243,6 +286,7 @@ public partial class SandboxPlayground : Node2D
             Check(!_world.TryPlace(new Vector2I(13, BlockWorld.SurfaceRow - 2), BlockKind.Wood, _player, _inventory), "Placement respects the full 72px player body.");
             Check(!_world.TryPlace(new Vector2I(14, BlockWorld.SurfaceRow - 5), BlockKind.Wood, _player, _inventory), "Floating unsupported blocks are rejected.");
             Check(!_world.TryPlace(new Vector2I(27, BlockWorld.SurfaceRow - 1), BlockKind.Wood, _player, _inventory), "Building still uses its shorter reach.");
+            SelectSlot(0);
             Check(!_world.CanMine(new Vector2I(80, BlockWorld.SurfaceRow), _player), "Mining beyond the extended range is rejected.");
             Check(_world.CanMine(new Vector2I(21, BlockWorld.SurfaceRow), _player) && !_world.CanMine(new Vector2I(22, BlockWorld.SurfaceRow), _player),
                 "The halved 192px mining distance is enforced at its boundary.");
@@ -265,6 +309,11 @@ public partial class SandboxPlayground : Node2D
             _player.Position = new Vector2(906, GroundY);
             _player.Velocity = Vector2.Zero;
             await Frames(3);
+            SelectSlot(1);
+            await UseTool(new Vector2I(39, BlockWorld.SurfaceRow - 1), 45);
+            Check(_world.HasBlock(new Vector2I(39, BlockWorld.SurfaceRow - 1)) && _inventory.Count(BlockKind.Stone) == 0,
+                "The axe cannot mine stone, even when held longer than its mining time.");
+            SelectSlot(0);
             _testTarget = BlockWorld.Center(new Vector2I(39, BlockWorld.SurfaceRow - 1));
             Input.ActionPress("use_primary");
             await Frames(20);
@@ -276,20 +325,25 @@ public partial class SandboxPlayground : Node2D
             _player.Position = new Vector2(618, GroundY);
             _player.Velocity = Vector2.Zero;
             await Frames(3);
+            await UseTool(new Vector2I(27, BlockWorld.SurfaceRow - 1), 40);
+            Check(_world.HasBlock(new Vector2I(27, BlockWorld.SurfaceRow - 1)) && _inventory.Count(BlockKind.Wood) == 10,
+                "The pickaxe cannot harvest wood or create wood drops.");
+            SelectSlot(1);
             await UseTool(new Vector2I(27, BlockWorld.SurfaceRow - 1), 30);
             await Frames(20);
             Check(_inventory.Count(BlockKind.Wood) == 11, "Tree trunks yield individual 24px wood blocks.");
-            SelectSlot(3);
+            SelectSlot(5);
             await UseTool(new Vector2I(23, BlockWorld.SurfaceRow - 1), 3, true);
             Check(_world.TryGetBlock(new Vector2I(23, BlockWorld.SurfaceRow - 1), out BlockKind built) && built == BlockKind.Wood,
                 "Secondary input places the selected wood material.");
-            SelectSlot(0);
+            SelectSlot(1);
             await UseTool(new Vector2I(23, BlockWorld.SurfaceRow - 1), 30);
             await Frames(20);
+            SelectSlot(0);
             _testTarget = BlockWorld.Center(new Vector2I(25, BlockWorld.SurfaceRow));
             Input.ActionPress("use_primary");
             await Frames(4);
-            SelectSlot(2);
+            SelectSlot(4);
             await Frames(25);
             Input.ActionRelease("use_primary");
             Check(_world.HasBlock(new Vector2I(25, BlockWorld.SurfaceRow)), "Tool switching cancels unfinished mining.");
@@ -309,6 +363,7 @@ public partial class SandboxPlayground : Node2D
 
     private async Task TestBackgroundWalls()
     {
+        SelectSlot(0);
         _player.Position = new Vector2(1692, GroundY);
         _player.Velocity = Vector2.Zero;
         await Frames(3);
@@ -340,12 +395,12 @@ public partial class SandboxPlayground : Node2D
             "The wall-supported target has no adjacent foreground blocks.");
         _inventory.Add(BlockKind.Wood);
         int before = _inventory.Count(BlockKind.Wood);
-        SelectSlot(3);
+        SelectSlot(5);
         await UseTool(anchor, 3);
         Check(_world.HasBlock(anchor) && _inventory.Count(BlockKind.Wood) == before - 1,
             "Tool input attaches a floating foreground block to its background wall.");
         Check(_world.GetWorld2D().DirectSpaceState.IntersectPoint(point).Count > 0, "The new foreground block provides collision.");
-        SelectSlot(0);
+        SelectSlot(1);
         await UseTool(anchor, 30);
         await Frames(20);
         Check(!_world.HasBlock(anchor) && _world.HasWall(anchor) && _inventory.Count(BlockKind.Wood) == before,
@@ -371,11 +426,12 @@ public partial class SandboxPlayground : Node2D
         int woodBefore = _inventory.Count(BlockKind.Wood);
         Check(!_world.TryPlace(new Vector2I(22, BlockWorld.SurfaceRow - 1), BlockKind.Wood, _player, _inventory), "Building cannot overlap a live enemy.");
         Vector2I lower = new(20, BlockWorld.SurfaceRow - 1), upper = new(20, BlockWorld.SurfaceRow - 2);
-        SelectSlot(3);
+        SelectSlot(5);
         await UseTool(lower, 3);
         await UseTool(upper, 3);
         Check(_world.HasBlock(lower) && _world.HasBlock(upper), "Two 24px blocks form a defensive barrier.");
         Check(!_world.TryPlace(new Vector2I(24, BlockWorld.SurfaceRow - 1), BlockKind.Wood, _player, _inventory), "Building still requires a clear path.");
+        SelectSlot(2);
         Input.ActionPress("attack");
         await Frames(28);
         Input.ActionRelease("attack");
@@ -384,14 +440,16 @@ public partial class SandboxPlayground : Node2D
         await Frames(59);
         Check(_player.Health == 100, "Built terrain still shields the taller player from enemy attacks.");
         _enemy.ProcessMode = ProcessModeEnum.Disabled;
-        SelectSlot(0);
+        SelectSlot(1);
         _testTarget = BlockWorld.Center(upper);
         Input.ActionPress("use_primary");
         await Frames(4);
+        SelectSlot(2);
         Input.ActionPress("attack");
         await Frames(28);
         Input.ActionRelease("attack");
-        Check(_world.HasBlock(upper), "Attacks interrupt unfinished mining.");
+        Check(_world.HasBlock(upper), "Switching from axe to sword cancels an unfinished harvest.");
+        SelectSlot(1);
         await Frames(35);
         Input.ActionRelease("use_primary");
         await Frames(25);
@@ -399,10 +457,19 @@ public partial class SandboxPlayground : Node2D
         await Frames(20);
         Check(!_world.HasBlock(lower) && !_world.HasBlock(upper) && _inventory.Count(BlockKind.Wood) == woodBefore,
             "Mining recovers both defensive blocks after combat.");
+        SelectSlot(0);
         Input.ActionPress("attack");
         await Frames(28);
         Input.ActionRelease("attack");
-        Check(_enemy.Health == 75, "Melee damages an exposed enemy with the pickaxe selected.");
+        Check(_enemy.Health == 100 && !_player.IsAttacking, "J cannot damage an enemy while the pickaxe is equipped.");
+        SelectSlot(1);
+        await UseTool(lower, 28);
+        Check(_enemy.Health == 100 && !_player.IsAttacking, "An axe cannot damage an enemy with left click.");
+        SelectSlot(2);
+        Input.ActionPress("attack");
+        await Frames(28);
+        Input.ActionRelease("attack");
+        Check(_enemy.Health == 75, "The equipped sword deals the established 25 damage with J.");
         _enemy.ProcessMode = ProcessModeEnum.Inherit;
         await Frames(115);
         Check(_player.Health < 100, "Enemy attacks damage the taller player when exposed.");
@@ -411,19 +478,22 @@ public partial class SandboxPlayground : Node2D
         _player.Velocity = Vector2.Zero;
         _enemy.Position = new Vector2(544, GroundY);
         _enemy.Velocity = Vector2.Zero;
-        SelectSlot(3);
+        SelectSlot(2);
         for (int i = 0; i < 3; i++)
         {
-            Input.ActionPress("attack"); await Frames(28);
-            Input.ActionRelease("attack"); await Frames(2);
+            Input.ActionPress("use_primary"); await Frames(28);
+            Input.ActionRelease("use_primary"); await Frames(2);
         }
-        Check(_enemy.IsDead, "Combat still defeats the creature with building material selected.");
+        Check(_enemy.IsDead && !_world.HasBlock(lower) && _inventory.Count(BlockKind.Wood) == woodBefore,
+            "Sword left-click attacks defeat the creature without mining or placing blocks.");
         _testTarget = BlockWorld.Center(lower);
-        Input.ActionPress("use_secondary"); Input.ActionPress("attack");
+        Input.ActionPress("use_primary");
         await Frames(3);
-        Check(!_world.HasBlock(lower) && _inventory.Count(BlockKind.Wood) == woodBefore, "Attack input takes priority over building.");
-        Input.ActionRelease("attack");
-        await Frames(30);
+        Input.ActionRelease("use_primary");
+        SelectSlot(5);
+        Check(!_player.IsAttacking, "Changing equipment cancels a pending sword swing.");
+        Input.ActionPress("use_secondary");
+        await Frames(3);
         Input.ActionRelease("use_secondary");
         Check(_world.HasBlock(lower) && _inventory.Count(BlockKind.Wood) == woodBefore - 1,
             "Building continues after victory in the same scene.");

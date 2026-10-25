@@ -4,7 +4,7 @@ namespace Tervain;
 
 public enum BlockKind { Dirt, Stone, Wood, Bedrock }
 
-/// <summary>Material stacks for this prototype. The pickaxe is a permanent tool, not a stack.</summary>
+/// <summary>Material stacks for this prototype. Starter tools are permanent equipment, not stacks.</summary>
 public sealed class SandboxInventory
 {
     private readonly Dictionary<BlockKind, int> _counts = new();

@@ -26,11 +26,15 @@ Press **F5** in the Godot .NET project. The main scene is now `Scenes/SandboxPla
 | A / D or Left / Right | Move |
 | Space, W, or Up | Jump |
 | Shift | Dodge |
-| J | Melee attack with any hotbar slot selected |
+| J | Swing the sword when it is equipped |
 | 1 | Select pickaxe |
-| 2 / 3 / 4 | Select dirt / stone / wood |
+| 2 | Select axe |
+| 3 | Select sword |
+| 4 / 5 / 6 | Select dirt / stone / wood |
 | Mouse wheel or hotbar buttons | Change selection |
-| Hold left mouse with pickaxe | Mine the targeted block |
+| Hold left mouse with pickaxe | Mine dirt or stone |
+| Hold left mouse with axe | Harvest wood |
+| Left mouse with sword | Melee attack |
 | Hold left or right mouse with material selected | Place the selected block |
 | F2 | Enter the combat playground |
 | F3 in the combat playground | Return to a fresh sandbox |
@@ -43,10 +47,10 @@ Press **F5** in the Godot .NET project. The main scene is now `Scenes/SandboxPla
 1. Select the pickaxe and hold left mouse on a nearby dirt block.
 2. Move near the dropped item to collect it; nearby drops are drawn toward the character.
 3. Select dirt and place it on the ground nearby.
-4. Harvest tree trunks for wood. Stone is available underground and in the surface outcrop to the right of spawn.
+4. Select the axe (2) to harvest tree trunks for wood. Stone is available underground and in the surface outcrop to the right of spawn.
 5. Build walls and a roof. The player is three blocks tall; leave a four-block-high entrance for comfortable headroom.
 6. Try jumping onto your construction, mining underfoot, and recovering placed blocks.
-7. Approach the creature to the right of spawn. Read its wind-up, dodge with Shift, and attack with J. Try building a barrier, mining it away, fighting, and then continuing construction in the same world.
+7. Approach the creature to the right of spawn. Read its wind-up, dodge with Shift, select the sword (3), and attack with left click or J. Try building a barrier, mining it away, fighting, and then continuing construction in the same world.
 
 The outline is pale green when an action is allowed and red when it is blocked. The mining meter appears inside the selected block.
 
@@ -54,10 +58,10 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 
 - Small authored terrain: 96 by 32 cells, with 24-pixel blocks, trees, surface stone, and an underground cavity. Physical world dimensions remain 2304 by 768 pixels.
 - Dirt, stone, and wood are mineable, collectible, and placeable. Each has its own stack in the hotbar.
-- Pickaxe is a permanent starter tool. Material stacks start empty.
+- Pickaxe, axe, and sword are permanent starter equipment. The pickaxe is selected on spawn. Material stacks start empty.
 - Dirt takes 0.28 seconds to mine, wood 0.4 seconds, and stone 0.6 seconds.
 - Changing the target or hotbar slot interrupts unfinished mining.
-- Mining reaches 192 pixels (8 blocks) from the player body centre and ignores intervening blocks. Only distance, world bounds, player state, and protected bedrock determine whether a target can be mined. Building reaches 160 pixels (about 6.7 blocks) and still requires a clear path.
+- Mining reaches 192 pixels (8 blocks) from the player body centre and ignores intervening blocks. The correct equipped tool is also required: pickaxe for dirt/stone and axe for wood. Bedrock and background walls remain unmineable. Building reaches 160 pixels (about 6.7 blocks) and still requires a clear path.
 - Placed blocks need an adjacent foreground block or a background wall in the target cell. They cannot overlap the player or a living enemy.
 - Successful placement spends one item. Rejected placement spends nothing.
 - Blocks remain suspended if their support is later removed; structural collapse is outside this milestone.
@@ -65,7 +69,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 - The camera follows exploration above and below the initial surface.
 - Mouse actions over the HUD do not modify terrain.
 - One creature starts to the right of spawn. It waits until the player comes within 180 pixels, leaving room to gather first.
-- J attacks with any selected slot. Holding attack or dodge takes priority over tool actions; mining/building resumes after releasing the combat key and completing the action.
+- Only the equipped sword can deal melee damage. Left click or J swings it. Switching equipment cancels the previous mining action or sword swing. Pickaxe, axe, and building materials cannot damage enemies.
 - Solid terrain blocks melee damage in both directions, including newly placed blocks. Mining away a barrier opens the attack path again.
 - Defeating the creature leaves the world and inventory intact. R restores terrain, inventory, player, and enemy together.
 - Enemy navigation is still basic: it walks and collides with terrain, without jumping or finding routes around constructed barriers.
@@ -76,6 +80,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 | --- | --- |
 | `Scripts/BlockWorld.cs` | Foreground terrain, generated background walls, collision, reach/visibility checks, mining, placement, target rendering |
 | `Scripts/SandboxInventory.cs` | Material stack counts and spending |
+| `Scripts/Equipment.cs` | Shared six-slot equipment mapping and tool/material rules |
 | `Scripts/MaterialDrop.cs` | Dropped material attraction and collection |
 | `Scripts/SandboxHud.cs` | Hotbar, counts, status, and controls |
 | `Scripts/SandboxPlayground.cs` | Tool selection, combat/tool priority, integration checks, and optional scene switching |
@@ -150,3 +155,22 @@ The developer requested halving mining reach and changing blocks to 24px with a 
 - Player drawing, collision, and the melee swing's vertical coverage have been adjusted for the taller body. Mining hints derive their block count from the current reach and tile size.
 
 The C# build passed with zero warnings and errors. Godot checks passed for the exact three-block player size, world dimensions, preserved jump height, halved mining boundary, buried-block mining, material recovery, building collisions, non-solid background walls, wall-supported construction, and combat. The isolated combat suite also passed. Surface and excavated-wall previews were rendered and inspected.
+
+## Pickaxe, axe, and sword — 2026-10-25
+
+The developer requested separate tools for gathering and combat. The hotbar now contains six slots:
+
+| Slot | Equipment | Action |
+| --- | --- | --- |
+| 1 | Pickaxe | Hold left mouse to mine dirt or stone |
+| 2 | Axe | Hold left mouse to harvest wood, including placed wood blocks |
+| 3 | Sword | Left click or J to swing at enemies |
+| 4 | Dirt | Left or right mouse to build |
+| 5 | Stone | Left or right mouse to build |
+| 6 | Wood | Left or right mouse to build |
+
+All three tools are supplied at spawn for this prototype. They do not wear out or require crafting yet. Wrong tools leave the block untouched and show the required tool in the targeting hint. The sword does not mine blocks, and mining tools do not damage enemies. Core mining checks enforce the equipped tool as well as the existing range and protection rules.
+
+The held-item drawing changes with the selection. Pickaxe and axe swing while harvesting; materials appear as a held block. Changing equipment interrupts the previous action, preventing a hidden sword from dealing delayed damage. Sword damage, startup, active frames, and recovery retain the established combat values.
+
+Godot checks passed for keyboard selection of slot six, wheel wrapping, dirt/stone mining with the pickaxe, rejected axe-on-stone and pickaxe-on-wood use, wood gathering with the axe, rejected sword-on-dirt use, sword attacks using both J and left click, rejected enemy damage from mining tools, equipment-switch cancellation, continued building, wall-supported wood placement/recovery, and reset to the starter pickaxe. The original combat suite passed. All three held-item selections and the expanded hotbar were rendered and inspected; C# compilation had zero warnings and errors.

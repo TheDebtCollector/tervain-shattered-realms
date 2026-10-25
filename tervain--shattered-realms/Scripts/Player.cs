@@ -19,6 +19,8 @@ public partial class Player : CharacterBody2D
     public bool IsAttacking => _attackLeft > 0;
     public float DodgeReadyIn => _dodgeCooldownLeft;
     public bool IsDead => Health <= 0;
+    public EquipmentKind EquippedItem { get; private set; } = EquipmentKind.Sword;
+    public float ToolUseProgress { get; set; }
     public const float BodyHeight = 72;
     public Vector2 BodyCenter => GlobalPosition + new Vector2(0, -BodyHeight / 2);
     public Rect2 BodyBounds => new(GlobalPosition + new Vector2(-14, -BodyHeight), new Vector2(28, BodyHeight));
@@ -84,11 +86,7 @@ public partial class Player : CharacterBody2D
             }
             if (Input.IsActionJustReleased("jump") && vertical < -220) vertical *= 0.55f;
             Velocity = new Vector2(Mathf.MoveToward(Velocity.X, axis * speed, 2200 * dt), vertical);
-            if (Input.IsActionJustPressed("attack") && !IsAttacking)
-            {
-                _attackLeft = 0.38f;
-                _attackConnected = false;
-            }
+            if (Input.IsActionJustPressed("attack")) TryStartAttack();
         }
 
         MoveAndSlide();
@@ -108,6 +106,26 @@ public partial class Player : CharacterBody2D
         }
         if (Position.Y > 850) ReceiveHit(1000, 0);
         QueueRedraw();
+    }
+
+    public void Equip(EquipmentKind item)
+    {
+        if (EquippedItem == item) return;
+        EquippedItem = item;
+        // Switching equipment ends the old action; a hidden sword cannot finish dealing damage.
+        _attackLeft = 0;
+        ToolUseProgress = 0;
+        QueueRedraw();
+    }
+
+    public bool TryStartAttack()
+    {
+        if (EquippedItem != EquipmentKind.Sword || IsDead || IsDodging || IsAttacking) return false;
+        float axis = Input.GetAxis("move_left", "move_right");
+        if (axis != 0) Facing = axis > 0 ? 1 : -1;
+        _attackLeft = 0.38f;
+        _attackConnected = false;
+        return true;
     }
 
     public void ReceiveHit(int damage, int direction)
@@ -132,7 +150,36 @@ public partial class Player : CharacterBody2D
         DrawLine(new Vector2(-7, -5), new Vector2(-7, 0), new Color("243a46"), 7);
         DrawLine(new Vector2(7, -5), new Vector2(7, 0), new Color("243a46"), 7);
         Vector2 hand = new(Facing * 17, -36);
-        DrawLine(hand, hand + new Vector2(Facing * 10, -23), new Color("d9e8e9"), 5);
+        float toolAngle = ToolUseProgress > 0 ? Mathf.Sin(ToolUseProgress * Mathf.Tau) * 0.65f : 0;
+        DrawSetTransform(hand, toolAngle * Facing, new Vector2(Facing, 1));
+        Color steel = new("d9e8e9");
+        Color handle = new("bd8c56");
+        switch (EquippedItem)
+        {
+            case EquipmentKind.Pickaxe:
+                DrawLine(new Vector2(0, 5), new Vector2(10, -23), handle, 4);
+                DrawLine(new Vector2(-2, -23), new Vector2(23, -18), steel, 5);
+                DrawLine(new Vector2(23, -18), new Vector2(26, -10), steel, 3);
+                break;
+            case EquipmentKind.Axe:
+                DrawLine(new Vector2(0, 5), new Vector2(9, -25), handle, 4);
+                DrawColoredPolygon(new[] { new Vector2(7, -26), new Vector2(23, -24),
+                    new Vector2(25, -12), new Vector2(8, -12) }, steel);
+                break;
+            case EquipmentKind.Sword:
+                DrawLine(new Vector2(0, 5), new Vector2(3, -3), handle, 4);
+                DrawLine(new Vector2(-2, -5), new Vector2(10, -1), new Color("d7bb75"), 3);
+                DrawLine(new Vector2(4, -3), new Vector2(14, -31), steel, 5);
+                break;
+            default:
+                if (EquipmentRules.TryGetMaterial(EquippedItem, out BlockKind block))
+                {
+                    DrawRect(new Rect2(0, -16, 16, 16), BlockWorld.Colour(block));
+                    DrawRect(new Rect2(0, -16, 16, 16), new Color("e6d8ba"), false, 1);
+                }
+                break;
+        }
+        DrawSetTransform(Vector2.Zero);
         if (_attackLeft is > 0.14f and <= 0.27f)
         {
             DrawRect(AttackBounds with { Position = AttackBounds.Position - GlobalPosition }, new Color(0.65f, 1, 0.9f, 0.12f));

@@ -85,9 +85,9 @@ public partial class BlockWorld : Node2D
         return hit.Count == 0;
     }
 
-    // Mining intentionally ignores visibility: only range and protected block rules apply.
+    // Mining ignores visibility; the correct tool, range, and protection rules still apply.
     public bool CanMine(Vector2I cell, Player player) => !player.IsDead && InBounds(cell) &&
-        _blocks.TryGetValue(cell, out BlockKind kind) && kind != BlockKind.Bedrock &&
+        _blocks.TryGetValue(cell, out BlockKind kind) && EquipmentRules.CanMine(player.EquippedItem, kind) &&
         player.BodyCenter.DistanceTo(Center(cell)) <= MiningReach;
 
     public bool TryMine(Vector2I cell, Player player, out BlockKind material)

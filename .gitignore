@@ -1,0 +1,23 @@
+# Godot-generated caches and exported builds
+**/.godot/
+**/android/
+**/exports/
+
+# C# and IDE output
+**/bin/
+**/obj/
+**/.vs/
+**/.idea/
+*.user
+*.suo
+
+# Local Obsidian configuration, window layouts, and trash
+.obsidian/
+.trash/
+
+# Local secrets and operating-system files
+.env
+.env.*
+!.env.example
+Thumbs.db
+.DS_Store

@@ -15,7 +15,7 @@ Related: [[MVP Design]] · [[Combat Prototype]]
 
 Mine materials, collect them, build a small shelter, and fight a creature in the same scene. This joins the movement/combat and sandbox foundations. Crafting comes next.
 
-The accepted movement settings and combat timings are preserved. The main sandbox now includes the training creature, melee combat, mining, pickups, and building together. Solid terrain shields both combatants. The original combat room remains an optional isolated test scene.
+Run speed, dodge settings, and combat timings are preserved. Jump height and player size use the newer tuning described below. The main sandbox now includes the training creature, melee combat, mining, pickups, and building together. Solid terrain shields both combatants. The original combat room remains an optional isolated test scene.
 
 ## Play
 
@@ -44,7 +44,7 @@ Press **F5** in the Godot .NET project. The main scene is now `Scenes/SandboxPla
 2. Move near the dropped item to collect it; nearby drops are drawn toward the character.
 3. Select dirt and place it on the ground nearby.
 4. Harvest tree trunks for wood. Stone is available underground and in the surface outcrop to the right of spawn.
-5. Build walls and a roof. Leave a two-block-high entrance so the character can enter.
+5. Build walls and a roof. The player is four blocks tall; leave a five-block-high entrance for comfortable headroom.
 6. Try jumping onto your construction, mining underfoot, and recovering placed blocks.
 7. Approach the creature to the right of spawn. Read its wind-up, dodge with Shift, and attack with J. Try building a barrier, mining it away, fighting, and then continuing construction in the same world.
 
@@ -52,12 +52,12 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 
 ## Implemented rules
 
-- Small authored terrain: 72 by 24 cells, with 32-pixel blocks, trees, surface stone, and an underground cavity.
+- Small authored terrain: 144 by 48 cells, with 16-pixel blocks, trees, surface stone, and an underground cavity. Physical world dimensions remain 2304 by 768 pixels.
 - Dirt, stone, and wood are mineable, collectible, and placeable. Each has its own stack in the hotbar.
 - Pickaxe is a permanent starter tool. Material stacks start empty.
 - Dirt takes 0.28 seconds to mine, wood 0.4 seconds, and stone 0.6 seconds.
 - Changing the target or hotbar slot interrupts unfinished mining.
-- Reach is 160 pixels from the character's centre. Intervening solid blocks obstruct mining and placement.
+- Mining reaches 384 pixels (24 blocks) from the player body centre and ignores intervening blocks. Only distance, world bounds, player state, and protected bedrock determine whether a target can be mined. Building reaches 160 pixels (10 blocks) and still requires a clear path.
 - Placed blocks need an existing neighbour and cannot overlap the player or a living enemy.
 - Successful placement spends one item. Rejected placement spends nothing.
 - Blocks remain suspended if their support is later removed; structural collapse is outside this milestone.
@@ -86,7 +86,7 @@ The test terrain uses one static body per block for simplicity. Chunking and pro
 
 ## Verification
 
-C# compilation passed with zero warnings and errors. Godot integration checks passed for mining input, material collection, material costs, invalid placements, visibility and reach restrictions, player overlap prevention, placed-block collision, removing collision when mining, resource recovery, different mining times, wood harvesting, secondary placement input, interrupted mining, underground camera framing, reset, and return to the combat room. Combined-scene checks also passed for notice range, live enemy placement protection, player and enemy melee obstruction, mining interruption during attacks, resource recovery after combat, enemy damage and defeat, simultaneous attack/build input, continued building after victory, and resetting both combatants. The original combat integration suite also passed. The rendered combined layout was inspected.
+C# compilation passed with zero warnings and errors. Godot integration checks passed for mining input, material collection, material costs, invalid placements, placement visibility checks and separate mining/building reach limits, player overlap prevention, placed-block collision, removing collision when mining, resource recovery, different mining times, wood harvesting, secondary placement input, interrupted mining, underground camera framing, reset, and return to the combat room. Combined-scene checks also passed for notice range, live enemy placement protection, player and enemy melee obstruction, mining interruption during attacks, resource recovery after combat, enemy damage and defeat, simultaneous attack/build input, continued building after victory, and resetting both combatants. The original combat integration suite also passed. The rendered combined layout was inspected.
 
 Run the sandbox checks with:
 
@@ -112,3 +112,16 @@ Crafting, a separate inventory window, background walls, doors, furniture, autom
 - Can you comfortably construct and enter a small shelter?
 - Does movement still feel as good as the accepted baseline?
 - Can you switch comfortably between mining, fighting, and building without leaving the scene?
+
+## Grid, jump, and mining update — 2026-10-25
+
+The developer requested a finer 16px block grid, a four-block-tall player, a jump one block higher, much longer mining range, and mining through solid terrain.
+
+- Player drawing and collision body are now 64 pixels high. Combat targeting, item pickup, and building overlap checks use the resized body.
+- The held-jump apex was measured in Godot at approximately 123.8 pixels, compared with 107.8 pixels previously: one additional 16px block. Jump speed is 606.3542; gravity remains 1550. Early release still shortens the jump.
+- Mining range increased from 160 to 384 pixels. A buried block can be selected and mined directly without clearing the blocks in front of it.
+- Drops still need to be collected nearby; remote mining does not automatically add distant materials to inventory.
+- Building reach remains 160 pixels, and terrain still blocks placement and melee attacks.
+- World width and height in pixels, spawn positions, and the overall landscape footprint are preserved by doubling the grid dimensions.
+
+The C# build passed without warnings or errors. Godot checks measured the jump increase and verified player/grid scale, distant buried mining, range boundaries, protected bedrock, item collection, resized placement/collision, and combined combat/building. The original combat suite passed, and the rendered proportions were inspected.

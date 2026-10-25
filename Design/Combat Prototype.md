@@ -74,7 +74,7 @@ To rerun the engine smoke test from a terminal, use your Godot executable:
 
 The first movement and combat milestone is accepted. Preserve the current feel while developing the sandbox foundation. Revisit tuning when new mechanics or playtest feedback identify a specific need.
 
-## Accepted baseline — 2026-10-25
+## Original accepted baseline — 2026-10-25
 
 Player settings: movement speed 280, jump speed 565, gravity 1550, dodge speed 650, dodge duration 0.18 seconds, dodge cooldown 0.8 seconds, and melee damage 25.
 
@@ -94,3 +94,7 @@ Mining, resource drops and collection, hotbar stacks, and block placement are no
 ## Combined world update — 2026-10-25
 
 At the developer's request, combat is now available directly in [[Sandbox Prototype]] alongside mining and building. J attacks from any hotbar slot; mouse clicks use the selected tool or material. The creature waits to the right of spawn until approached. Built terrain shields both sides from melee damage, and blocks cannot be placed inside a living enemy. Movement and combat timing values remain at the accepted baseline. The isolated combat room remains available for tuning and regression checks.
+
+## Current movement tuning — 2026-10-25
+
+The developer subsequently requested one extra block of jump height and a player four blocks tall on a 16px grid. Current player height is 64px, and jump speed is 606.3542. Measured held-jump height increased from about 107.8px to 123.8px. Run speed, gravity, dodge, damage, and combat timing values remain as above. These explicit requests supersede the original baseline's jump speed and character proportions. See [[Sandbox Prototype]] for the full scale and mining changes.

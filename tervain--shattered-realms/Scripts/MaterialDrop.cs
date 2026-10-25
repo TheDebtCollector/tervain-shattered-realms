@@ -13,7 +13,7 @@ public partial class MaterialDrop : Node2D
     {
         _age += (float)delta;
         if (_collected || Player.IsDead) return;
-        Vector2 target = Player.GlobalPosition + new Vector2(0, -24);
+        Vector2 target = Player.BodyCenter;
         if (_age > 0.12f && Position.DistanceTo(target) < 120)
             Position = Position.MoveToward(target, (float)delta * 340);
         if (_age > 0.12f && Position.DistanceTo(target) < 24)

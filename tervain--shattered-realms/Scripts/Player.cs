@@ -5,7 +5,8 @@ namespace Tervain;
 public partial class Player : CharacterBody2D
 {
     [Export] public float MoveSpeed { get; set; } = 280f;
-    [Export] public float JumpSpeed { get; set; } = 565f;
+    // One 16px block higher than the original jump at the default 60Hz physics rate.
+    [Export] public float JumpSpeed { get; set; } = 606.3542f;
     [Export] public float GravityStrength { get; set; } = 1550f;
     [Export] public float DodgeSpeed { get; set; } = 650f;
     [Export] public float DodgeDuration { get; set; } = 0.18f;
@@ -18,6 +19,9 @@ public partial class Player : CharacterBody2D
     public bool IsAttacking => _attackLeft > 0;
     public float DodgeReadyIn => _dodgeCooldownLeft;
     public bool IsDead => Health <= 0;
+    public const float BodyHeight = 64;
+    public Vector2 BodyCenter => GlobalPosition + new Vector2(0, -BodyHeight / 2);
+    public Rect2 BodyBounds => new(GlobalPosition + new Vector2(-14, -BodyHeight), new Vector2(28, BodyHeight));
     public Rect2 AttackBounds => new(
         GlobalPosition + new Vector2(Facing > 0 ? 0 : -96, -65), new Vector2(96, 76));
 
@@ -31,8 +35,8 @@ public partial class Player : CharacterBody2D
         CollisionMask = 1;
         AddChild(new CollisionShape2D
         {
-            Position = new Vector2(0, -24),
-            Shape = new RectangleShape2D { Size = new Vector2(28, 48) }
+            Position = new Vector2(0, -BodyHeight / 2),
+            Shape = new RectangleShape2D { Size = new Vector2(28, BodyHeight) }
         });
         AddToGroup("player");
     }
@@ -121,13 +125,13 @@ public partial class Player : CharacterBody2D
         if (_hurtLeft > 0) coat = Colors.White;
         if (_invulnerableLeft > 0 && (int)(_invulnerableLeft * 20) % 2 == 0) coat.A = 0.5f;
         DrawCircle(new Vector2(0, 1), 17, new Color(0, 0, 0, 0.2f));
-        DrawRect(new Rect2(-13, -34, 26, 30), coat);
-        DrawCircle(new Vector2(0, -43), 12, new Color("edcfaa"));
-        DrawRect(new Rect2(-12, -54, 24, 10), new Color("263d49"));
-        DrawCircle(new Vector2(Facing * 5, -43), 2, new Color("182b36"));
+        DrawRect(new Rect2(-13, -43, 26, 39), coat);
+        DrawCircle(new Vector2(0, -52), 12, new Color("edcfaa"));
+        DrawRect(new Rect2(-12, -64, 24, 10), new Color("263d49"));
+        DrawCircle(new Vector2(Facing * 5, -52), 2, new Color("182b36"));
         DrawLine(new Vector2(-7, -5), new Vector2(-7, 0), new Color("243a46"), 7);
         DrawLine(new Vector2(7, -5), new Vector2(7, 0), new Color("243a46"), 7);
-        Vector2 hand = new(Facing * 17, -24);
+        Vector2 hand = new(Facing * 17, -32);
         DrawLine(hand, hand + new Vector2(Facing * 10, -23), new Color("d9e8e9"), 5);
         if (_attackLeft is > 0.14f and <= 0.27f)
         {

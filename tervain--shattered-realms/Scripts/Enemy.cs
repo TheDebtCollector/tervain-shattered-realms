@@ -69,7 +69,7 @@ public partial class Enemy : CharacterBody2D
                 case Intent.Strike:
                     horizontal = _facing * 230;
                     Rect2 hit = new(GlobalPosition + new Vector2(_facing > 0 ? 0 : -105, -60), new Vector2(105, 65));
-                    Rect2 target = new(_player.GlobalPosition + new Vector2(-14, -48), new Vector2(28, 48));
+                    Rect2 target = _player.BodyBounds;
                     if (!_didHit && hit.Intersects(target) && CombatRules.HasClearPath(this, _player))
                     { _player.ReceiveHit(AttackDamage, _facing); _didHit = true; }
                     if (_timer <= 0) SetState(Intent.Recover, RecoveryDuration);

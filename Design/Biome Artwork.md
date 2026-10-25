@@ -4,7 +4,7 @@ tags:
   - art
   - biomes
 created: 2026-10-25
-status: art-authored-integration-pending
+status: integrated-in-sandbox
 ---
 
 # Biome Artwork
@@ -48,4 +48,4 @@ Each biome also has a labeled enlarged preview and a native 96×72 atlas in the 
 - All 30 wall tiles are darker than their matching foreground materials.
 - The native-size exports and enlarged previews were visually inspected across all fifteen sets.
 
-Game integration is pending. Existing assets, scripts, scenes, and gameplay were not changed. These are environmental tile sets; structures, enemies, equipment, UI, full scenery backgrounds, and animations need their own requirements. Biome distribution, generation guarantees, and the fixed plains spawn at (0, 0) remain as documented in [[World Generation]].
+The environmental artwork is now integrated into the authored sandbox; see [[Biome Integration]]. Seed-based world creation and realm progression remain pending. These are environmental tile sets; structures, enemies, equipment, UI, full scenery backgrounds, and animations need their own requirements. Biome distribution, generation guarantees, and the fixed plains spawn at (0, 0) remain as documented in [[World Generation]].

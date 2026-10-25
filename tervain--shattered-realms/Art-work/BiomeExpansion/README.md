@@ -2,7 +2,7 @@
 
 180 environmental assets for the fifteen new biomes: twelve native 24×24 RGBA tiles per biome. All tiles have editable single-frame, single-layer Aseprite sources and matching PNG exports.
 
-Scope: environmental tiles, walls, liquids, and flora/formations. No game code or generation integration. Existing assets are style references and must remain untouched.
+Scope: environmental tiles, walls, liquids, and flora/formations. Runtime integration now lives in `Scripts/BiomeCatalog.cs`, `Scripts/BlockWorld.Biomes.cs`, and `Data/biomes.json`; the Obsidian note `Design/Biome Integration.md` documents controls and verification. Seed-based world creation remains pending.
 
 ## Contents
 
@@ -31,4 +31,4 @@ To reproduce the initial generated package on Windows with PowerShell and System
 
 Run `python validate-biomes.py` with Pillow installed to verify all 180 pairs. Validation reads the assets without changing them and checks dimensions, frame/layer layout, palette limits, alpha, pixel equality between PNG and ASE, and foreground/background brightness.
 
-No existing artwork, scripts, scenes, world generation, or game behavior is modified by this package.
+All twenty biomes can now be visited in the sandbox using the header selector or Page Up / Page Down. Final rendered captures are in `previews/in-game/`. The frozen-cave reference sheet and its twelve source/export pairs were revised to remove tile-divider seams; `frozen-polish-prompt.json` retains the exact built-in imagegen edit prompt. The package itself remains independent of game code, and its sheet converter rebuilds artwork only.

@@ -14,9 +14,9 @@ Related: [[MVP Design]] · [[Sandbox Prototype]]
 ## Confirmed scope
 
 - Define the rules before implementing the generation tool.
-- Do not change the game project during this design phase; only the Obsidian vault may be updated.
+- Seed-based world generation remains in design. Biome artwork and its playable sandbox integration were subsequently requested explicitly; design decisions belong in this vault.
 - Generate terrain and biome layouts based on a world seed when the player creates a new world.
-- The five existing biomes are **plains, jungle, tundra, desert, and swamp**. Fifteen additional biomes are selected for the design roster below. Their environmental artwork is authored (see [[Biome Artwork]]); game integration is pending.
+- The five existing biomes are **plains, jungle, tundra, desert, and swamp**. Fifteen additional biomes are selected for the design roster below. Their environmental artwork is authored (see [[Biome Artwork]]) and all twenty biomes are integrated into the authored sandbox (see [[Biome Integration]]). Seed-based world creation is pending.
 - Every generated world must contain all five current biomes. The seed determines their sizes, positions, and terrain shapes; minimum region widths remain to be defined.
 - Initial player spawn is always at world coordinates **(0, 0)** and always within the **plains** biome, for every seed. Terrain and biome generation must accommodate this fixed spawn rather than move the spawn to a different location.
 - The system must support adding more biomes and future structures.

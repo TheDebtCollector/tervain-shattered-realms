@@ -8,7 +8,9 @@ namespace Tervain;
 public partial class BlockWorld : Node2D
 {
     public const int TileSize = 24;
-    public const int Width = 128;
+    public const int LegacyWidth = 128;
+    public const int BiomeWidth = 48;
+    public static int Width => LegacyWidth + (BiomeCatalog.All.Length - 3) * BiomeWidth;
     public const int Height = 32;
     public const int SurfaceRow = 19;
     public const int CaveBottomRow = 28;
@@ -22,6 +24,7 @@ public partial class BlockWorld : Node2D
     // Generated scenery only: kept independently of foreground blocks, with no physics bodies.
     private readonly Dictionary<Vector2I, BlockKind> _walls = new();
     private readonly Dictionary<Vector2I, StaticBody2D> _bodies = new();
+    private readonly RectangleShape2D _tileShape = new() { Size = Vector2.One * TileSize };
     private readonly HashSet<Vector2I> _vegetation = new();
     public event System.Action<Vector2, BlockKind>? MaterialReleased;
     public bool IsVegetation(Vector2I cell) => _vegetation.Contains(cell);
@@ -49,7 +52,7 @@ public partial class BlockWorld : Node2D
     private FallingSand? FallingAt(Vector2I cell) => _fallingSand.FirstOrDefault(sand => CellAt(sand.GlobalPosition) == cell);
     public bool HasBlock(Vector2I cell) => TryGetBlock(cell, out _);
     public bool HasWall(Vector2I cell) => _walls.ContainsKey(cell);
-    public static Color Colour(BlockKind kind) => new(kind switch
+    public static Color Colour(BlockKind kind) => BiomeCatalog.Materials.ContainsKey(kind) ? new Color("9b9684") : new(kind switch
     {
         BlockKind.Dirt => "947356", BlockKind.Stone => "7c9093", BlockKind.Wood => "bd8c56", BlockKind.IronOre => "b58a6a",
         BlockKind.Sand => "e6be73", BlockKind.Sandstone => "c7a16a", BlockKind.CrackedEarth => "b68d62", BlockKind.Cactus => "718b42",
@@ -58,13 +61,14 @@ public partial class BlockWorld : Node2D
     public static float MineDuration(BlockKind kind) => kind switch
     { BlockKind.Dirt => 0.28f, BlockKind.Stone => 0.6f, BlockKind.IronOre => 0.8f, BlockKind.Wood or BlockKind.Cactus => 0.4f,
         BlockKind.Sand => 0.25f, BlockKind.Sandstone => 0.65f, BlockKind.CrackedEarth => 0.35f,
-        BlockKind.Snow => 0.25f, BlockKind.Ice => 0.45f, BlockKind.FrozenEarth => 0.55f, BlockKind.TundraWood => 0.4f, _ => float.PositiveInfinity };
+        BlockKind.Snow => 0.25f, BlockKind.Ice => 0.45f, BlockKind.FrozenEarth => 0.55f, BlockKind.TundraWood => 0.4f,
+        _ => BiomeCatalog.Materials.TryGetValue(kind, out BiomeMaterial? material) ? material.Seconds : float.PositiveInfinity };
 
     public override void _Ready()
     {
         TextureFilter = TextureFilterEnum.Nearest;
         AddToGroup("block_worlds");
-        for (int x = 0; x < Width; x++)
+        for (int x = 0; x < LegacyWidth; x++)
             for (int y = SurfaceRow; y < Height; y++)
             {
                 if (y >= 24 && y < CaveBottomRow && x is >= 39 and <= 54) continue;
@@ -90,7 +94,8 @@ public partial class BlockWorld : Node2D
         foreach (int x in PineColumns)
             for (int y = 17; y < SurfaceRow; y++) SetBlock(new Vector2I(x, y), BlockKind.TundraWood, vegetation: true);
         foreach (int x in new[] { 97, 112, 119, 126 }) _bushes.Add(new Vector2I(x, SurfaceRow - 1));
-        // Snapshot only generated solid cells. Open sky, cave air, and later player builds
+        BuildBiomeTrail();
+        // Snapshot generated terrain. Original sky/cave air and later player builds
         // do not create walls; mining the foreground leaves this scenery intact.
         foreach (var block in _blocks)
             if (block.Value != BlockKind.Cactus) _walls[block.Key] = block.Value;
@@ -101,9 +106,12 @@ public partial class BlockWorld : Node2D
     private void AddBoundary(Rect2 rect)
     {
         var body = new StaticBody2D { Position = rect.Position, CollisionLayer = 1, CollisionMask = 0 };
-        body.AddChild(new CollisionShape2D { Position = rect.Size / 2, Shape = new RectangleShape2D { Size = rect.Size } });
+        using var shape = new RectangleShape2D { Size = rect.Size };
+        body.AddChild(new CollisionShape2D { Position = rect.Size / 2, Shape = shape });
         AddChild(body);
     }
+
+    public override void _ExitTree() => _tileShape.Dispose();
 
     private void SetBlock(Vector2I cell, BlockKind kind, bool vegetation = false)
     {
@@ -116,8 +124,14 @@ public partial class BlockWorld : Node2D
             QueueRedraw();
             return;
         }
+        if (cell.X < LegacyWidth || IsCollisionColumnActive(cell.X)) AddBlockCollider(cell);
+        QueueRedraw();
+    }
+
+    private void AddBlockCollider(Vector2I cell)
+    {
         var body = new StaticBody2D { Position = Center(cell), CollisionLayer = 1, CollisionMask = 0 };
-        body.AddChild(new CollisionShape2D { Shape = new RectangleShape2D { Size = Vector2.One * TileSize } });
+        body.AddChild(new CollisionShape2D { Shape = _tileShape });
         _bodies[cell] = body;
         AddChild(body);
         QueueRedraw();
@@ -129,7 +143,7 @@ public partial class BlockWorld : Node2D
         Vector2 origin = player.BodyCenter;
         Vector2 destination = Center(cell);
         if (origin.DistanceTo(destination) > BuildReach) return false;
-        var ray = PhysicsRayQueryParameters2D.Create(origin, destination, 1);
+        using var ray = PhysicsRayQueryParameters2D.Create(origin, destination, 1);
         var hit = GetWorld2D().DirectSpaceState.IntersectRay(ray);
         return hit.Count == 0;
     }
@@ -216,6 +230,7 @@ public partial class BlockWorld : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (GetTree().GetFirstNodeInGroup("player") is Player player) UpdateNearbyCollision(player.Position);
         foreach (Vector2I bush in _bushes.ToArray())
             if (!_bodies.ContainsKey(bush + Vector2I.Down)) { _bushes.Remove(bush); QueueRedraw(); }
         if (!_sandDirty) return;
@@ -267,7 +282,7 @@ public partial class BlockWorld : Node2D
             if (attacker != null)
             {
                 Vector2 origin = attacker is Player player ? player.BodyCenter : attacker.GlobalPosition + new Vector2(0, -24);
-                var ray = PhysicsRayQueryParameters2D.Create(origin, Center(cell), 1);
+                using var ray = PhysicsRayQueryParameters2D.Create(origin, Center(cell), 1);
                 if (GetWorld2D().DirectSpaceState.IntersectRay(ray).Count != 0) continue;
             }
             _bushes.Remove(cell); // Dead bushes never produce items.
@@ -277,62 +292,45 @@ public partial class BlockWorld : Node2D
 
     public override void _Draw()
     {
-        DrawRect(new Rect2(0, 0, Width * TileSize, Height * TileSize), new Color("182f37"));
-        DrawCircle(new Vector2(650, 180), 55, new Color("5e7163"));
-        for (int x = 0; x < DesertStartColumn; x += 5)
-        {
-            float px = x * TileSize + 40;
-            DrawRect(new Rect2(px, 250, 22, 240), new Color("234348"));
-            DrawCircle(new Vector2(px + 11, 240), 69, new Color("234348"));
-        }
-        float desertX = DesertStartColumn * TileSize;
-        float tundraX = TundraStartColumn * TileSize;
-        DrawRect(new Rect2(desertX, 0, tundraX - desertX, Height * TileSize), new Color("b5a17d"));
-        DrawCircle(new Vector2(desertX + 440, 190), 45, new Color("f7d78b"));
-        DrawColoredPolygon(new[] { new Vector2(desertX, 456), new Vector2(desertX + 220, 290),
-            new Vector2(desertX + 440, 390), new Vector2(tundraX, 270), new Vector2(tundraX, 456) }, new Color("a28a66"));
-        float worldRight = Width * TileSize;
-        DrawRect(new Rect2(tundraX, 0, worldRight - tundraX, Height * TileSize), new Color("698595"));
-        DrawCircle(new Vector2(tundraX + 560, 170), 40, new Color("d9e9ed"));
-        DrawColoredPolygon(new[] { new Vector2(tundraX, 456), new Vector2(tundraX + 160, 230),
-            new Vector2(tundraX + 300, 350), new Vector2(tundraX + 510, 200),
-            new Vector2(worldRight, 370), new Vector2(worldRight, 456) }, new Color("a5bec8"));
-        for (int x = TundraStartColumn; x < Width; x += 5)
-            DrawColoredPolygon(new[] { new Vector2(x * TileSize, 456), new Vector2(x * TileSize + 28, 330),
-                new Vector2(x * TileSize + 56, 456) }, new Color("4d6977"));
+        Rect2 visible = VisibleWorld();
+        DrawBiomeScenery(visible);
         foreach (int x in TreeColumns)
-            if (HasWall(new Vector2I(x, 13)))
+            if (HasWall(new Vector2I(x, 13)) && visible.Intersects(new Rect2(x * TileSize - 60, 230, 144, 240)))
             {
                 bool backgroundOnly = !HasBlock(new Vector2I(x, 13));
-                Color canopy = new("426951"), highlights = new("4d7658");
-                if (backgroundOnly) { canopy = canopy.Darkened(0.58f); highlights = highlights.Darkened(0.58f); }
-                DrawCircle(new Vector2(x * TileSize + TileSize / 2f, 294), 57, canopy);
-                DrawCircle(new Vector2(x * TileSize - 10, 282), 35, highlights);
+                Color tint = backgroundOnly ? new Color(0.42f, 0.42f, 0.42f) : Colors.White;
+                DrawTextureRect(BiomeArt.Texture("res://Art-work/BiomeExpansion/Exported/temperate-forest-canopy-formation-24.png"),
+                    new Rect2(x * TileSize - 36, 254, 96, 96), false, tint);
             }
         foreach (var entry in _walls)
         {
-            if (_blocks.ContainsKey(entry.Key)) continue; // Moving sand still needs scenery behind it.
+            if (_blocks.ContainsKey(entry.Key) || !visible.Intersects(CellRect(entry.Key))) continue;
             Rect2 rect = CellRect(entry.Key);
             BlockArt.DrawWall(this, rect, entry.Value);
         }
         foreach (int x in PineColumns)
         {
-            if (!HasWall(new Vector2I(x, 17))) continue;
+            if (!HasWall(new Vector2I(x, 17)) || !visible.Intersects(new Rect2(x * TileSize - 24, 354, 72, 102))) continue;
             Color tint = _blocks.TryGetValue(new Vector2I(x, 17), out BlockKind trunk) && trunk == BlockKind.TundraWood ? Colors.White : new Color(0.42f, 0.42f, 0.42f);
             // Crop transparent padding and scale by six whole pixels to ground the pine sprite.
             DrawTextureRectRegion(BlockArt.PineTexture, new Rect2(x * TileSize - 24, SurfaceRow * TileSize - 102, 72, 102),
                 new Rect2(6, 4, 12, 17), tint);
         }
+        DrawBiomeDetails(visible);
         foreach (var entry in _blocks)
         {
+            if (!visible.Intersects(CellRect(entry.Key))) continue;
             // The live pine sprite represents its original trunk cells. Other foreground blocks stay in front.
             if (entry.Value == BlockKind.TundraWood && entry.Key.Y is 17 or 18 && PineColumns.Contains(entry.Key.X)
                 && _blocks.TryGetValue(new Vector2I(entry.Key.X, 17), out BlockKind top) && top == BlockKind.TundraWood) continue;
             Rect2 rect = CellRect(entry.Key);
-            BlockArt.Draw(this, rect, entry.Value);
+            DrawTerrainBlock(entry.Key, entry.Value, rect);
             if (entry.Value == BlockKind.Dirt && !HasBlock(entry.Key + Vector2I.Up))
                 DrawRect(new Rect2(rect.Position, new Vector2(TileSize, 3)), new Color("8ca773"));
         }
+        foreach (var liquid in _liquids)
+            if (!HasBlock(liquid.Key) && visible.Intersects(CellRect(liquid.Key)))
+                DrawTextureRect(BiomeArt.Texture(liquid.Value.Texture), CellRect(liquid.Key), false);
         foreach (Vector2I bush in _bushes)
             DrawTextureRect(bush.X >= TundraStartColumn ? BlockArt.ShrubTexture : BlockArt.BushTexture, CellRect(bush), false);
         if (HighlightCell is Vector2I selected)

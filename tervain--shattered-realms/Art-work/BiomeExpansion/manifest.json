@@ -230,7 +230,7 @@
     "width": 24,
     "height": 24,
     "opaquePixels": 576,
-    "colors": 6,
+    "colors": 5,
     "animated": false
   },
   {
@@ -334,7 +334,7 @@
     "width": 24,
     "height": 24,
     "opaquePixels": 576,
-    "colors": 7,
+    "colors": 8,
     "animated": false
   },
   {
@@ -425,7 +425,7 @@
     "width": 24,
     "height": 24,
     "opaquePixels": 136,
-    "colors": 7,
+    "colors": 8,
     "animated": false
   },
   {
@@ -464,7 +464,7 @@
     "width": 24,
     "height": 24,
     "opaquePixels": 151,
-    "colors": 7,
+    "colors": 8,
     "animated": false
   },
   {
@@ -1309,7 +1309,7 @@
     "width": 24,
     "height": 24,
     "opaquePixels": 576,
-    "colors": 3,
+    "colors": 4,
     "animated": false
   },
   {
@@ -1360,7 +1360,7 @@
     "png": "Exported/frozen-caves-canopy-formation-24.png",
     "width": 24,
     "height": 24,
-    "opaquePixels": 140,
+    "opaquePixels": 170,
     "colors": 8,
     "animated": false
   },
@@ -1373,7 +1373,7 @@
     "png": "Exported/frozen-caves-small-decoration-24.png",
     "width": 24,
     "height": 24,
-    "opaquePixels": 95,
+    "opaquePixels": 111,
     "colors": 8,
     "animated": false
   },
@@ -1386,7 +1386,7 @@
     "png": "Exported/frozen-caves-tall-decoration-24.png",
     "width": 24,
     "height": 24,
-    "opaquePixels": 174,
+    "opaquePixels": 199,
     "colors": 8,
     "animated": false
   },
@@ -1399,7 +1399,7 @@
     "png": "Exported/frozen-caves-hanging-decoration-24.png",
     "width": 24,
     "height": 24,
-    "opaquePixels": 129,
+    "opaquePixels": 162,
     "colors": 8,
     "animated": false
   },
@@ -1426,7 +1426,7 @@
     "width": 24,
     "height": 24,
     "opaquePixels": 576,
-    "colors": 7,
+    "colors": 6,
     "animated": false
   },
   {
@@ -1634,7 +1634,7 @@
     "width": 24,
     "height": 24,
     "opaquePixels": 576,
-    "colors": 6,
+    "colors": 7,
     "animated": false
   },
   {
@@ -1647,7 +1647,7 @@
     "width": 24,
     "height": 24,
     "opaquePixels": 576,
-    "colors": 6,
+    "colors": 7,
     "animated": false
   },
   {
@@ -1907,7 +1907,7 @@
     "width": 24,
     "height": 24,
     "opaquePixels": 576,
-    "colors": 7,
+    "colors": 6,
     "animated": false
   },
   {

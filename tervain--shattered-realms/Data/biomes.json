@@ -1,0 +1,918 @@
+[
+  {
+    "id": "plains",
+    "name": "Plains",
+    "category": "surface",
+    "profile": "woodland",
+    "sky": "233d4b",
+    "horizon": "738a75",
+    "silhouette": "3e6056",
+    "soil": 0,
+    "stone": 1,
+    "material": 2,
+    "trees": true,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/temperate-forest-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/temperate-forest-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/temperate-forest-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/temperate-forest-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/Exported/temperate-water-24.png",
+    "liquidSurface": "res://Art-work/Exported/temperate-water-24.png",
+    "materials": []
+  },
+  {
+    "id": "desert",
+    "name": "Desert",
+    "category": "surface",
+    "profile": "mesa",
+    "sky": "7b8d94",
+    "horizon": "d5bb83",
+    "silhouette": "9c8766",
+    "soil": 5,
+    "stone": 6,
+    "material": 8,
+    "trees": false,
+    "decorations": [
+      "res://Art-work/Exported/dry-bush-24.png",
+      "res://Art-work/Exported/dry-bush-24.png",
+      "res://Art-work/Exported/cactus-24.png",
+      "res://Art-work/Exported/dry-bush-24.png"
+    ],
+    "liquid": "res://Art-work/Exported/desert-water-24.png",
+    "liquidSurface": "res://Art-work/Exported/desert-water-24.png",
+    "materials": []
+  },
+  {
+    "id": "tundra",
+    "name": "Tundra",
+    "category": "surface",
+    "profile": "alpine",
+    "sky": "4c697d",
+    "horizon": "a5bec8",
+    "silhouette": "648295",
+    "soil": 11,
+    "stone": 10,
+    "material": 12,
+    "trees": true,
+    "decorations": [
+      "res://Art-work/Exported/snow-pine-24.png",
+      "res://Art-work/Exported/tundra-shrub-24.png",
+      "res://Art-work/Exported/snow-pine-24.png",
+      "res://Art-work/Exported/tundra-shrub-24.png"
+    ],
+    "liquid": "res://Art-work/Exported/tundra-water-24.png",
+    "liquidSurface": "res://Art-work/Exported/tundra-water-24.png",
+    "materials": []
+  },
+  {
+    "id": "jungle",
+    "name": "Jungle",
+    "category": "surface",
+    "profile": "woodland",
+    "sky": "173e41",
+    "horizon": "65876b",
+    "silhouette": "28584b",
+    "soil": 30,
+    "stone": 31,
+    "material": 32,
+    "trees": true,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/temperate-forest-canopy-formation-24.png",
+      "res://Art-work/Exported/jungle-fern-24.png",
+      "res://Art-work/Exported/jungle-fern-24.png",
+      "res://Art-work/Exported/jungle-vine-24.png"
+    ],
+    "liquid": "res://Art-work/Exported/jungle-water-24.png",
+    "liquidSurface": "res://Art-work/Exported/jungle-water-24.png",
+    "materials": [
+      {
+        "id": 30,
+        "name": "Jungle soil",
+        "texture": "res://Art-work/Exported/jungle-soil-block-24.png",
+        "wall": "res://Art-work/Exported/jungle-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": ""
+      },
+      {
+        "id": 31,
+        "name": "Mossy stone",
+        "texture": "res://Art-work/Exported/mossy-stone-block-24.png",
+        "wall": "res://Art-work/Exported/jungle-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 32,
+        "name": "Jungle wood",
+        "texture": "res://Art-work/Exported/jungle-wood-block-24.png",
+        "wall": "res://Art-work/Exported/jungle-wood-block-24.png",
+        "wood": true,
+        "seconds": 0.4,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "swamp",
+    "name": "Swamp",
+    "category": "surface",
+    "profile": "woodland",
+    "sky": "283f3c",
+    "horizon": "7a8061",
+    "silhouette": "455744",
+    "soil": 33,
+    "stone": 34,
+    "material": 35,
+    "trees": true,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/temperate-forest-canopy-formation-24.png",
+      "res://Art-work/Exported/swamp-mushroom-24.png",
+      "res://Art-work/Exported/swamp-reeds-24.png",
+      "res://Art-work/Exported/swamp-reeds-24.png"
+    ],
+    "liquid": "res://Art-work/Exported/swamp-water-24.png",
+    "liquidSurface": "res://Art-work/Exported/swamp-water-24.png",
+    "materials": [
+      {
+        "id": 33,
+        "name": "Swamp mud",
+        "texture": "res://Art-work/Exported/swamp-mud-block-24.png",
+        "wall": "res://Art-work/Exported/swamp-mud-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": ""
+      },
+      {
+        "id": 34,
+        "name": "Swamp stone",
+        "texture": "res://Art-work/Exported/swamp-stone-block-24.png",
+        "wall": "res://Art-work/Exported/swamp-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 35,
+        "name": "Swamp wood",
+        "texture": "res://Art-work/Exported/swamp-wood-block-24.png",
+        "wall": "res://Art-work/Exported/swamp-wood-block-24.png",
+        "wood": true,
+        "seconds": 0.4,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "temperate_forest",
+    "name": "Temperate forest",
+    "category": "surface",
+    "profile": "woodland",
+    "sky": "365468",
+    "horizon": "9ba88b",
+    "silhouette": "4c6b5b",
+    "soil": 100,
+    "stone": 101,
+    "material": 102,
+    "trees": true,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/temperate-forest-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/temperate-forest-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/temperate-forest-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/temperate-forest-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/temperate-forest-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/temperate-forest-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 100,
+        "name": "Forest loam",
+        "texture": "res://Art-work/BiomeExpansion/Exported/temperate-forest-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/temperate-forest-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/temperate-forest-surface-block-24.png"
+      },
+      {
+        "id": 101,
+        "name": "Woodland stone",
+        "texture": "res://Art-work/BiomeExpansion/Exported/temperate-forest-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/temperate-forest-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 102,
+        "name": "Oak wood",
+        "texture": "res://Art-work/BiomeExpansion/Exported/temperate-forest-wood-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/temperate-forest-wood-block-24.png",
+        "wood": true,
+        "seconds": 0.4,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "taiga",
+    "name": "Pine forest / taiga",
+    "category": "surface",
+    "profile": "woodland",
+    "sky": "314958",
+    "horizon": "8c9e94",
+    "silhouette": "3e5d58",
+    "soil": 103,
+    "stone": 104,
+    "material": 105,
+    "trees": true,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/taiga-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/taiga-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/taiga-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/taiga-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/taiga-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/taiga-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 103,
+        "name": "Podzol",
+        "texture": "res://Art-work/BiomeExpansion/Exported/taiga-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/taiga-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/taiga-surface-block-24.png"
+      },
+      {
+        "id": 104,
+        "name": "Taiga granite",
+        "texture": "res://Art-work/BiomeExpansion/Exported/taiga-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/taiga-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 105,
+        "name": "Pine wood",
+        "texture": "res://Art-work/BiomeExpansion/Exported/taiga-wood-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/taiga-wood-block-24.png",
+        "wood": true,
+        "seconds": 0.4,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "badlands",
+    "name": "Badlands / mesa",
+    "category": "surface",
+    "profile": "mesa",
+    "sky": "736d69",
+    "horizon": "d4a16d",
+    "silhouette": "95674f",
+    "soil": 106,
+    "stone": 107,
+    "material": 108,
+    "trees": false,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/badlands-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/badlands-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/badlands-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/badlands-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/badlands-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/badlands-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 106,
+        "name": "Red clay",
+        "texture": "res://Art-work/BiomeExpansion/Exported/badlands-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/badlands-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/badlands-surface-block-24.png"
+      },
+      {
+        "id": 107,
+        "name": "Mesa rock",
+        "texture": "res://Art-work/BiomeExpansion/Exported/badlands-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/badlands-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 108,
+        "name": "Petrified wood",
+        "texture": "res://Art-work/BiomeExpansion/Exported/badlands-wood-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/badlands-wood-block-24.png",
+        "wood": true,
+        "seconds": 0.4,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "alpine",
+    "name": "Mountains / alpine",
+    "category": "surface",
+    "profile": "alpine",
+    "sky": "3e5f79",
+    "horizon": "bdc9be",
+    "silhouette": "738997",
+    "soil": 109,
+    "stone": 110,
+    "material": 111,
+    "trees": true,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/alpine-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/alpine-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/alpine-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/alpine-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/alpine-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/alpine-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 109,
+        "name": "Alpine soil",
+        "texture": "res://Art-work/BiomeExpansion/Exported/alpine-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/alpine-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/alpine-surface-block-24.png"
+      },
+      {
+        "id": 110,
+        "name": "Alpine granite",
+        "texture": "res://Art-work/BiomeExpansion/Exported/alpine-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/alpine-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 111,
+        "name": "Alpine timber",
+        "texture": "res://Art-work/BiomeExpansion/Exported/alpine-wood-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/alpine-wood-block-24.png",
+        "wood": true,
+        "seconds": 0.4,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "volcanic_wasteland",
+    "name": "Volcanic wasteland",
+    "category": "surface",
+    "profile": "woodland",
+    "sky": "2d2635",
+    "horizon": "7f574a",
+    "silhouette": "493946",
+    "soil": 112,
+    "stone": 113,
+    "material": 114,
+    "trees": false,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 112,
+        "name": "Volcanic ash",
+        "texture": "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-surface-block-24.png"
+      },
+      {
+        "id": 113,
+        "name": "Basalt",
+        "texture": "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 114,
+        "name": "Obsidian",
+        "texture": "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-material-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/volcanic-wasteland-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.75,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "limestone_caverns",
+    "name": "Limestone caverns",
+    "category": "underground",
+    "profile": "cave",
+    "sky": "211e1d",
+    "horizon": "6f6450",
+    "silhouette": "403a31",
+    "soil": 115,
+    "stone": 116,
+    "material": 117,
+    "trees": false,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/limestone-caverns-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/limestone-caverns-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/limestone-caverns-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/limestone-caverns-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/limestone-caverns-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/limestone-caverns-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 115,
+        "name": "Cave sediment",
+        "texture": "res://Art-work/BiomeExpansion/Exported/limestone-caverns-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/limestone-caverns-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/limestone-caverns-surface-block-24.png"
+      },
+      {
+        "id": 116,
+        "name": "Limestone",
+        "texture": "res://Art-work/BiomeExpansion/Exported/limestone-caverns-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/limestone-caverns-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 117,
+        "name": "Flowstone",
+        "texture": "res://Art-work/BiomeExpansion/Exported/limestone-caverns-material-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/limestone-caverns-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.75,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "crystal_caverns",
+    "name": "Crystal caverns",
+    "category": "underground",
+    "profile": "cave",
+    "sky": "191829",
+    "horizon": "504468",
+    "silhouette": "302b42",
+    "soil": 118,
+    "stone": 119,
+    "material": 120,
+    "trees": false,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/crystal-caverns-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/crystal-caverns-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/crystal-caverns-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/crystal-caverns-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/crystal-caverns-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/crystal-caverns-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 118,
+        "name": "Mineral sediment",
+        "texture": "res://Art-work/BiomeExpansion/Exported/crystal-caverns-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/crystal-caverns-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/crystal-caverns-surface-block-24.png"
+      },
+      {
+        "id": 119,
+        "name": "Crystal host stone",
+        "texture": "res://Art-work/BiomeExpansion/Exported/crystal-caverns-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/crystal-caverns-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 120,
+        "name": "Amethyst rock",
+        "texture": "res://Art-work/BiomeExpansion/Exported/crystal-caverns-material-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/crystal-caverns-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.75,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "fungal_caves",
+    "name": "Fungal caves",
+    "category": "underground",
+    "profile": "cave",
+    "sky": "17282c",
+    "horizon": "4c5e59",
+    "silhouette": "283b3a",
+    "soil": 121,
+    "stone": 122,
+    "material": 123,
+    "trees": false,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/fungal-caves-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/fungal-caves-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/fungal-caves-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/fungal-caves-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/fungal-caves-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/fungal-caves-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 121,
+        "name": "Fungal loam",
+        "texture": "res://Art-work/BiomeExpansion/Exported/fungal-caves-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/fungal-caves-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/fungal-caves-surface-block-24.png"
+      },
+      {
+        "id": 122,
+        "name": "Fungal stone",
+        "texture": "res://Art-work/BiomeExpansion/Exported/fungal-caves-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/fungal-caves-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 123,
+        "name": "Fungal fiber",
+        "texture": "res://Art-work/BiomeExpansion/Exported/fungal-caves-material-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/fungal-caves-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.75,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "frozen_caves",
+    "name": "Frozen caves",
+    "category": "underground",
+    "profile": "cave",
+    "sky": "192c43",
+    "horizon": "668696",
+    "silhouette": "344f67",
+    "soil": 124,
+    "stone": 125,
+    "material": 126,
+    "trees": false,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/frozen-caves-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/frozen-caves-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/frozen-caves-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/frozen-caves-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/frozen-caves-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/frozen-caves-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 124,
+        "name": "Frozen gravel",
+        "texture": "res://Art-work/BiomeExpansion/Exported/frozen-caves-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/frozen-caves-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/frozen-caves-surface-block-24.png"
+      },
+      {
+        "id": 125,
+        "name": "Frozen rock",
+        "texture": "res://Art-work/BiomeExpansion/Exported/frozen-caves-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/frozen-caves-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 126,
+        "name": "Cave ice",
+        "texture": "res://Art-work/BiomeExpansion/Exported/frozen-caves-material-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/frozen-caves-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.75,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "magma_caverns",
+    "name": "Magma caverns",
+    "category": "underground",
+    "profile": "cave",
+    "sky": "241b24",
+    "horizon": "653d36",
+    "silhouette": "3b2630",
+    "soil": 127,
+    "stone": 128,
+    "material": 129,
+    "trees": false,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/magma-caverns-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/magma-caverns-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/magma-caverns-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/magma-caverns-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/magma-caverns-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/magma-caverns-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 127,
+        "name": "Cinder",
+        "texture": "res://Art-work/BiomeExpansion/Exported/magma-caverns-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/magma-caverns-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/magma-caverns-surface-block-24.png"
+      },
+      {
+        "id": 128,
+        "name": "Magma basalt",
+        "texture": "res://Art-work/BiomeExpansion/Exported/magma-caverns-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/magma-caverns-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 129,
+        "name": "Ember obsidian",
+        "texture": "res://Art-work/BiomeExpansion/Exported/magma-caverns-material-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/magma-caverns-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.75,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "shattered_islands",
+    "name": "Shattered islands",
+    "category": "fantasy",
+    "profile": "shattered",
+    "sky": "4c6e8a",
+    "horizon": "cad3bc",
+    "silhouette": "7c9b99",
+    "soil": 130,
+    "stone": 131,
+    "material": 132,
+    "trees": true,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/shattered-islands-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/shattered-islands-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/shattered-islands-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/shattered-islands-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/shattered-islands-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/shattered-islands-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 130,
+        "name": "Sky soil",
+        "texture": "res://Art-work/BiomeExpansion/Exported/shattered-islands-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/shattered-islands-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/shattered-islands-surface-block-24.png"
+      },
+      {
+        "id": 131,
+        "name": "Fractured stone",
+        "texture": "res://Art-work/BiomeExpansion/Exported/shattered-islands-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/shattered-islands-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 132,
+        "name": "Sky wood",
+        "texture": "res://Art-work/BiomeExpansion/Exported/shattered-islands-wood-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/shattered-islands-wood-block-24.png",
+        "wood": true,
+        "seconds": 0.4,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "enchanted_forest",
+    "name": "Enchanted forest",
+    "category": "fantasy",
+    "profile": "woodland",
+    "sky": "202d48",
+    "horizon": "717fa0",
+    "silhouette": "3e5365",
+    "soil": 133,
+    "stone": 134,
+    "material": 135,
+    "trees": true,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/enchanted-forest-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/enchanted-forest-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/enchanted-forest-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/enchanted-forest-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/enchanted-forest-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/enchanted-forest-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 133,
+        "name": "Enchanted loam",
+        "texture": "res://Art-work/BiomeExpansion/Exported/enchanted-forest-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/enchanted-forest-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/enchanted-forest-surface-block-24.png"
+      },
+      {
+        "id": 134,
+        "name": "Enchanted stone",
+        "texture": "res://Art-work/BiomeExpansion/Exported/enchanted-forest-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/enchanted-forest-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 135,
+        "name": "Silver wood",
+        "texture": "res://Art-work/BiomeExpansion/Exported/enchanted-forest-wood-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/enchanted-forest-wood-block-24.png",
+        "wood": true,
+        "seconds": 0.4,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "corrupted_wilderness",
+    "name": "Corrupted wilderness",
+    "category": "fantasy",
+    "profile": "woodland",
+    "sky": "272038",
+    "horizon": "777761",
+    "silhouette": "493e50",
+    "soil": 136,
+    "stone": 137,
+    "material": 138,
+    "trees": true,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 136,
+        "name": "Tainted soil",
+        "texture": "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-surface-block-24.png"
+      },
+      {
+        "id": 137,
+        "name": "Corrupted stone",
+        "texture": "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 138,
+        "name": "Twisted wood",
+        "texture": "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-wood-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/corrupted-wilderness-wood-block-24.png",
+        "wood": true,
+        "seconds": 0.4,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "living_biome",
+    "name": "Flesh / living biome",
+    "category": "fantasy",
+    "profile": "woodland",
+    "sky": "321f2b",
+    "horizon": "9c6b61",
+    "silhouette": "5e343f",
+    "soil": 139,
+    "stone": 140,
+    "material": 141,
+    "trees": false,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/living-biome-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/living-biome-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/living-biome-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/living-biome-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/living-biome-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/living-biome-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 139,
+        "name": "Living tissue",
+        "texture": "res://Art-work/BiomeExpansion/Exported/living-biome-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/living-biome-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/living-biome-surface-block-24.png"
+      },
+      {
+        "id": 140,
+        "name": "Calcified bone",
+        "texture": "res://Art-work/BiomeExpansion/Exported/living-biome-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/living-biome-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 141,
+        "name": "Sinew",
+        "texture": "res://Art-work/BiomeExpansion/Exported/living-biome-material-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/living-biome-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.75,
+        "surface": ""
+      }
+    ]
+  },
+  {
+    "id": "voidlands",
+    "name": "Voidlands",
+    "category": "fantasy",
+    "profile": "shattered",
+    "sky": "121524",
+    "horizon": "55536c",
+    "silhouette": "2c2c42",
+    "soil": 142,
+    "stone": 143,
+    "material": 144,
+    "trees": false,
+    "decorations": [
+      "res://Art-work/BiomeExpansion/Exported/voidlands-canopy-formation-24.png",
+      "res://Art-work/BiomeExpansion/Exported/voidlands-small-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/voidlands-tall-decoration-24.png",
+      "res://Art-work/BiomeExpansion/Exported/voidlands-hanging-decoration-24.png"
+    ],
+    "liquid": "res://Art-work/BiomeExpansion/Exported/voidlands-liquid-body-24.png",
+    "liquidSurface": "res://Art-work/BiomeExpansion/Exported/voidlands-liquid-surface-24.png",
+    "materials": [
+      {
+        "id": 142,
+        "name": "Void dust",
+        "texture": "res://Art-work/BiomeExpansion/Exported/voidlands-soil-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/voidlands-soil-background-24.png",
+        "wood": false,
+        "seconds": 0.32,
+        "surface": "res://Art-work/BiomeExpansion/Exported/voidlands-surface-block-24.png"
+      },
+      {
+        "id": 143,
+        "name": "Void stone",
+        "texture": "res://Art-work/BiomeExpansion/Exported/voidlands-stone-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/voidlands-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.65,
+        "surface": ""
+      },
+      {
+        "id": 144,
+        "name": "Fissured mineral",
+        "texture": "res://Art-work/BiomeExpansion/Exported/voidlands-material-block-24.png",
+        "wall": "res://Art-work/BiomeExpansion/Exported/voidlands-stone-background-24.png",
+        "wood": false,
+        "seconds": 0.75,
+        "surface": ""
+      }
+    ]
+  }
+]

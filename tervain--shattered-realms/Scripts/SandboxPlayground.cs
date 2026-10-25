@@ -36,12 +36,15 @@ public partial class SandboxPlayground : Node2D
         BindMouse("use_secondary", MouseButton.Right);
         _player = GetNode<Player>("Player");
         _world = GetNode<BlockWorld>("World");
+        GetNode<Camera2D>("Player/Camera2D").LimitRight = BlockWorld.Width * BlockWorld.TileSize;
         _world.MaterialReleased += (position, material) => AddChild(new MaterialDrop
             { Kind = material, Position = position, Player = _player, Inventory = _inventory });
         _enemy = GetNode<Enemy>("TrainingCreature");
         SelectSlot(0);
-        _hud = new SandboxHud { SlotSelected = SelectSlot };
+        _hud = new SandboxHud { SlotSelected = SelectSlot, BiomeSelected = TravelToBiome };
         AddChild(_hud);
+        if (HasArgument("--biome-test")) CallDeferred(MethodName.RunBiomeTests);
+        if (HasArgument("--biome-previews")) CallDeferred(MethodName.SaveBiomePreviews);
         RenderingServer.SetDefaultClearColor(new Color("182f37"));
         if (HasArgument("--vegetation-test")) CallDeferred(MethodName.RunVegetationTests);
         if (HasArgument("--ctrl-mining-test")) CallDeferred(MethodName.RunCtrlMiningTests);
@@ -81,7 +84,7 @@ public partial class SandboxPlayground : Node2D
         _selected = Mathf.PosMod(slot, EquipmentRules.SlotCount);
         _miningCell = null;
         _mineElapsed = 0;
-        _player.Equip((EquipmentKind)_selected);
+        _player.Equip(EquipmentRules.AtSlot(_selected));
     }
 
     public override void _UnhandledInput(InputEvent input)
@@ -91,6 +94,8 @@ public partial class SandboxPlayground : Node2D
             Key code = key.PhysicalKeycode != Key.None ? key.PhysicalKeycode : key.Keycode;
             if (code >= Key.Key1 && code <= Key.Key9)
             { SelectSlot((int)(code - Key.Key1)); GetViewport().SetInputAsHandled(); }
+            if (code is Key.Pageup or Key.Pagedown)
+            { TravelToBiome(Mathf.PosMod(_world.BiomeAt(_player.Position) + (code == Key.Pagedown ? 1 : -1), _world.BiomeCount)); GetViewport().SetInputAsHandled(); }
         }
         if (input is InputEventKey { Pressed: true, Echo: false } extra)
         {
@@ -100,8 +105,8 @@ public partial class SandboxPlayground : Node2D
         }
         if (input is InputEventMouseButton { Pressed: true } mouse)
         {
-            if (mouse.ButtonIndex == MouseButton.WheelUp) SelectSlot(_selected - 1);
-            if (mouse.ButtonIndex == MouseButton.WheelDown) SelectSlot(_selected + 1);
+            if (mouse.ButtonIndex == MouseButton.WheelUp) SelectNextAvailableSlot(-1);
+            if (mouse.ButtonIndex == MouseButton.WheelDown) SelectNextAvailableSlot(1);
         }
     }
 
@@ -112,7 +117,7 @@ public partial class SandboxPlayground : Node2D
         _placeCooldown = Mathf.Max(0, _placeCooldown - dt);
         Vector2I cell = BlockWorld.CellAt(_testTarget ?? GetGlobalMousePosition());
         bool overUi = _testTarget == null && (GetViewport().GuiGetHoveredControl() != null ||
-            GetViewport().GetMousePosition().Y < 114 || GetViewport().GetMousePosition().Y > GetViewportRect().Size.Y - 166);
+            GetViewport().GetMousePosition().Y < 114 || GetViewport().GetMousePosition().Y > GetViewportRect().Size.Y - 142);
         EquipmentKind item = _player.EquippedItem;
         bool miningTool = EquipmentRules.IsMiningTool(item);
         bool building = EquipmentRules.TryGetMaterial(item, out BlockKind buildingMaterial);
@@ -144,10 +149,10 @@ public partial class SandboxPlayground : Node2D
         {
             string instruction = building ? "This space is occupied."
                 : block == BlockKind.Bedrock ? "This foundation cannot be mined."
-                : !EquipmentRules.CanMine(item, block) ? block is BlockKind.Wood or BlockKind.Cactus or BlockKind.TundraWood ? "Requires axe (2)." : "Requires pickaxe (1)."
+                : !EquipmentRules.CanMine(item, block) ? EquipmentRules.CanMine(EquipmentKind.Axe, block) ? "Requires axe (2)." : "Requires pickaxe (1)."
                 : valid ? mineForward ? "CTRL  /  Mining the closest block ahead." : "Hold left mouse or Ctrl to harvest."
                 : $"Move closer; tool reach is {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks through terrain.";
-            target = $"{(block == BlockKind.IronOre ? "IRON ORE" : block.ToString().ToUpperInvariant())}  /  {instruction}";
+            target = $"{EquipmentRules.BlockName(block).ToUpperInvariant()}  /  {instruction}";
         }
         else if (!overUi && _world.HasBush(cell))
             target = cell.X >= BlockWorld.TundraStartColumn ? "TUNDRA SHRUB  /  Hit with any tool or weapon. No drops." : "DEAD BUSH  /  Hit with any tool or weapon. No drops.";
@@ -175,7 +180,7 @@ public partial class SandboxPlayground : Node2D
         }
         _world.MiningProgress = _miningCell != null ? Mathf.Clamp(_mineElapsed / BlockWorld.MineDuration(block), 0, 1) : 0;
         _world.QueueRedraw();
-        _hud.Refresh(_player, _enemy, _inventory, _selected, target);
+        _hud.Refresh(_player, _enemy, _inventory, _selected, target, _world.BiomeAt(_player.Position));
         if (Input.IsActionJustPressed("restart")) GetTree().ReloadCurrentScene();
         if (Input.IsActionJustPressed("combat_playground"))
         {
@@ -322,8 +327,9 @@ public partial class SandboxPlayground : Node2D
             Check(BlockWorld.TileSize == 24 && _player.BodyBounds.Size.Y == 68
                 && BlockWorld.TileSize * 3 - _player.BodyBounds.Size.Y == 4,
                 "The 68px player has four pixels of clearance in a three-block tunnel.");
-            Check(BlockWorld.Width * BlockWorld.TileSize == 3072 && BlockWorld.Height * BlockWorld.TileSize == 768,
-                "The expanded world spans 3072 by 768 pixels.");
+            Check(BlockWorld.Width == BlockWorld.LegacyWidth + (BiomeCatalog.All.Length - 3) * BlockWorld.BiomeWidth
+                && BlockWorld.Height * BlockWorld.TileSize == 768,
+                "The expanded world includes every biome and preserves its original vertical scale.");
             float newSpeed = _player.JumpSpeed;
             float newHeight = await MeasureJump(newSpeed);
             Check(Mathf.Abs(newHeight - 123.8f) < 1,
@@ -339,7 +345,7 @@ public partial class SandboxPlayground : Node2D
             SelectSlot(EquipmentRules.SlotCount - 1);
             GetViewport().PushInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelDown, Pressed = true });
             await Frames(2);
-            Check(_player.EquippedItem == EquipmentKind.Pickaxe, "Mouse wheel selection wraps across all fifteen equipment slots.");
+            Check(_player.EquippedItem == EquipmentKind.Pickaxe, "Mouse wheel selection wraps through the available equipment slots.");
             int blocksBeforeSwinging = _world.BlockCount;
             for (int slot = 0; slot < 2; slot++)
             {
@@ -576,7 +582,7 @@ public partial class SandboxPlayground : Node2D
 
     private async Task TestTundra()
     {
-        Check(BlockWorld.Width == 128 && GetNode<Camera2D>("Player/Camera2D").LimitRight == BlockWorld.Width * BlockWorld.TileSize,
+        Check(BlockWorld.Width >= BlockWorld.LegacyWidth && GetNode<Camera2D>("Player/Camera2D").LimitRight == BlockWorld.Width * BlockWorld.TileSize,
             "The expanded world and camera include the tundra beyond the desert.");
         foreach (var (cell, expected) in new[] { (new Vector2I(98, 19), BlockKind.Snow),
             (new Vector2I(98, 21), BlockKind.FrozenEarth), (new Vector2I(98, 24), BlockKind.Ice),

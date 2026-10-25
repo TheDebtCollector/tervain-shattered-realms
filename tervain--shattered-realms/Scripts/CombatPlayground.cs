@@ -28,8 +28,7 @@ public partial class CombatPlayground : Node2D
         if (Array.Exists(OS.GetCmdlineUserArgs(), arg => arg == "--sandbox-test"))
         {
             Check(InputMap.ActionHasEvent("attack", new InputEventMouseButton { ButtonIndex = MouseButton.Left }), "Combat room restores left-click attack after scene transition.");
-            GD.Print("SANDBOX TESTS PASSED.");
-            GetTree().Quit();
+            CallDeferred(MethodName.FinishSandboxVerification);
         }
         if (Array.Exists(OS.GetCmdlineUserArgs(), arg => arg == "--prototype-preview"))
             CallDeferred(MethodName.SavePreview);
@@ -43,6 +42,15 @@ public partial class CombatPlayground : Node2D
             }
             else CallDeferred(MethodName.RunPrototypeTests);
         }
+    }
+
+    private async void FinishSandboxVerification()
+    {
+        // Scene changes free the previous world's physics objects at the end of the frame.
+        // Let that teardown finish before the automated cross-scene check exits the engine.
+        await Frames(4);
+        GD.Print("SANDBOX TESTS PASSED.");
+        GetTree().Quit();
     }
 
     private static void ConfigureInput()

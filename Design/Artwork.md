@@ -50,3 +50,7 @@ All eight winter sources are integrated: snow and ice foreground/background tile
 ## Biome expansion art — 2026-10-25
 
 The fifteen new biomes now have a separate environmental art package with 180 native 24×24 tiles, matching editable Aseprite sources, and previews. See [[Biome Artwork]] for the catalog, validation, and editing workflow. Integration into the game is pending.
+
+## Biome integration follow-up — 2026-10-25
+
+All twenty biomes now have playable authored regions, dedicated materials and walls, vegetation/formations, pools, and matching scenery. The frozen-cave sheet was corrected after in-game inspection exposed repeat lines. See [[Biome Integration]] for controls, current limits, and validation.

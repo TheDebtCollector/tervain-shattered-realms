@@ -11,6 +11,11 @@ public static class BlockArt
 
     public static void DrawWall(CanvasItem canvas, Rect2 rect, BlockKind kind)
     {
+        if (BiomeCatalog.Materials.TryGetValue(kind, out BiomeMaterial? material))
+        {
+            BiomeArt.DrawWall(canvas, rect, material);
+            return;
+        }
         // There is no separate wood-wall tile yet; keep a recessed version of the trunk.
         if (kind is BlockKind.Wood or BlockKind.TundraWood)
         {
@@ -32,6 +37,7 @@ public static class BlockArt
 
     public static Texture2D? Texture(BlockKind kind)
     {
+        if (BiomeCatalog.Materials.TryGetValue(kind, out BiomeMaterial? material)) return BiomeArt.Texture(material.Texture);
         string? name = kind switch
         {
             BlockKind.Dirt => "dirt-block", BlockKind.Stone => "stone-block",

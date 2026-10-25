@@ -28,7 +28,7 @@ public partial class SandboxHud : CanvasLayer
         }
         Text("TERVAIN / BUILD · EXPLORE · FIGHT", new Vector2(28, 14), 13, "94bcb0");
         Text("A place to call home", new Vector2(26, 33), 28, "f1e5cb");
-        Text("1 Pickaxe: dirt / stone   2 Axe: wood   3 Sword   ·   All three can fight", new Vector2(28, 77), 16, "b5c7bd");
+        Text("1 Pickaxe: dirt / stone / ore   2 Axe: wood   3 Sword   ·   All three can fight", new Vector2(28, 77), 16, "b5c7bd");
         _status = Text("", new Vector2(825, 27), 16, "b3e9d8");
         _enemyStatus = Text("", new Vector2(825, 83), 12, "f4c396");
         _target = Text("", new Vector2(28, 124), 17, "e4e3c8");
@@ -36,17 +36,18 @@ public partial class SandboxHud : CanvasLayer
 
         var footer = new ColorRect { Color = new Color(0.05f, 0.11f, 0.14f, 0.94f), MouseFilter = Control.MouseFilterEnum.Ignore };
         footer.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
-        footer.OffsetTop = -142;
+        footer.OffsetTop = -166;
         root.AddChild(footer);
         var hotbar = new HBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
         hotbar.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterBottom);
         float halfWidth = (EquipmentRules.SlotCount * 115 + (EquipmentRules.SlotCount - 1) * 8) / 2f;
         hotbar.OffsetLeft = -halfWidth;
         hotbar.OffsetRight = halfWidth;
-        hotbar.OffsetTop = -132;
+        hotbar.OffsetTop = -158;
         hotbar.OffsetBottom = -62;
         hotbar.AddThemeConstantOverride("separation", 8);
         root.AddChild(hotbar);
+        root.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
         for (int i = 0; i < EquipmentRules.SlotCount; i++)
         {
             int slot = i;
@@ -58,6 +59,13 @@ public partial class SandboxHud : CanvasLayer
                     : i == 2 ? "Left click or J to swing the equipped sword."
                     : "Left or right click to place the selected material."
             };
+            if (EquipmentRules.TryGetMaterial((EquipmentKind)i, out BlockKind material))
+            {
+                button.Icon = BlockArt.Texture(material);
+                button.IconAlignment = HorizontalAlignment.Center;
+                button.VerticalIconAlignment = VerticalAlignment.Top;
+                button.AddThemeConstantOverride("icon_max_width", 24);
+            }
             button.AddThemeFontSizeOverride("font_size", 15);
             button.AddThemeStyleboxOverride("normal", Box("263e43", "46615e", 1));
             button.AddThemeStyleboxOverride("hover", Box("344e50", "91b5a4", 1));
@@ -67,7 +75,7 @@ public partial class SandboxHud : CanvasLayer
             _slots[i] = button;
             hotbar.AddChild(button);
         }
-        var controls = Text("A/D Move   SPACE Jump   SHIFT Dodge   1–6 / Wheel Select   LMB Use   J Swing   RMB Build",
+        var controls = Text("A/D Move   SPACE Jump   SHIFT Dodge   1–7 / Wheel Select   LMB Use   J Swing   RMB Build",
             Vector2.Zero, 15, "dfddc8");
         controls.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
         controls.OffsetLeft = 28; controls.OffsetTop = -52; controls.OffsetRight = -20; controls.OffsetBottom = -28;
@@ -94,7 +102,7 @@ public partial class SandboxHud : CanvasLayer
             EquipmentKind item = (EquipmentKind)i;
             string detail = EquipmentRules.TryGetMaterial(item, out BlockKind material)
                 ? inventory.Count(material).ToString() : EquipmentRules.Purpose(item);
-            _slots[i].Text = $"{i + 1}  {item.ToString().ToUpperInvariant()}\n{detail}";
+            _slots[i].Text = $"{i + 1}  {(item == EquipmentKind.IronOre ? "IRON ORE" : item.ToString().ToUpperInvariant())}\n{detail}";
             _slots[i].SetPressedNoSignal(i == selected);
         }
     }

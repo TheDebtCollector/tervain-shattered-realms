@@ -33,6 +33,7 @@ public partial class Player : CharacterBody2D
 
     public override void _Ready()
     {
+        TextureFilter = TextureFilterEnum.Nearest;
         CollisionLayer = 2;
         CollisionMask = 1;
         AddChild(new CollisionShape2D
@@ -174,8 +175,7 @@ public partial class Player : CharacterBody2D
             default:
                 if (EquipmentRules.TryGetMaterial(EquippedItem, out BlockKind block))
                 {
-                    DrawRect(new Rect2(0, -16, 16, 16), BlockWorld.Colour(block));
-                    DrawRect(new Rect2(0, -16, 16, 16), new Color("e6d8ba"), false, 1);
+                    BlockArt.Draw(this, new Rect2(0, -24, 24, 24), block);
                 }
                 break;
         }

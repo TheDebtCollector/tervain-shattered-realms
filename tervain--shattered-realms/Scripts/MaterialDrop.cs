@@ -9,6 +9,8 @@ public partial class MaterialDrop : Node2D
     public SandboxInventory Inventory { get; init; } = null!;
     private float _age;
     private bool _collected;
+    public override void _Ready() => TextureFilter = TextureFilterEnum.Nearest;
+
     public override void _PhysicsProcess(double delta)
     {
         _age += (float)delta;
@@ -28,7 +30,7 @@ public partial class MaterialDrop : Node2D
     {
         float bob = Mathf.Sin(_age * 5) * 2;
         DrawCircle(new Vector2(0, bob), 10, new Color(0.75f, 0.95f, 0.8f, 0.12f));
-        DrawRect(new Rect2(-6, -6 + bob, 12, 12), BlockWorld.Colour(Kind));
+        BlockArt.Draw(this, new Rect2(-6, -6 + bob, 12, 12), Kind);
         DrawRect(new Rect2(-6, -6 + bob, 12, 12), new Color("e4d7b8"), false, 1);
     }
 }

@@ -51,7 +51,7 @@ public partial class SandboxPlayground : Node2D
             }
             else CallDeferred(MethodName.RunSandboxTests);
         }
-        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview") || HasArgument("--equipment-preview"))
+        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview") || HasArgument("--equipment-preview") || HasArgument("--ore-preview"))
             CallDeferred(MethodName.SavePreview);
     }
 
@@ -82,7 +82,7 @@ public partial class SandboxPlayground : Node2D
         if (input is InputEventKey { Pressed: true, Echo: false } key)
         {
             Key code = key.PhysicalKeycode != Key.None ? key.PhysicalKeycode : key.Keycode;
-            if (code >= Key.Key1 && code <= Key.Key6)
+            if (code >= Key.Key1 && code <= Key.Key7)
             { SelectSlot((int)(code - Key.Key1)); GetViewport().SetInputAsHandled(); }
         }
         if (input is InputEventMouseButton { Pressed: true } mouse)
@@ -99,7 +99,7 @@ public partial class SandboxPlayground : Node2D
         _placeCooldown = Mathf.Max(0, _placeCooldown - dt);
         Vector2I cell = BlockWorld.CellAt(_testTarget ?? GetGlobalMousePosition());
         bool overUi = _testTarget == null && (GetViewport().GuiGetHoveredControl() != null ||
-            GetViewport().GetMousePosition().Y < 114 || GetViewport().GetMousePosition().Y > GetViewportRect().Size.Y - 142);
+            GetViewport().GetMousePosition().Y < 114 || GetViewport().GetMousePosition().Y > GetViewportRect().Size.Y - 166);
         EquipmentKind item = _player.EquippedItem;
         bool miningTool = EquipmentRules.IsMiningTool(item);
         bool building = EquipmentRules.TryGetMaterial(item, out BlockKind buildingMaterial);
@@ -119,7 +119,7 @@ public partial class SandboxPlayground : Node2D
         _world.HighlightValid = valid;
         bool hasBlock = _world.TryGetBlock(cell, out BlockKind block);
         string target = sword ? "SWORD  /  Left click or J to attack. Shift to dodge."
-            : building ? $"{item.ToString().ToUpperInvariant()}  /  Hold left or right mouse to build."
+            : building ? $"{(item == EquipmentKind.IronOre ? "IRON ORE" : item.ToString().ToUpperInvariant())}  /  Hold left or right mouse to build."
             : $"{item.ToString().ToUpperInvariant()}  /  Left click or J to swing; hold left mouse to harvest {EquipmentRules.Purpose(item).ToLowerInvariant()}.";
         if (!overUi && hasBlock && (miningTool || building))
         {
@@ -128,7 +128,7 @@ public partial class SandboxPlayground : Node2D
                 : !EquipmentRules.CanMine(item, block) ? block == BlockKind.Wood ? "Requires axe (2)." : "Requires pickaxe (1)."
                 : valid ? "Hold left mouse to harvest."
                 : $"Move closer; tool reach is {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks through terrain.";
-            target = $"{block.ToString().ToUpperInvariant()}  /  {instruction}";
+            target = $"{(block == BlockKind.IronOre ? "IRON ORE" : block.ToString().ToUpperInvariant())}  /  {instruction}";
         }
         else if (miningTool && !overUi && _world.HasWall(cell))
             target = "BACKGROUND WALL  /  Select a building material to attach a block here.";
@@ -190,6 +190,14 @@ public partial class SandboxPlayground : Node2D
             return;
         }
         bool wallPreview = HasArgument("--wall-preview");
+        if (HasArgument("--ore-preview"))
+        {
+            _enemy.ProcessMode = ProcessModeEnum.Disabled;
+            _player.Position = new Vector2(52.5f * BlockWorld.TileSize, BlockWorld.CaveBottomRow * BlockWorld.TileSize);
+            _player.Velocity = Vector2.Zero;
+            _inventory.Add(BlockKind.IronOre);
+            SelectSlot(6);
+        }
         if (wallPreview)
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
@@ -206,7 +214,7 @@ public partial class SandboxPlayground : Node2D
         }
         await Frames(30);
         await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
-        Error result = GetViewport().GetTexture().GetImage().SavePng(wallPreview ? "res://.godot/wall-preview.png" : "res://.godot/sandbox-preview.png");
+        Error result = GetViewport().GetTexture().GetImage().SavePng(HasArgument("--ore-preview") ? "res://.godot/ore-preview.png" : wallPreview ? "res://.godot/wall-preview.png" : "res://.godot/sandbox-preview.png");
         GD.Print("Sandbox preview: " + result);
         GetTree().Quit(result == Error.Ok ? 0 : 1);
     }
@@ -264,13 +272,13 @@ public partial class SandboxPlayground : Node2D
 
             Vector2I minedCell = new(15, BlockWorld.SurfaceRow);
             Check(_player.EquippedItem == EquipmentKind.Pickaxe, "The sandbox starts with the pickaxe equipped.");
-            GetViewport().PushInput(new InputEventKey { PhysicalKeycode = Key.Key6, Pressed = true });
+            GetViewport().PushInput(new InputEventKey { PhysicalKeycode = Key.Key7, Pressed = true });
             await Frames(2);
-            Check(_player.EquippedItem == EquipmentKind.Wood, "The sixth hotbar slot can be selected with the keyboard.");
-            GetViewport().PushInput(new InputEventKey { PhysicalKeycode = Key.Key6, Pressed = false });
+            Check(_player.EquippedItem == EquipmentKind.IronOre, "The seventh hotbar slot can be selected with the keyboard.");
+            GetViewport().PushInput(new InputEventKey { PhysicalKeycode = Key.Key7, Pressed = false });
             GetViewport().PushInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelDown, Pressed = true });
             await Frames(2);
-            Check(_player.EquippedItem == EquipmentKind.Pickaxe, "Mouse wheel selection wraps across all six equipment slots.");
+            Check(_player.EquippedItem == EquipmentKind.Pickaxe, "Mouse wheel selection wraps across all seven equipment slots.");
             int blocksBeforeSwinging = _world.BlockCount;
             for (int slot = 0; slot < 2; slot++)
             {
@@ -377,10 +385,41 @@ public partial class SandboxPlayground : Node2D
                 "Underground exploration stays clear of the HUD.");
             await TestBackgroundWalls();
             await TestCombinedSystems();
+            await TestIronOre();
             _testingRestart = true;
             Check(GetTree().ReloadCurrentScene() == Error.Ok, "Sandbox can restart.");
         }
         catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async Task TestIronOre()
+    {
+        _player.Position = new Vector2(52.5f * BlockWorld.TileSize, BlockWorld.CaveBottomRow * BlockWorld.TileSize);
+        _player.Velocity = Vector2.Zero;
+        await Frames(5);
+        Vector2I ore = new(55, 26);
+        Check(_world.TryGetBlock(ore, out BlockKind kind) && kind == BlockKind.IronOre && _world.HasWall(ore),
+            "An iron ore deposit generates beside the cave with a matching wall.");
+        SelectSlot(1);
+        await UseTool(ore, 55);
+        Check(_world.HasBlock(ore) && _inventory.Count(BlockKind.IronOre) == 0, "The axe cannot harvest iron ore.");
+        SelectSlot(0);
+        await UseTool(ore, 20);
+        Check(_world.HasBlock(ore), "Iron ore requires a sustained pickaxe harvest.");
+        await UseTool(ore, 52);
+        await Frames(20);
+        Check(!_world.HasBlock(ore) && _world.HasWall(ore) && _inventory.Count(BlockKind.IronOre) == 1,
+            "Mining iron ore leaves its scenery wall and collects one ore block.");
+        SelectSlot(6);
+        Vector2I placement = new(54, 27);
+        await UseTool(placement, 3);
+        Check(_world.TryGetBlock(placement, out kind) && kind == BlockKind.IronOre && _inventory.Count(BlockKind.IronOre) == 0,
+            "Slot seven places the iron ore block and spends its own stack.");
+        SelectSlot(0);
+        await UseTool(placement, 52);
+        await Frames(20);
+        Check(!_world.HasBlock(placement) && _inventory.Count(BlockKind.IronOre) == 1,
+            "Placed iron ore can be mined and recovered.");
     }
 
     private async Task TestBackgroundWalls()

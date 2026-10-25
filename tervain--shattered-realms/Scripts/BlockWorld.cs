@@ -32,18 +32,21 @@ public partial class BlockWorld : Node2D
     public bool HasWall(Vector2I cell) => _walls.ContainsKey(cell);
     public static Color Colour(BlockKind kind) => new(kind switch
     {
-        BlockKind.Dirt => "947356", BlockKind.Stone => "7c9093", BlockKind.Wood => "bd8c56", _ => "36434b"
+        BlockKind.Dirt => "947356", BlockKind.Stone => "7c9093", BlockKind.Wood => "bd8c56", BlockKind.IronOre => "b58a6a", _ => "36434b"
     });
     public static float MineDuration(BlockKind kind) => kind switch
-    { BlockKind.Dirt => 0.28f, BlockKind.Stone => 0.6f, BlockKind.Wood => 0.4f, _ => float.PositiveInfinity };
+    { BlockKind.Dirt => 0.28f, BlockKind.Stone => 0.6f, BlockKind.IronOre => 0.8f, BlockKind.Wood => 0.4f, _ => float.PositiveInfinity };
 
     public override void _Ready()
     {
+        TextureFilter = TextureFilterEnum.Nearest;
         for (int x = 0; x < Width; x++)
             for (int y = SurfaceRow; y < Height; y++)
             {
                 if (y >= 24 && y < CaveBottomRow && x is >= 39 and <= 54) continue;
-                SetBlock(new Vector2I(x, y), y == Height - 1 ? BlockKind.Bedrock : y < 23 ? BlockKind.Dirt : BlockKind.Stone);
+                BlockKind kind = y == Height - 1 ? BlockKind.Bedrock : y < 23 ? BlockKind.Dirt : BlockKind.Stone;
+                if (x is >= 55 and <= 56 && y is >= 25 and <= 26) kind = BlockKind.IronOre;
+                SetBlock(new Vector2I(x, y), kind);
             }
         foreach (int x in TreeColumns)
             for (int y = 13; y < SurfaceRow; y++) SetBlock(new Vector2I(x, y), BlockKind.Wood);
@@ -139,31 +142,14 @@ public partial class BlockWorld : Node2D
         {
             if (HasBlock(entry.Key)) continue; // Opaque foreground already covers this scenery.
             Rect2 rect = CellRect(entry.Key);
-            Color colour = Colour(entry.Value).Darkened(0.58f);
-            DrawRect(rect, colour);
-            DrawLine(rect.Position, rect.Position + new Vector2(TileSize, 0), colour.Lightened(0.08f), 1);
-            DrawLine(rect.Position, rect.Position + new Vector2(0, TileSize), colour.Darkened(0.15f), 1);
-            // Recessed seams distinguish scenery from the brighter foreground grid.
-            DrawLine(rect.Position + new Vector2(4, TileSize / 2f), rect.Position + new Vector2(TileSize - 4, TileSize / 2f), colour.Darkened(0.14f), 1);
+            BlockArt.Draw(this, rect, entry.Value, new Color(0.42f, 0.42f, 0.42f));
         }
         foreach (var entry in _blocks)
         {
             Rect2 rect = CellRect(entry.Key);
-            Color colour = Colour(entry.Value);
-            float tint = ((entry.Key.X * 7 + entry.Key.Y * 3) % 5 - 2) * 0.025f;
-            colour = colour.Lightened(tint);
-            DrawRect(rect, colour);
-            DrawLine(rect.Position, rect.Position + new Vector2(TileSize, 0), colour.Lightened(0.12f), 1);
-            DrawLine(rect.Position, rect.Position + new Vector2(0, TileSize), colour.Darkened(0.13f), 1);
+            BlockArt.Draw(this, rect, entry.Value);
             if (entry.Value == BlockKind.Dirt && !HasBlock(entry.Key + Vector2I.Up))
                 DrawRect(new Rect2(rect.Position, new Vector2(TileSize, 3)), new Color("8ca773"));
-            if (entry.Value == BlockKind.Wood)
-            {
-                DrawLine(rect.Position + new Vector2(TileSize * 0.28f, 3), rect.Position + new Vector2(TileSize * 0.28f, TileSize - 4), colour.Darkened(0.2f), 1);
-                DrawLine(rect.Position + new Vector2(TileSize * 0.72f, 6), rect.Position + new Vector2(TileSize * 0.72f, TileSize - 1), colour.Darkened(0.2f), 1);
-            }
-            if (entry.Value == BlockKind.Stone)
-                DrawLine(rect.Position + new Vector2(4, TileSize * 0.68f), rect.Position + new Vector2(TileSize * 0.6f, TileSize * 0.45f), colour.Darkened(0.2f), 1);
         }
         if (HighlightCell is Vector2I selected)
         {

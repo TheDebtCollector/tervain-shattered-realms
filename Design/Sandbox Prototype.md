@@ -30,9 +30,9 @@ Press **F5** in the Godot .NET project. The main scene is now `Scenes/SandboxPla
 | 1 | Select pickaxe |
 | 2 | Select axe |
 | 3 | Select sword |
-| 4 / 5 / 6 | Select dirt / stone / wood |
+| 4 / 5 / 6 / 7 | Select dirt / stone / wood / iron ore |
 | Mouse wheel or hotbar buttons | Change selection |
-| Hold left mouse with pickaxe | Repeat swings; mine dirt or stone when targeted |
+| Hold left mouse with pickaxe | Repeat swings; mine dirt, stone, or iron ore when targeted |
 | Hold left mouse with axe | Repeat swings; harvest wood when targeted |
 | Left mouse with sword | Melee attack |
 | Hold left or right mouse with material selected | Place the selected block |
@@ -57,11 +57,11 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 ## Implemented rules
 
 - Small authored terrain: 96 by 32 cells, with 24-pixel blocks, trees, surface stone, and an underground cavity. Physical world dimensions remain 2304 by 768 pixels.
-- Dirt, stone, and wood are mineable, collectible, and placeable. Each has its own stack in the hotbar.
+- Dirt, stone, wood, and iron ore are mineable, collectible, and placeable. Each has its own stack in the hotbar.
 - Pickaxe, axe, and sword are permanent starter equipment. The pickaxe is selected on spawn. Material stacks start empty.
-- Dirt takes 0.28 seconds to mine, wood 0.4 seconds, and stone 0.6 seconds.
+- Dirt takes 0.28 seconds to mine, wood 0.4 seconds, stone 0.6 seconds, and iron ore 0.8 seconds.
 - Changing the target or hotbar slot interrupts unfinished mining.
-- Mining reaches 192 pixels (8 blocks) from the player body centre and ignores intervening blocks. The correct equipped tool is also required: pickaxe for dirt/stone and axe for wood. Bedrock and background walls remain unmineable. Building reaches 160 pixels (about 6.7 blocks) and still requires a clear path.
+- Mining reaches 192 pixels (8 blocks) from the player body centre and ignores intervening blocks. The correct equipped tool is also required: pickaxe for dirt/stone/iron ore and axe for wood. Bedrock and background walls remain unmineable. Building reaches 160 pixels (about 6.7 blocks) and still requires a clear path.
 - Placed blocks need an adjacent foreground block or a background wall in the target cell. They cannot overlap the player or a living enemy.
 - Successful placement spends one item. Rejected placement spends nothing.
 - Blocks remain suspended if their support is later removed; structural collapse is outside this milestone.
@@ -78,9 +78,10 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 
 | File | Responsibility |
 | --- | --- |
+| `Scripts/BlockArt.cs` | Shared pixel-art textures for terrain, walls, drops, held blocks, and hotbar icons |
 | `Scripts/BlockWorld.cs` | Foreground terrain, generated background walls, collision, reach/visibility checks, mining, placement, target rendering |
 | `Scripts/SandboxInventory.cs` | Material stack counts and spending |
-| `Scripts/Equipment.cs` | Shared six-slot equipment mapping and tool/material rules |
+| `Scripts/Equipment.cs` | Shared seven-slot equipment mapping and tool/material rules |
 | `Scripts/MaterialDrop.cs` | Dropped material attraction and collection |
 | `Scripts/SandboxHud.cs` | Hotbar, counts, status, and controls |
 | `Scripts/SandboxPlayground.cs` | Tool selection, combat/tool priority, integration checks, and optional scene switching |
@@ -189,3 +190,10 @@ The developer clarified that pickaxe and axe should also hurt enemies and swing 
 - Equipment swapping and dodging cancel the previous swing. Material slots remain for construction.
 
 Godot checks passed for empty-air swings with both tools, repeated held swings, finishing after release, no terrain/material changes from air swings, exact 15-damage pickaxe and axe hits without harvesting, preserved 25-damage sword hits, and damaging a nearby enemy during an unfinished dirt harvest followed by successful material collection. Existing equipment, mining, background-wall, building, reset, and isolated sword-combat checks passed. C# compilation had no warnings or errors, and both free-air tool swings were rendered and inspected.
+
+
+## First block artwork — 2026-10-25
+
+The developer’s dirt, stone, wood, and iron ore Aseprite tiles now replace the corresponding placeholder blocks. The same art is used for darkened background walls, drops, held materials, and hotbar icons, with nearest filtering. Source documents and PNG exports are preserved in Git. See [[Artwork]] for the export workflow and verification.
+
+A four-block iron ore deposit sits beside the right edge of the underground cavity. The pickaxe harvests it in 0.8 seconds; it has its own collectible, placeable stack in the new seventh hotbar slot. Existing six slots retain their mappings. Ore crafting and smelting remain future work.

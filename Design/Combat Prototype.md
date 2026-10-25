@@ -103,6 +103,10 @@ The developer subsequently requested one extra block of jump height and a player
 
 The latest requested grid uses 24px blocks and a 72px player, exactly three blocks tall. Jump speed remains 606.3542 and full jump height remains approximately 123.8px. Run speed, gravity, dodge settings, and combat timings are preserved. Collision and melee coverage use the new player proportions. Mining reach is now 192px (eight blocks). See [[Sandbox Prototype]] for current values and validation.
 
-## Equipped sword requirement — 2026-10-25
+## Initial sword-only requirement (superseded) — 2026-10-25
 
 The main sandbox now requires the sword (slot 3) to deal melee damage. Left click and J both swing the selected sword. Pickaxe (1), axe (2), and materials (4–6) cannot attack enemies. Switching equipment cancels any pending sword swing. The isolated combat room starts with the sword equipped and keeps its original J/left-click controls. Combat timing and damage remain at the accepted values. See [[Sandbox Prototype]] for the current six-slot controls; this supersedes earlier notes about attacking from any hotbar slot.
+
+## Tool melee and free swings — 2026-10-25
+
+Pickaxe and axe now also swing and deal damage, as requested by the developer. Left click or J swings any of the three equipped weapons; holding left click repeats tool swings even in empty air. Pickaxe/axe damage is 15 per hit, while sword damage remains 25. Tool harvesting and melee can progress together. The shared swing timing and terrain obstruction rules are unchanged. This supersedes the earlier restriction that only swords can hurt enemies. See [[Sandbox Prototype]] for current controls and checks.

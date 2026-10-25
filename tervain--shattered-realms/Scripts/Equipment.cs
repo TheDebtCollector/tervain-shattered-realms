@@ -7,6 +7,7 @@ public static class EquipmentRules
 {
     public const int SlotCount = 6;
     public static bool IsMiningTool(EquipmentKind item) => item is EquipmentKind.Pickaxe or EquipmentKind.Axe;
+    public static bool CanSwing(EquipmentKind item) => IsMiningTool(item) || item == EquipmentKind.Sword;
     public static bool CanMine(EquipmentKind item, BlockKind block) => block switch
     {
         BlockKind.Dirt or BlockKind.Stone => item == EquipmentKind.Pickaxe,

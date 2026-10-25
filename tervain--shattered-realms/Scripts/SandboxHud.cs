@@ -28,7 +28,7 @@ public partial class SandboxHud : CanvasLayer
         }
         Text("TERVAIN / BUILD · EXPLORE · FIGHT", new Vector2(28, 14), 13, "94bcb0");
         Text("A place to call home", new Vector2(26, 33), 28, "f1e5cb");
-        Text("1 Pickaxe: dirt / stone   2 Axe: wood   3 Sword: combat", new Vector2(28, 77), 16, "b5c7bd");
+        Text("1 Pickaxe: dirt / stone   2 Axe: wood   3 Sword   ·   All three can fight", new Vector2(28, 77), 16, "b5c7bd");
         _status = Text("", new Vector2(825, 27), 16, "b3e9d8");
         _enemyStatus = Text("", new Vector2(825, 83), 12, "f4c396");
         _target = Text("", new Vector2(28, 124), 17, "e4e3c8");
@@ -54,7 +54,7 @@ public partial class SandboxHud : CanvasLayer
             {
                 CustomMinimumSize = new Vector2(115, 68), ToggleMode = true,
                 FocusMode = Control.FocusModeEnum.None,
-                TooltipText = i < 2 ? $"{EquipmentRules.Purpose((EquipmentKind)i)}. Hold left mouse to harvest within {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks."
+                TooltipText = i < 2 ? $"Left click or J to swing and damage enemies. Hold left mouse to harvest {EquipmentRules.Purpose((EquipmentKind)i).ToLowerInvariant()} within {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks."
                     : i == 2 ? "Left click or J to swing the equipped sword."
                     : "Left or right click to place the selected material."
             };
@@ -67,7 +67,7 @@ public partial class SandboxHud : CanvasLayer
             _slots[i] = button;
             hotbar.AddChild(button);
         }
-        var controls = Text("A/D Move   SPACE Jump   SHIFT Dodge   1–6 / Wheel Select   LMB Use   J Sword   RMB Build",
+        var controls = Text("A/D Move   SPACE Jump   SHIFT Dodge   1–6 / Wheel Select   LMB Use   J Swing   RMB Build",
             Vector2.Zero, 15, "dfddc8");
         controls.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
         controls.OffsetLeft = 28; controls.OffsetTop = -52; controls.OffsetRight = -20; controls.OffsetBottom = -28;

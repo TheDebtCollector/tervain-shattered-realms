@@ -26,14 +26,14 @@ Press **F5** in the Godot .NET project. The main scene is now `Scenes/SandboxPla
 | A / D or Left / Right | Move |
 | Space, W, or Up | Jump |
 | Shift | Dodge |
-| J | Swing the sword when it is equipped |
+| J | Swing the equipped pickaxe, axe, or sword |
 | 1 | Select pickaxe |
 | 2 | Select axe |
 | 3 | Select sword |
 | 4 / 5 / 6 | Select dirt / stone / wood |
 | Mouse wheel or hotbar buttons | Change selection |
-| Hold left mouse with pickaxe | Mine dirt or stone |
-| Hold left mouse with axe | Harvest wood |
+| Hold left mouse with pickaxe | Repeat swings; mine dirt or stone when targeted |
+| Hold left mouse with axe | Repeat swings; harvest wood when targeted |
 | Left mouse with sword | Melee attack |
 | Hold left or right mouse with material selected | Place the selected block |
 | F2 | Enter the combat playground |
@@ -69,7 +69,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 - The camera follows exploration above and below the initial surface.
 - Mouse actions over the HUD do not modify terrain.
 - One creature starts to the right of spawn. It waits until the player comes within 180 pixels, leaving room to gather first.
-- Only the equipped sword can deal melee damage. Left click or J swings it. Switching equipment cancels the previous mining action or sword swing. Pickaxe, axe, and building materials cannot damage enemies.
+- Pickaxe, axe, and sword can all swing with left click or J, with or without a harvestable target. Tools deal 15 damage and the sword deals 25. Holding left click repeats tool swings and harvests valid blocks at the same time. Switching equipment cancels the previous action. Building materials cannot attack.
 - Solid terrain blocks melee damage in both directions, including newly placed blocks. Mining away a barrier opens the attack path again.
 - Defeating the creature leaves the world and inventory intact. R restores terrain, inventory, player, and enemy together.
 - Enemy navigation is still basic: it walks and collides with terrain, without jumping or finding routes around constructed barriers.
@@ -169,8 +169,23 @@ The developer requested separate tools for gathering and combat. The hotbar now 
 | 5 | Stone | Left or right mouse to build |
 | 6 | Wood | Left or right mouse to build |
 
-All three tools are supplied at spawn for this prototype. They do not wear out or require crafting yet. Wrong tools leave the block untouched and show the required tool in the targeting hint. The sword does not mine blocks, and mining tools do not damage enemies. Core mining checks enforce the equipped tool as well as the existing range and protection rules.
+All three tools are supplied at spawn for this prototype. They do not wear out or require crafting yet. Wrong tools leave the block untouched and show the required tool in the targeting hint. The sword does not mine blocks. Pickaxe and axe also deal melee damage, including when swinging in empty air or harvesting; see the free-swing update below. Core mining checks enforce the equipped tool as well as the existing range and protection rules.
 
-The held-item drawing changes with the selection. Pickaxe and axe swing while harvesting; materials appear as a held block. Changing equipment interrupts the previous action, preventing a hidden sword from dealing delayed damage. Sword damage, startup, active frames, and recovery retain the established combat values.
+The held-item drawing changes with the selection. Pickaxe and axe swing freely, including while harvesting; materials appear as a held block. Changing equipment interrupts the previous action, preventing a hidden sword from dealing delayed damage. Sword damage, startup, active frames, and recovery retain the established combat values.
 
-Godot checks passed for keyboard selection of slot six, wheel wrapping, dirt/stone mining with the pickaxe, rejected axe-on-stone and pickaxe-on-wood use, wood gathering with the axe, rejected sword-on-dirt use, sword attacks using both J and left click, rejected enemy damage from mining tools, equipment-switch cancellation, continued building, wall-supported wood placement/recovery, and reset to the starter pickaxe. The original combat suite passed. All three held-item selections and the expanded hotbar were rendered and inspected; C# compilation had zero warnings and errors.
+Godot checks passed for keyboard selection of slot six, wheel wrapping, dirt/stone mining with the pickaxe, rejected axe-on-stone and pickaxe-on-wood use, wood gathering with the axe, rejected sword-on-dirt use, sword attacks using both J and left click, equipment damage checks, equipment-switch cancellation, continued building, wall-supported wood placement/recovery, and reset to the starter pickaxe. The original combat suite passed. All three held-item selections and the expanded hotbar were rendered and inspected; C# compilation had zero warnings and errors.
+
+## Free tool swings and melee damage — 2026-10-25
+
+The developer clarified that pickaxe and axe should also hurt enemies and swing without breaking a block. This supersedes the earlier sword-only damage restriction.
+
+- Left click or J swings the selected pickaxe, axe, or sword without requiring a valid block, nearby resource, or enemy.
+- Holding left click repeats pickaxe/axe swings. Releasing the button lets the current swing finish.
+- Pickaxe and axe each deal 15 damage per successful swing; the sword retains 25 damage. Tool damage is exposed as `Player.ToolDamage`, alongside the existing sword `AttackDamage` value.
+- All three use the established 0.38-second swing cycle and active hit window. Solid foreground terrain still shields enemies from melee attacks.
+- Tool animation follows the swing timer instead of mining progress, so empty-air and wrong-material swings remain visible.
+- Mining progress and tool swings run concurrently. A swing can damage an enemy while a correctly targeted block is still being harvested, and harvesting continues to completion.
+- Harvest restrictions are unchanged: pickaxe for dirt/stone, axe for wood, no block mining with the sword. Wrong-material swings do not generate resource drops.
+- Equipment swapping and dodging cancel the previous swing. Material slots remain for construction.
+
+Godot checks passed for empty-air swings with both tools, repeated held swings, finishing after release, no terrain/material changes from air swings, exact 15-damage pickaxe and axe hits without harvesting, preserved 25-damage sword hits, and damaging a nearby enemy during an unfinished dirt harvest followed by successful material collection. Existing equipment, mining, background-wall, building, reset, and isolated sword-combat checks passed. C# compilation had no warnings or errors, and both free-air tool swings were rendered and inspected.

@@ -12,6 +12,7 @@ public partial class Player : CharacterBody2D
     [Export] public float DodgeDuration { get; set; } = 0.18f;
     [Export] public float DodgeCooldown { get; set; } = 0.8f;
     [Export] public int AttackDamage { get; set; } = 25;
+    [Export] public int ToolDamage { get; set; } = 15;
 
     public int Health { get; private set; } = 100;
     public int Facing { get; private set; } = 1;
@@ -20,7 +21,6 @@ public partial class Player : CharacterBody2D
     public float DodgeReadyIn => _dodgeCooldownLeft;
     public bool IsDead => Health <= 0;
     public EquipmentKind EquippedItem { get; private set; } = EquipmentKind.Sword;
-    public float ToolUseProgress { get; set; }
     public const float BodyHeight = 72;
     public Vector2 BodyCenter => GlobalPosition + new Vector2(0, -BodyHeight / 2);
     public Rect2 BodyBounds => new(GlobalPosition + new Vector2(-14, -BodyHeight), new Vector2(28, BodyHeight));
@@ -99,7 +99,7 @@ public partial class Player : CharacterBody2D
                     if (node is Enemy enemy && !enemy.IsDead && AttackBounds.Intersects(enemy.BodyBounds)
                         && CombatRules.HasClearPath(this, enemy))
                     {
-                        enemy.ReceiveHit(AttackDamage, Facing);
+                        enemy.ReceiveHit(EquipmentRules.IsMiningTool(EquippedItem) ? ToolDamage : AttackDamage, Facing);
                         _attackConnected = true;
                     }
             }
@@ -112,15 +112,14 @@ public partial class Player : CharacterBody2D
     {
         if (EquippedItem == item) return;
         EquippedItem = item;
-        // Switching equipment ends the old action; a hidden sword cannot finish dealing damage.
+        // Switching equipment ends the old action; a hidden weapon cannot finish dealing damage.
         _attackLeft = 0;
-        ToolUseProgress = 0;
         QueueRedraw();
     }
 
     public bool TryStartAttack()
     {
-        if (EquippedItem != EquipmentKind.Sword || IsDead || IsDodging || IsAttacking) return false;
+        if (!EquipmentRules.CanSwing(EquippedItem) || IsDead || IsDodging || IsAttacking) return false;
         float axis = Input.GetAxis("move_left", "move_right");
         if (axis != 0) Facing = axis > 0 ? 1 : -1;
         _attackLeft = 0.38f;
@@ -150,7 +149,8 @@ public partial class Player : CharacterBody2D
         DrawLine(new Vector2(-7, -5), new Vector2(-7, 0), new Color("243a46"), 7);
         DrawLine(new Vector2(7, -5), new Vector2(7, 0), new Color("243a46"), 7);
         Vector2 hand = new(Facing * 17, -36);
-        float toolAngle = ToolUseProgress > 0 ? Mathf.Sin(ToolUseProgress * Mathf.Tau) * 0.65f : 0;
+        // Animation follows the swing itself, including swings into empty air.
+        float toolAngle = IsAttacking ? Mathf.Lerp(-0.65f, 1.15f, 1 - _attackLeft / 0.38f) : 0;
         DrawSetTransform(hand, toolAngle * Facing, new Vector2(Facing, 1));
         Color steel = new("d9e8e9");
         Color handle = new("bd8c56");

@@ -16,7 +16,7 @@ Realm travel, procedural world generation, crafting, and save/load are planned. 
 2. Import `tervain--shattered-realms/project.godot` into Godot.
 3. Press **F5** to play the sandbox.
 
-Move with A/D, jump with Space, dodge with Shift, and equip the sword (3) to attack with left click or J. Approach the creature to the right of spawn to fight in the same world where you mine and build. Select pickaxe (1) to mine dirt/stone or axe (2) to harvest wood by holding left mouse. Select dirt, stone, or wood with 4/5/6 and click to place. All three tools are supplied at spawn. F2 opens the combat room; F3 returns to a fresh sandbox. R resets the current scene.
+Move with A/D, jump with Space, dodge with Shift, and equip the pickaxe (1), axe (2), or sword (3) to swing with left click or J. Tool swings deal 15 damage; sword swings deal 25. Holding left click repeats tool swings, including in empty air. Approach the creature to the right of spawn to fight in the same world where you mine and build. Select pickaxe (1) to mine dirt/stone or axe (2) to harvest wood by holding left mouse. Select dirt, stone, or wood with 4/5/6 and click to place. All three tools are supplied at spawn. F2 opens the combat room; F3 returns to a fresh sandbox. R resets the current scene.
 
 ## Design and development
 

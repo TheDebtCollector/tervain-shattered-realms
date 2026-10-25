@@ -17,7 +17,9 @@ public static class BlockArt
             Draw(canvas, rect, kind, new Color(0.42f, 0.42f, 0.42f));
             return;
         }
-        string name = kind == BlockKind.Dirt ? "dirt" : "cave";
+        string name = kind switch
+        { BlockKind.Dirt => "dirt", BlockKind.Sand => "sand",
+            BlockKind.Sandstone or BlockKind.CrackedEarth => "sandstone", _ => "cave" };
         if (!WallTextures.TryGetValue(name, out Texture2D? texture))
         {
             texture = GD.Load<Texture2D>($"res://Art-work/Exported/{name}-background-24.png");
@@ -31,17 +33,22 @@ public static class BlockArt
     {
         string? name = kind switch
         {
-            BlockKind.Dirt => "dirt", BlockKind.Stone => "stone",
-            BlockKind.Wood => "wood", BlockKind.IronOre => "iron-ore", _ => null
+            BlockKind.Dirt => "dirt-block", BlockKind.Stone => "stone-block",
+            BlockKind.Wood => "wood-block", BlockKind.IronOre => "iron-ore-block",
+            BlockKind.Sand => "sand-block", BlockKind.Sandstone => "sandstone-block",
+            BlockKind.CrackedEarth => "cracked-earth-block", BlockKind.Cactus => "cactus", _ => null
         };
         if (name == null) return null; // Bedrock retains its distinct protected-floor appearance.
         if (!Textures.TryGetValue(kind, out Texture2D? texture))
         {
-            texture = GD.Load<Texture2D>($"res://Art-work/Exported/{name}-block-24.png");
+            texture = GD.Load<Texture2D>($"res://Art-work/Exported/{name}-24.png");
             Textures[kind] = texture;
         }
         return texture;
     }
+
+    private static Texture2D? _bushTexture;
+    public static Texture2D BushTexture => _bushTexture ??= GD.Load<Texture2D>("res://Art-work/Exported/dry-bush-24.png");
 
     public static void Draw(CanvasItem canvas, Rect2 rect, BlockKind kind, Color? tint = null)
     {

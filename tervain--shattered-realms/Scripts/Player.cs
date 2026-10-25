@@ -94,6 +94,9 @@ public partial class Player : CharacterBody2D
         if (_attackLeft > 0)
         {
             _attackLeft = Mathf.Max(0, _attackLeft - dt);
+            if (_attackLeft <= 0.27f && _attackLeft >= 0.14f)
+                foreach (Node node in GetTree().GetNodesInGroup("block_worlds"))
+                    if (node is BlockWorld world) world.BreakBushes(AttackBounds, this);
             if (_attackLeft <= 0.27f && _attackLeft >= 0.14f && !_attackConnected)
             {
                 foreach (Node node in GetTree().GetNodesInGroup("enemies"))

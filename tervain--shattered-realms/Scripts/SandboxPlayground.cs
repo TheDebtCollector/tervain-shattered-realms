@@ -40,6 +40,7 @@ public partial class SandboxPlayground : Node2D
         _hud = new SandboxHud { SlotSelected = SelectSlot };
         AddChild(_hud);
         RenderingServer.SetDefaultClearColor(new Color("182f37"));
+        if (HasArgument("--desert-test")) CallDeferred(MethodName.RunDesertTests);
         if (HasArgument("--sandbox-test"))
         {
             if (_testingRestart)
@@ -51,7 +52,7 @@ public partial class SandboxPlayground : Node2D
             }
             else CallDeferred(MethodName.RunSandboxTests);
         }
-        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview") || HasArgument("--equipment-preview") || HasArgument("--ore-preview") || HasArgument("--tree-preview"))
+        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview") || HasArgument("--equipment-preview") || HasArgument("--ore-preview") || HasArgument("--tree-preview") || HasArgument("--desert-preview"))
             CallDeferred(MethodName.SavePreview);
     }
 
@@ -82,8 +83,14 @@ public partial class SandboxPlayground : Node2D
         if (input is InputEventKey { Pressed: true, Echo: false } key)
         {
             Key code = key.PhysicalKeycode != Key.None ? key.PhysicalKeycode : key.Keycode;
-            if (code >= Key.Key1 && code <= Key.Key7)
+            if (code >= Key.Key1 && code <= Key.Key9)
             { SelectSlot((int)(code - Key.Key1)); GetViewport().SetInputAsHandled(); }
+        }
+        if (input is InputEventKey { Pressed: true, Echo: false } extra)
+        {
+            Key code = extra.PhysicalKeycode != Key.None ? extra.PhysicalKeycode : extra.Keycode;
+            if (code == Key.Key0 || code == Key.Minus)
+            { SelectSlot(code == Key.Key0 ? 9 : 10); GetViewport().SetInputAsHandled(); }
         }
         if (input is InputEventMouseButton { Pressed: true } mouse)
         {
@@ -119,17 +126,19 @@ public partial class SandboxPlayground : Node2D
         _world.HighlightValid = valid;
         bool hasBlock = _world.TryGetBlock(cell, out BlockKind block);
         string target = sword ? "SWORD  /  Left click or J to attack. Shift to dodge."
-            : building ? $"{(item == EquipmentKind.IronOre ? "IRON ORE" : item.ToString().ToUpperInvariant())}  /  Hold left or right mouse to build."
+            : building ? $"{EquipmentRules.Name(item).ToUpperInvariant()}  /  Hold left or right mouse to build."
             : $"{item.ToString().ToUpperInvariant()}  /  Left click or J to swing; hold left mouse to harvest {EquipmentRules.Purpose(item).ToLowerInvariant()}.";
         if (!overUi && hasBlock && (miningTool || building))
         {
             string instruction = building ? "This space is occupied."
                 : block == BlockKind.Bedrock ? "This foundation cannot be mined."
-                : !EquipmentRules.CanMine(item, block) ? block == BlockKind.Wood ? "Requires axe (2)." : "Requires pickaxe (1)."
+                : !EquipmentRules.CanMine(item, block) ? block is BlockKind.Wood or BlockKind.Cactus ? "Requires axe (2)." : "Requires pickaxe (1)."
                 : valid ? "Hold left mouse to harvest."
                 : $"Move closer; tool reach is {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks through terrain.";
             target = $"{(block == BlockKind.IronOre ? "IRON ORE" : block.ToString().ToUpperInvariant())}  /  {instruction}";
         }
+        else if (!overUi && _world.HasBush(cell))
+            target = "DEAD BUSH  /  Hit with any tool or weapon. No drops.";
         else if (miningTool && !overUi && _world.HasWall(cell))
             target = "BACKGROUND WALL  /  Select a building material to attach a block here.";
         if (miningTool && primary && valid)
@@ -190,6 +199,12 @@ public partial class SandboxPlayground : Node2D
             return;
         }
         bool wallPreview = HasArgument("--wall-preview");
+        if (HasArgument("--desert-preview"))
+        {
+            _enemy.ProcessMode = ProcessModeEnum.Disabled;
+            _player.Position = new Vector2(78 * BlockWorld.TileSize, GroundY);
+            _player.Velocity = Vector2.Zero;
+        }
         if (HasArgument("--tree-preview"))
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
@@ -224,7 +239,7 @@ public partial class SandboxPlayground : Node2D
         }
         await Frames(30);
         await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
-        string preview = HasArgument("--tree-preview") ? "tree-preview" : HasArgument("--ore-preview") ? "ore-preview" : wallPreview ? "wall-preview" : "sandbox-preview";
+        string preview = HasArgument("--desert-preview") ? "desert-preview" : HasArgument("--tree-preview") ? "tree-preview" : HasArgument("--ore-preview") ? "ore-preview" : wallPreview ? "wall-preview" : "sandbox-preview";
         Error result = GetViewport().GetTexture().GetImage().SavePng($"res://.godot/{preview}.png");
         GD.Print("Sandbox preview: " + result);
         GetTree().Quit(result == Error.Ok ? 0 : 1);
@@ -287,9 +302,10 @@ public partial class SandboxPlayground : Node2D
             await Frames(2);
             Check(_player.EquippedItem == EquipmentKind.IronOre, "The seventh hotbar slot can be selected with the keyboard.");
             GetViewport().PushInput(new InputEventKey { PhysicalKeycode = Key.Key7, Pressed = false });
+            SelectSlot(EquipmentRules.SlotCount - 1);
             GetViewport().PushInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelDown, Pressed = true });
             await Frames(2);
-            Check(_player.EquippedItem == EquipmentKind.Pickaxe, "Mouse wheel selection wraps across all seven equipment slots.");
+            Check(_player.EquippedItem == EquipmentKind.Pickaxe, "Mouse wheel selection wraps across all eleven equipment slots.");
             int blocksBeforeSwinging = _world.BlockCount;
             for (int slot = 0; slot < 2; slot++)
             {
@@ -399,10 +415,133 @@ public partial class SandboxPlayground : Node2D
             await TestIronOre();
             await TestTreeBackground();
             await TestDropGravity();
+            await TestDesert();
             _testingRestart = true;
             Check(GetTree().ReloadCurrentScene() == Error.Ok, "Sandbox can restart.");
         }
         catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async void RunDesertTests()
+    {
+        try
+        {
+            _enemy.ProcessMode = ProcessModeEnum.Disabled;
+            _enemy.Position = new Vector2(200, GroundY);
+            await TestDesert();
+            GD.Print("DESERT TESTS PASSED.");
+            GetTree().Quit();
+        }
+        catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async Task TestDesert()
+    {
+        Check(_world.TryGetBlock(new Vector2I(69, 19), out BlockKind kind) && kind == BlockKind.Sand
+            && _world.TryGetBlock(new Vector2I(69, 22), out kind) && kind == BlockKind.Sandstone
+            && _world.TryGetBlock(new Vector2I(73, 19), out kind) && kind == BlockKind.CrackedEarth,
+            "The desert generates sand, sandstone, and cracked-earth patches.");
+        Check(!_world.HasWall(new Vector2I(70, 18)) && !_world.HasWall(new Vector2I(74, 18)),
+            "Cacti and dead bushes do not generate solid-looking background walls.");
+        foreach (BlockKind terrain in new[] { BlockKind.Sand, BlockKind.Sandstone, BlockKind.CrackedEarth })
+            Check(EquipmentRules.CanMine(EquipmentKind.Pickaxe, terrain) && !EquipmentRules.CanMine(EquipmentKind.Axe, terrain),
+                "Desert terrain requires the pickaxe.");
+
+        _player.Position = new Vector2(69 * 24, GroundY);
+        _player.Velocity = Vector2.Zero;
+        await Frames(5);
+        Vector2I cactus = new(70, 18);
+        int cactusBefore = _inventory.Count(BlockKind.Cactus);
+        SelectSlot(0);
+        await UseTool(cactus, 30);
+        Check(_world.HasBlock(cactus) && _inventory.Count(BlockKind.Cactus) == cactusBefore,
+            "A pickaxe swing does not harvest cactus.");
+        SelectSlot(2);
+        await UseTool(cactus, 30);
+        Check(_world.HasBlock(cactus), "A sword swing does not harvest cactus.");
+        SelectSlot(1);
+        await UseTool(cactus, 30);
+        await Frames(20);
+        Check(!_world.HasBlock(cactus) && _inventory.Count(BlockKind.Cactus) == cactusBefore + 1,
+            "The axe harvests a cactus and its drop is collected.");
+        SelectSlot(10);
+        await UseTool(cactus, 3);
+        Check(_world.TryGetBlock(cactus, out kind) && kind == BlockKind.Cactus && _inventory.Count(BlockKind.Cactus) == cactusBefore,
+            "Cactus can be placed from its own stack and consumes one item.");
+
+        int bushesBefore = _world.BushCount;
+        int dropsBefore = 0;
+        foreach (Node node in GetChildren()) if (node is MaterialDrop) dropsBefore++;
+        foreach (var (cell, slot) in new[] { (new Vector2I(74, 18), 0), (new Vector2I(82, 17), 1), (new Vector2I(90, 18), 2) })
+        {
+            float ground = cell.Y == 17 ? GroundY - 24 : GroundY;
+            // Keep the previous accepted facing and put the bush inside the actual melee arc.
+            _player.Position = new Vector2(BlockWorld.Center(cell).X - _player.Facing * 45, ground);
+            _player.Velocity = Vector2.Zero;
+            SelectSlot(slot);
+            _testTarget = BlockWorld.Center(cell);
+            await Frames(3);
+            Input.ActionPress("attack");
+            await Frames(1);
+            Input.ActionRelease("attack");
+            await Frames(28);
+            Check(!_world.HasBush(cell), "A dead bush is destroyed by an actual pickaxe, axe, or sword hit.");
+        }
+        int dropsAfter = 0;
+        foreach (Node node in GetChildren()) if (node is MaterialDrop) dropsAfter++;
+        Check(_world.BushCount == bushesBefore - 3 && dropsAfter <= dropsBefore,
+            "Destroyed bushes do not spawn resource drops.");
+
+        _player.Position = new Vector2(71.5f * 24, GroundY);
+        _player.Velocity = Vector2.Zero;
+        SelectSlot(0);
+        await Frames(3);
+        int blocksBefore = _world.BlockCount;
+        Check(_world.TryMine(new Vector2I(69, 21), _player, out _)
+            && _world.TryMine(new Vector2I(69, 22), _player, out _), "Mining opens a shaft beneath a sand column.");
+        await Frames(3);
+        Check(_world.FallingSandCount > 0, "Unsupported sand becomes a moving full-size block.");
+        await Frames(70);
+        Check(_world.FallingSandCount == 0 && !_world.HasBlock(new Vector2I(69, 19))
+            && _world.TryGetBlock(new Vector2I(69, 22), out kind) && kind == BlockKind.Sand
+            && _world.TryGetBlock(new Vector2I(69, 21), out kind) && kind == BlockKind.Sand,
+            "Stacked sand falls and settles onto the next solid floor.");
+        Check(_world.BlockCount == blocksBefore - 2 && _world.HasWall(new Vector2I(69, 19)),
+            "Sand movement preserves blocks and leaves the generated scenery in place.");
+        Check(!_world.CanPlace(new Vector2I(69, 21), _player), "Settled sand remains solid occupied terrain.");
+
+        _inventory.Add(BlockKind.Sand);
+        _player.Position = new Vector2(67.5f * 24, GroundY);
+        _player.Velocity = Vector2.Zero;
+        SelectSlot(7);
+        int sandBefore = _inventory.Count(BlockKind.Sand);
+        // Use the exposed background as an anchor, then let the placed sand fall.
+        await UseTool(new Vector2I(69, 18), 3);
+        await Frames(60);
+        Check(_inventory.Count(BlockKind.Sand) == sandBefore - 1 && _world.FallingSandCount == 0
+            && _world.TryGetBlock(new Vector2I(69, 20), out kind) && kind == BlockKind.Sand,
+            "Player-placed sand also falls and settles, spending exactly one material.");
+        SelectSlot(0);
+        int sandRecovered = _inventory.Count(BlockKind.Sand);
+        await UseTool(new Vector2I(69, 20), 24);
+        await Frames(30);
+        Check(_inventory.Count(BlockKind.Sand) == sandRecovered + 1,
+            "Settled sand can be mined and collected as one sand item.");
+        SelectSlot(7);
+        Check(_world.TryPlace(new Vector2I(69, 18), BlockKind.Sand, _player, _inventory),
+            "Another sand block can be placed above the shaft.");
+        await Frames(3);
+        FallingSand? moving = null;
+        foreach (Node node in _world.GetChildren()) if (node is FallingSand sand) moving = sand;
+        Check(moving != null, "Placed sand enters the falling state before reaching the floor.");
+        SelectSlot(0);
+        int beforeAirMining = _world.BlockCount;
+        Check(_world.TryMine(BlockWorld.CellAt(moving!.GlobalPosition), _player, out kind) && kind == BlockKind.Sand,
+            "A moving sand block remains mineable with a pickaxe.");
+        await Frames(40);
+        Check(_world.FallingSandCount == 0 && _world.BlockCount == beforeAirMining - 1
+            && !_world.HasBlock(new Vector2I(69, 20)),
+            "Mining falling sand removes it exactly once and does not respawn it on landing.");
     }
 
     private async Task TestDropGravity()
@@ -495,30 +634,30 @@ public partial class SandboxPlayground : Node2D
     private async Task TestBackgroundWalls()
     {
         SelectSlot(0);
-        _player.Position = new Vector2(1692, GroundY);
+        _player.Position = new Vector2(1452, GroundY);
         _player.Velocity = Vector2.Zero;
         await Frames(3);
         int excavated = 0;
-        for (int x = 67; x <= 73; x++)
+        for (int x = 57; x <= 63; x++)
             for (int y = BlockWorld.SurfaceRow; y <= BlockWorld.SurfaceRow + 5; y++)
                 if (_world.TryMine(new Vector2I(x, y), _player, out _)) excavated++;
         Check(excavated == 42, "Excavation clears foreground blocks for background-wall checks.");
         await Frames(3);
-        Vector2I anchor = new(71, BlockWorld.SurfaceRow + 2);
+        Vector2I anchor = new(61, BlockWorld.SurfaceRow + 2);
         float floor = (BlockWorld.SurfaceRow + 6) * BlockWorld.TileSize;
         Check(_world.HasWall(anchor) && !_world.HasBlock(anchor), "Mining reveals and preserves the generated background wall.");
         Check(!_world.CanMine(anchor, _player) && !_world.TryMine(anchor, _player, out _) && _world.HasWall(anchor),
             "The exposed background wall cannot be mined.");
         var point = new PhysicsPointQueryParameters2D { Position = BlockWorld.Center(anchor), CollisionMask = 1 };
         Check(_world.GetWorld2D().DirectSpaceState.IntersectPoint(point).Count == 0, "Background walls have no solid collision.");
-        _player.Position = new Vector2(1644, floor);
+        _player.Position = new Vector2(1404, floor);
         _player.Velocity = Vector2.Zero;
         await Frames(3);
         Input.ActionPress("move_right");
         await Frames(20);
         Input.ActionRelease("move_right");
         Check(_player.Position.X > BlockWorld.Center(anchor).X && _player.IsOnFloor(), "The player can walk through exposed background walls.");
-        _player.Position = new Vector2(1644, floor);
+        _player.Position = new Vector2(1404, floor);
         _player.Velocity = Vector2.Zero;
         await Frames(3);
         Check(!_world.HasBlock(anchor + Vector2I.Up) && !_world.HasBlock(anchor + Vector2I.Down)

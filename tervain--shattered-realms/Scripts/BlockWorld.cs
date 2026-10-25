@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tervain;
 
@@ -11,14 +12,21 @@ public partial class BlockWorld : Node2D
     public const int Height = 32;
     public const int SurfaceRow = 19;
     public const int CaveBottomRow = 28;
+    public const int DesertStartColumn = 68;
     public const float BuildReach = 160;
     public const float MiningReach = 192;
-    private static readonly int[] TreeColumns = { 5, 9, 27, 32, 56, 63, 80, 87 };
+    private static readonly int[] TreeColumns = { 5, 9, 27, 32, 56, 63 };
     private readonly Dictionary<Vector2I, BlockKind> _blocks = new();
     // Generated scenery only: kept independently of foreground blocks, with no physics bodies.
     private readonly Dictionary<Vector2I, BlockKind> _walls = new();
     private readonly Dictionary<Vector2I, StaticBody2D> _bodies = new();
-    public int BlockCount => _blocks.Count;
+    private readonly HashSet<Vector2I> _bushes = new();
+    private readonly List<FallingSand> _fallingSand = new();
+    private bool _sandDirty;
+    public int FallingSandCount => _fallingSand.Count;
+    public int BushCount => _bushes.Count;
+    public bool HasBush(Vector2I cell) => _bushes.Contains(cell);
+    public int BlockCount => _blocks.Count + _fallingSand.Count;
     public Vector2I? HighlightCell { get; set; }
     public bool HighlightValid { get; set; }
     public float MiningProgress { get; set; }
@@ -27,24 +35,36 @@ public partial class BlockWorld : Node2D
     public static Vector2 Center(Vector2I cell) => new Vector2(cell.X + 0.5f, cell.Y + 0.5f) * TileSize;
     public static Rect2 CellRect(Vector2I cell) => new(new Vector2(cell.X, cell.Y) * TileSize, Vector2.One * TileSize);
     public static bool InBounds(Vector2I cell) => cell.X >= 0 && cell.X < Width && cell.Y >= 4 && cell.Y < Height;
-    public bool TryGetBlock(Vector2I cell, out BlockKind kind) => _blocks.TryGetValue(cell, out kind);
-    public bool HasBlock(Vector2I cell) => _blocks.ContainsKey(cell);
+    public bool TryGetBlock(Vector2I cell, out BlockKind kind)
+    {
+        if (_blocks.TryGetValue(cell, out kind)) return true;
+        kind = BlockKind.Sand;
+        return FallingAt(cell) != null;
+    }
+    private FallingSand? FallingAt(Vector2I cell) => _fallingSand.FirstOrDefault(sand => CellAt(sand.GlobalPosition) == cell);
+    public bool HasBlock(Vector2I cell) => TryGetBlock(cell, out _);
     public bool HasWall(Vector2I cell) => _walls.ContainsKey(cell);
     public static Color Colour(BlockKind kind) => new(kind switch
     {
-        BlockKind.Dirt => "947356", BlockKind.Stone => "7c9093", BlockKind.Wood => "bd8c56", BlockKind.IronOre => "b58a6a", _ => "36434b"
+        BlockKind.Dirt => "947356", BlockKind.Stone => "7c9093", BlockKind.Wood => "bd8c56", BlockKind.IronOre => "b58a6a",
+        BlockKind.Sand => "e6be73", BlockKind.Sandstone => "c7a16a", BlockKind.CrackedEarth => "b68d62", BlockKind.Cactus => "718b42", _ => "36434b"
     });
     public static float MineDuration(BlockKind kind) => kind switch
-    { BlockKind.Dirt => 0.28f, BlockKind.Stone => 0.6f, BlockKind.IronOre => 0.8f, BlockKind.Wood => 0.4f, _ => float.PositiveInfinity };
+    { BlockKind.Dirt => 0.28f, BlockKind.Stone => 0.6f, BlockKind.IronOre => 0.8f, BlockKind.Wood or BlockKind.Cactus => 0.4f,
+        BlockKind.Sand => 0.25f, BlockKind.Sandstone => 0.65f, BlockKind.CrackedEarth => 0.35f, _ => float.PositiveInfinity };
 
     public override void _Ready()
     {
         TextureFilter = TextureFilterEnum.Nearest;
+        AddToGroup("block_worlds");
         for (int x = 0; x < Width; x++)
             for (int y = SurfaceRow; y < Height; y++)
             {
                 if (y >= 24 && y < CaveBottomRow && x is >= 39 and <= 54) continue;
                 BlockKind kind = y == Height - 1 ? BlockKind.Bedrock : y < 23 ? BlockKind.Dirt : BlockKind.Stone;
+                if (x >= DesertStartColumn && kind != BlockKind.Bedrock)
+                    kind = y <= 21 ? BlockKind.Sand : BlockKind.Sandstone;
+                if (x is >= 72 and <= 75 && y == SurfaceRow) kind = BlockKind.CrackedEarth;
                 if (x is >= 55 and <= 56 && y is >= 25 and <= 26) kind = BlockKind.IronOre;
                 SetBlock(new Vector2I(x, y), kind);
             }
@@ -52,9 +72,13 @@ public partial class BlockWorld : Node2D
             for (int y = 13; y < SurfaceRow; y++) SetBlock(new Vector2I(x, y), BlockKind.Wood);
         // Surface stone outcrops offer stone without forcing a deep excavation.
         for (int x = 39; x <= 43; x++) SetBlock(new Vector2I(x, SurfaceRow - 1), BlockKind.Stone);
+        for (int x = 80; x <= 84; x++) SetBlock(new Vector2I(x, SurfaceRow - 1), BlockKind.Sand);
+        foreach (int x in new[] { 70, 78, 88, 93 }) SetBlock(new Vector2I(x, SurfaceRow - 1), BlockKind.Cactus);
+        foreach (int x in new[] { 74, 82, 90 }) _bushes.Add(new Vector2I(x, x == 82 ? SurfaceRow - 2 : SurfaceRow - 1));
         // Snapshot only generated solid cells. Open sky, cave air, and later player builds
         // do not create walls; mining the foreground leaves this scenery intact.
-        foreach (var block in _blocks) _walls[block.Key] = block.Value;
+        foreach (var block in _blocks)
+            if (block.Value != BlockKind.Cactus) _walls[block.Key] = block.Value;
         AddBoundary(new Rect2(-32, -1000, 32, 2000));
         AddBoundary(new Rect2(Width * TileSize, -1000, 32, 2000));
     }
@@ -70,6 +94,7 @@ public partial class BlockWorld : Node2D
     {
         if (_blocks.ContainsKey(cell)) return;
         _blocks[cell] = kind;
+        _sandDirty = true;
         var body = new StaticBody2D { Position = Center(cell), CollisionLayer = 1, CollisionMask = 0 };
         body.AddChild(new CollisionShape2D { Shape = new RectangleShape2D { Size = Vector2.One * TileSize } });
         _bodies[cell] = body;
@@ -90,17 +115,23 @@ public partial class BlockWorld : Node2D
 
     // Mining ignores visibility; the correct tool, range, and protection rules still apply.
     public bool CanMine(Vector2I cell, Player player) => !player.IsDead && InBounds(cell) &&
-        _blocks.TryGetValue(cell, out BlockKind kind) && EquipmentRules.CanMine(player.EquippedItem, kind) &&
+        TryGetBlock(cell, out BlockKind kind) && EquipmentRules.CanMine(player.EquippedItem, kind) &&
         player.BodyCenter.DistanceTo(Center(cell)) <= MiningReach;
 
     public bool TryMine(Vector2I cell, Player player, out BlockKind material)
     {
         material = default;
         if (!CanMine(cell, player)) return false;
-        material = _blocks[cell];
-        _blocks.Remove(cell);
-        _bodies[cell].QueueFree();
-        _bodies.Remove(cell);
+        FallingSand? falling = FallingAt(cell);
+        if (_blocks.TryGetValue(cell, out material)) RemoveBlock(cell);
+        else if (falling != null)
+        {
+            material = BlockKind.Sand;
+            _fallingSand.Remove(falling);
+            falling.CollisionLayer = 0;
+            falling.QueueFree();
+        }
+        _sandDirty = true;
         QueueRedraw();
         return true;
     }
@@ -109,6 +140,7 @@ public partial class BlockWorld : Node2D
     {
         if (player.IsDead || HasBlock(cell) || !CanReachForBuilding(cell, player)) return false;
         if (CellRect(cell).Intersects(player.BodyBounds)) return false;
+        if (_fallingSand.Any(sand => CellRect(cell).Intersects(sand.BodyBounds))) return false;
         foreach (Node node in GetTree().GetNodesInGroup("enemies"))
             if (node is Enemy enemy && !enemy.IsDead && CellRect(cell).Intersects(enemy.BodyBounds)) return false;
         return HasWall(cell) || HasBlock(cell + Vector2I.Down) || HasBlock(cell + Vector2I.Up) ||
@@ -118,20 +150,88 @@ public partial class BlockWorld : Node2D
     public bool TryPlace(Vector2I cell, BlockKind material, Player player, SandboxInventory inventory)
     {
         if (material == BlockKind.Bedrock || !CanPlace(cell, player) || !inventory.Spend(material)) return false;
+        _bushes.Remove(cell);
         SetBlock(cell, material);
         return true;
+    }
+
+    private void RemoveBlock(Vector2I cell)
+    {
+        _blocks.Remove(cell);
+        _bodies[cell].CollisionLayer = 0;
+        _bodies[cell].QueueFree();
+        _bodies.Remove(cell);
+        _sandDirty = true;
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        foreach (Vector2I bush in _bushes.ToArray())
+            if (!HasBlock(bush + Vector2I.Down)) { _bushes.Remove(bush); QueueRedraw(); }
+        if (!_sandDirty) return;
+        _sandDirty = false;
+        foreach (Vector2I cell in _blocks.Where(pair => pair.Value == BlockKind.Sand)
+                     .Select(pair => pair.Key).OrderByDescending(cell => cell.Y).ToArray())
+        {
+            // Scenery does not support sand. Release a whole unsupported column.
+            if (_blocks.ContainsKey(cell + Vector2I.Down)) continue;
+            RemoveBlock(cell);
+            var falling = new FallingSand { World = this, Position = Center(cell) };
+            _fallingSand.Add(falling);
+            AddChild(falling);
+            QueueRedraw();
+        }
+    }
+
+    public void TrySettleSand(FallingSand sand)
+    {
+        if (!_fallingSand.Contains(sand) || sand.IsQueuedForDeletion()) return;
+        Vector2I cell = CellAt(sand.GlobalPosition);
+        if (!InBounds(cell) || _blocks.ContainsKey(cell) || !_blocks.ContainsKey(cell + Vector2I.Down)) return;
+        if (sand.GlobalPosition.DistanceTo(Center(cell)) > 0.5f) return;
+        Rect2 bounds = CellRect(cell);
+        foreach (Node node in GetTree().GetNodesInGroup("player"))
+            if (node is Player player && bounds.Intersects(player.BodyBounds)) return;
+        foreach (Node node in GetTree().GetNodesInGroup("enemies"))
+            if (node is Enemy enemy && !enemy.IsDead && bounds.Intersects(enemy.BodyBounds)) return;
+        _fallingSand.Remove(sand);
+        sand.CollisionLayer = 0;
+        sand.QueueFree();
+        _bushes.Remove(cell);
+        SetBlock(cell, BlockKind.Sand);
+    }
+
+    public void BreakBushes(Rect2 hit, Node2D? attacker = null)
+    {
+        foreach (Vector2I cell in _bushes.ToArray())
+        {
+            if (!hit.Intersects(CellRect(cell))) continue;
+            if (attacker != null)
+            {
+                Vector2 origin = attacker is Player player ? player.BodyCenter : attacker.GlobalPosition + new Vector2(0, -24);
+                var ray = PhysicsRayQueryParameters2D.Create(origin, Center(cell), 1);
+                if (GetWorld2D().DirectSpaceState.IntersectRay(ray).Count != 0) continue;
+            }
+            _bushes.Remove(cell); // Dead bushes never produce items.
+            QueueRedraw();
+        }
     }
 
     public override void _Draw()
     {
         DrawRect(new Rect2(0, 0, Width * TileSize, Height * TileSize), new Color("182f37"));
         DrawCircle(new Vector2(650, 180), 55, new Color("5e7163"));
-        for (int x = 0; x < Width; x += 5)
+        for (int x = 0; x < DesertStartColumn; x += 5)
         {
             float px = x * TileSize + 40;
             DrawRect(new Rect2(px, 250, 22, 240), new Color("234348"));
             DrawCircle(new Vector2(px + 11, 240), 69, new Color("234348"));
         }
+        float desertX = DesertStartColumn * TileSize;
+        DrawRect(new Rect2(desertX, 0, Width * TileSize - desertX, Height * TileSize), new Color("b5a17d"));
+        DrawCircle(new Vector2(desertX + 440, 190), 45, new Color("f7d78b"));
+        DrawColoredPolygon(new[] { new Vector2(desertX, 456), new Vector2(desertX + 220, 290),
+            new Vector2(desertX + 440, 390), new Vector2(Width * TileSize, 270), new Vector2(Width * TileSize, 456) }, new Color("a28a66"));
         foreach (int x in TreeColumns)
             if (HasWall(new Vector2I(x, 13)))
             {
@@ -143,7 +243,7 @@ public partial class BlockWorld : Node2D
             }
         foreach (var entry in _walls)
         {
-            if (HasBlock(entry.Key)) continue; // Opaque foreground already covers this scenery.
+            if (_blocks.ContainsKey(entry.Key)) continue; // Moving sand still needs scenery behind it.
             Rect2 rect = CellRect(entry.Key);
             BlockArt.DrawWall(this, rect, entry.Value);
         }
@@ -154,6 +254,8 @@ public partial class BlockWorld : Node2D
             if (entry.Value == BlockKind.Dirt && !HasBlock(entry.Key + Vector2I.Up))
                 DrawRect(new Rect2(rect.Position, new Vector2(TileSize, 3)), new Color("8ca773"));
         }
+        foreach (Vector2I bush in _bushes)
+            DrawTextureRect(BlockArt.BushTexture, CellRect(bush), false);
         if (HighlightCell is Vector2I selected)
         {
             Rect2 rect = CellRect(selected);

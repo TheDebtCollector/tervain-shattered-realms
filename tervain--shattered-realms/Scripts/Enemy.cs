@@ -69,6 +69,8 @@ public partial class Enemy : CharacterBody2D
                 case Intent.Strike:
                     horizontal = _facing * 230;
                     Rect2 hit = new(GlobalPosition + new Vector2(_facing > 0 ? 0 : -105, -60), new Vector2(105, 65));
+                    foreach (Node node in GetTree().GetNodesInGroup("block_worlds"))
+                        if (node is BlockWorld world) world.BreakBushes(hit, this);
                     Rect2 target = _player.BodyBounds;
                     if (!_didHit && hit.Intersects(target) && CombatRules.HasClearPath(this, _player))
                     { _player.ReceiveHit(AttackDamage, _facing); _didHit = true; }

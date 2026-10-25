@@ -31,6 +31,7 @@ Press **F5** in the Godot .NET project. The main scene is now `Scenes/SandboxPla
 | 2 | Select axe |
 | 3 | Select sword |
 | 4 / 5 / 6 / 7 | Select dirt / stone / wood / iron ore |
+| 8 / 9 / 0 / Minus | Select sand / sandstone / cracked earth / cactus |
 | Mouse wheel or hotbar buttons | Change selection |
 | Hold left mouse with pickaxe | Repeat swings; mine dirt, stone, or iron ore when targeted |
 | Hold left mouse with axe | Repeat swings; harvest wood when targeted |
@@ -65,7 +66,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 - Placed blocks need an adjacent foreground block or a background wall in the target cell. They cannot overlap the player or a living enemy.
 - Mined material drops fall under gravity and settle on solid foreground blocks. Removing their support makes them fall again. Nearby drops still attract to the player for collection.
 - Successful placement spends one item. Rejected placement spends nothing.
-- Blocks remain suspended if their support is later removed; structural collapse is outside this milestone.
+- Sand falls when unsupported and settles as terrain. Other blocks retain their current support behaviour; general structural collapse is outside this milestone.
 - An unmineable bedrock floor and side boundaries keep the test area contained.
 - The camera follows exploration above and below the initial surface.
 - Mouse actions over the HUD do not modify terrain.
@@ -80,9 +81,10 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 | File | Responsibility |
 | --- | --- |
 | `Scripts/BlockArt.cs` | Shared pixel-art textures for terrain, walls, drops, held blocks, and hotbar icons |
+| `Scripts/FallingSand.cs` | Full-size falling sand physics and settlement |
 | `Scripts/BlockWorld.cs` | Foreground terrain, generated background walls, collision, reach/visibility checks, mining, placement, target rendering |
 | `Scripts/SandboxInventory.cs` | Material stack counts and spending |
-| `Scripts/Equipment.cs` | Shared seven-slot equipment mapping and tool/material rules |
+| `Scripts/Equipment.cs` | Shared eleven-slot equipment mapping and tool/material rules |
 | `Scripts/MaterialDrop.cs` | Dropped material gravity, terrain collision, attraction, and collection |
 | `Scripts/SandboxHud.cs` | Hotbar, counts, status, and controls |
 | `Scripts/SandboxPlayground.cs` | Tool selection, combat/tool priority, integration checks, and optional scene switching |
@@ -213,3 +215,8 @@ Broken blocks now produce physical drops that fall and rest on the terrain. Drop
 The existing pickup behaviour remains: after 0.12 seconds, drops within 120 pixels of a living player's body centre are attracted at 340 pixels per second and collected within 24 pixels. Close-range attraction still passes through terrain to preserve buried-block gathering. Gravity continues when the player is dead, while attraction and collection are disabled.
 
 C# compilation passed without warnings or errors. Sandbox checks passed for falling outside pickup range, landing on the correct surface, remaining settled, falling again when support is mined, passing through background scenery, and attracting/collecting exactly one item when approached. Existing mining, inventory, equipment, building, tree backgrounds, combat, and reset checks also passed.
+
+
+## Desert area and falling sand — 2026-10-25
+
+The right side of the prototype world now contains a desert with sand, sandstone, cracked earth, cacti, and dead bushes using the new artwork. Sand falls as a full block when unsupported and settles back into terrain, including after player placement. Cacti require the axe and yield cactus resources. Dead bushes break from a connected pickaxe, axe, or sword hit and drop nothing. See [[Desert Prototype]] for the complete rules and validation. New material shortcuts are 8 (sand), 9 (sandstone), 0 (cracked earth), and Minus (cactus).

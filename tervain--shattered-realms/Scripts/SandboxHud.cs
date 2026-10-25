@@ -28,7 +28,7 @@ public partial class SandboxHud : CanvasLayer
         }
         Text("TERVAIN / BUILD · EXPLORE · FIGHT", new Vector2(28, 14), 13, "94bcb0");
         Text("A place to call home", new Vector2(26, 33), 28, "f1e5cb");
-        Text("1 Pickaxe: dirt / stone / ore   2 Axe: wood   3 Sword   ·   All three can fight", new Vector2(28, 77), 16, "b5c7bd");
+        Text("1 Pickaxe: terrain / ore   2 Axe: wood / cactus   3 Sword   ·   Hit dead bushes with any weapon", new Vector2(28, 77), 14, "b5c7bd");
         _status = Text("", new Vector2(825, 27), 16, "b3e9d8");
         _enemyStatus = Text("", new Vector2(825, 83), 12, "f4c396");
         _target = Text("", new Vector2(28, 124), 17, "e4e3c8");
@@ -40,12 +40,12 @@ public partial class SandboxHud : CanvasLayer
         root.AddChild(footer);
         var hotbar = new HBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
         hotbar.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterBottom);
-        float halfWidth = (EquipmentRules.SlotCount * 115 + (EquipmentRules.SlotCount - 1) * 8) / 2f;
+        float halfWidth = (EquipmentRules.SlotCount * 94 + (EquipmentRules.SlotCount - 1) * 6) / 2f;
         hotbar.OffsetLeft = -halfWidth;
         hotbar.OffsetRight = halfWidth;
         hotbar.OffsetTop = -158;
         hotbar.OffsetBottom = -62;
-        hotbar.AddThemeConstantOverride("separation", 8);
+        hotbar.AddThemeConstantOverride("separation", 6);
         root.AddChild(hotbar);
         root.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
         for (int i = 0; i < EquipmentRules.SlotCount; i++)
@@ -53,7 +53,7 @@ public partial class SandboxHud : CanvasLayer
             int slot = i;
             var button = new Button
             {
-                CustomMinimumSize = new Vector2(115, 68), ToggleMode = true,
+                CustomMinimumSize = new Vector2(94, 68), ToggleMode = true,
                 FocusMode = Control.FocusModeEnum.None,
                 TooltipText = i < 2 ? $"Left click or J to swing and damage enemies. Hold left mouse to harvest {EquipmentRules.Purpose((EquipmentKind)i).ToLowerInvariant()} within {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks."
                     : i == 2 ? "Left click or J to swing the equipped sword."
@@ -66,7 +66,7 @@ public partial class SandboxHud : CanvasLayer
                 button.VerticalIconAlignment = VerticalAlignment.Top;
                 button.AddThemeConstantOverride("icon_max_width", 24);
             }
-            button.AddThemeFontSizeOverride("font_size", 15);
+            button.AddThemeFontSizeOverride("font_size", 12);
             button.AddThemeStyleboxOverride("normal", Box("263e43", "46615e", 1));
             button.AddThemeStyleboxOverride("hover", Box("344e50", "91b5a4", 1));
             button.AddThemeStyleboxOverride("pressed", Box("405b50", "d6d6a0", 3));
@@ -75,7 +75,7 @@ public partial class SandboxHud : CanvasLayer
             _slots[i] = button;
             hotbar.AddChild(button);
         }
-        var controls = Text("A/D Move   SPACE Jump   SHIFT Dodge   1–7 / Wheel Select   LMB Use   J Swing   RMB Build",
+        var controls = Text("A/D Move   SPACE Jump   SHIFT Dodge   1–9 / 0 / − / Wheel Select   LMB Use   J Swing   RMB Build",
             Vector2.Zero, 15, "dfddc8");
         controls.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
         controls.OffsetLeft = 28; controls.OffsetTop = -52; controls.OffsetRight = -20; controls.OffsetBottom = -28;
@@ -101,8 +101,8 @@ public partial class SandboxHud : CanvasLayer
         {
             EquipmentKind item = (EquipmentKind)i;
             string detail = EquipmentRules.TryGetMaterial(item, out BlockKind material)
-                ? inventory.Count(material).ToString() : EquipmentRules.Purpose(item);
-            _slots[i].Text = $"{i + 1}  {(item == EquipmentKind.IronOre ? "IRON ORE" : item.ToString().ToUpperInvariant())}\n{detail}";
+                ? inventory.Count(material).ToString() : EquipmentRules.Purpose(item).Replace(" / ", " /\n");
+            _slots[i].Text = $"{EquipmentRules.Shortcut(i)} {EquipmentRules.Name(item).ToUpperInvariant()}\n{detail}";
             _slots[i].SetPressedNoSignal(i == selected);
         }
     }

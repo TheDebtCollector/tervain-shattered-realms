@@ -17,6 +17,7 @@ Related: [[MVP Design]] · [[Sandbox Prototype]]
 - Do not change the game project during this design phase; only the Obsidian vault may be updated.
 - Generate terrain and biome layouts based on a world seed when the player creates a new world.
 - The current biome set is **plains, jungle, tundra, desert, and swamp**.
+- Every generated world must contain all five current biomes. The seed determines their sizes, positions, and terrain shapes; minimum region widths remain to be defined.
 - The system must support adding more biomes and future structures.
 - The game uses a 2D side-view world. Generation rules must describe a horizontal surface and vertical terrain, rather than assume a top-down map.
 
@@ -55,7 +56,7 @@ These terrain identities are proposals; exact climate ranges, materials, frequen
 ## Decisions still open
 
 - World dimensions, surface height range, terrain steepness, and underground depth.
-- Whether every world must contain all five biomes, their minimum widths, repetition, and frequency.
+- Minimum biome widths, repetition, and frequency, while guaranteeing all five current biomes in every world.
 - Climate distribution, adjacency rules, and biome transition width.
 - Water, caves, and resource placement rules.
 - Starting biome and safe spawn requirements.

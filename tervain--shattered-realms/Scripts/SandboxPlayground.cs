@@ -51,7 +51,7 @@ public partial class SandboxPlayground : Node2D
             }
             else CallDeferred(MethodName.RunSandboxTests);
         }
-        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview") || HasArgument("--equipment-preview") || HasArgument("--ore-preview"))
+        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview") || HasArgument("--equipment-preview") || HasArgument("--ore-preview") || HasArgument("--tree-preview"))
             CallDeferred(MethodName.SavePreview);
     }
 
@@ -190,6 +190,16 @@ public partial class SandboxPlayground : Node2D
             return;
         }
         bool wallPreview = HasArgument("--wall-preview");
+        if (HasArgument("--tree-preview"))
+        {
+            _enemy.ProcessMode = ProcessModeEnum.Disabled;
+            _player.Position = new Vector2(168, GroundY);
+            _player.Velocity = Vector2.Zero;
+            SelectSlot(1);
+            foreach (int x in new[] { 5, 9 })
+                for (int y = 13; y < BlockWorld.SurfaceRow; y++)
+                    _world.TryMine(new Vector2I(x, y), _player, out _);
+        }
         if (HasArgument("--ore-preview"))
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
@@ -214,7 +224,8 @@ public partial class SandboxPlayground : Node2D
         }
         await Frames(30);
         await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
-        Error result = GetViewport().GetTexture().GetImage().SavePng(HasArgument("--ore-preview") ? "res://.godot/ore-preview.png" : wallPreview ? "res://.godot/wall-preview.png" : "res://.godot/sandbox-preview.png");
+        string preview = HasArgument("--tree-preview") ? "tree-preview" : HasArgument("--ore-preview") ? "ore-preview" : wallPreview ? "wall-preview" : "sandbox-preview";
+        Error result = GetViewport().GetTexture().GetImage().SavePng($"res://.godot/{preview}.png");
         GD.Print("Sandbox preview: " + result);
         GetTree().Quit(result == Error.Ok ? 0 : 1);
     }
@@ -386,10 +397,37 @@ public partial class SandboxPlayground : Node2D
             await TestBackgroundWalls();
             await TestCombinedSystems();
             await TestIronOre();
+            await TestTreeBackground();
             _testingRestart = true;
             Check(GetTree().ReloadCurrentScene() == Error.Ok, "Sandbox can restart.");
         }
         catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async Task TestTreeBackground()
+    {
+        _player.Position = new Vector2(168, GroundY);
+        _player.Velocity = Vector2.Zero;
+        SelectSlot(1);
+        for (int y = 13; y < BlockWorld.SurfaceRow; y++)
+        {
+            Vector2I trunk = new(5, y);
+            Check(_world.TryMine(trunk, _player, out BlockKind kind) && kind == BlockKind.Wood && _world.HasWall(trunk),
+                "Harvesting each tree segment preserves its background trunk.");
+        }
+        await Frames(2);
+        Vector2I anchor = new(5, 14);
+        Check(!_world.CanMine(anchor, _player) && !_world.TryMine(anchor, _player, out _),
+            "The exposed tree background cannot be harvested again.");
+        var point = new PhysicsPointQueryParameters2D { Position = BlockWorld.Center(anchor), CollisionMask = 1 };
+        Check(_world.GetWorld2D().DirectSpaceState.IntersectPoint(point).Count == 0,
+            "Harvested tree backgrounds have no collision.");
+        _inventory.Add(BlockKind.Wood);
+        Check(_world.TryPlace(anchor, BlockKind.Wood, _player, _inventory),
+            "A tree background supports a foreground block without neighbouring solids.");
+        SelectSlot(1);
+        Check(_world.TryMine(anchor, _player, out _) && _world.HasWall(anchor),
+            "Removing a block built on a tree preserves the original tree background.");
     }
 
     private async Task TestIronOre()

@@ -10,9 +10,9 @@ created: 2026-10-25
 
 Related: [[Sandbox Prototype]]
 
-The developer's four original Aseprite documents are preserved in `tervain--shattered-realms/Art-work/`: dirt, stone, wood, and iron ore. Each is a single-frame, single-layer 24×24 RGBA tile. Runtime PNG exports live in `Art-work/Exported/`; both the editable sources and exports are versioned.
+The developer's six original Aseprite documents are preserved in `tervain--shattered-realms/Art-work/`: dirt, stone, wood, iron ore, dirt background, and cave background. Each is a single-frame, single-layer 24×24 RGBA tile. Runtime PNG exports live in `Art-work/Exported/`; both the editable sources and exports are versioned.
 
-`Scripts/BlockArt.cs` loads and shares these textures across foreground blocks, background walls, dropped resources, held building materials, and hotbar icons. Terrain uses the original 24×24 pixels with nearest filtering. Pickups use 12×12 thumbnails; held materials and hotbar icons use 24×24. Exposed dirt keeps the existing grass strip. Background walls use the same art at 42% brightness and retain their separate, non-solid, unmineable behaviour. Bedrock keeps its existing protected-floor appearance.
+`Scripts/BlockArt.cs` loads and shares these textures across foreground blocks, background walls, dropped resources, held building materials, and hotbar icons. Terrain uses the original 24×24 pixels with nearest filtering. Pickups use 12×12 thumbnails; held materials and hotbar icons use 24×24. Exposed dirt keeps the existing grass strip. Dirt walls use `dirt-background-24.png`; stone, iron ore, and bedrock walls use `cave-background-24.png`. These dedicated background tiles are drawn at their authored brightness. Tree walls use the wood tile at 42% brightness. All background walls retain their separate, non-solid, unmineable behaviour. Harvested trees also keep a dim canopy, including after their top trunk segment is removed. Bedrock keeps its existing protected-floor appearance.
 
 Iron ore has a small four-block deposit at columns 55–56, rows 25–26, beside the right wall of the test cave. It requires the starter pickaxe and takes 0.8 seconds to harvest. Each block drops one iron ore block that can be collected, placed from slot **7**, and recovered. Slots 1–6 keep their existing mappings. Smelting, bars, and ore-based crafting are future work.
 
@@ -22,8 +22,17 @@ Iron ore has a small four-block deposit at columns 55–56, rows 25–26, beside
 2. Export it as a 24×24 PNG with the same filename into `Art-work/Exported/`, overwriting its previous export. Godot reimports the PNG automatically.
 3. Commit the source, PNG, and any changed `.import` metadata together.
 
-Alternatively, `python Tools/export_blocks.py` from the Godot project directory regenerates these four PNGs. It requires Python and Pillow (`python -m pip install Pillow`). The exporter supports single opaque normal layers, full-size raw or compressed RGBA cels, and one 24×24 frame; it rejects unsupported document structures. Use Aseprite's normal PNG export when adding layers or animation. The game itself does not require Python or Aseprite.
+Alternatively, `python Tools/export_blocks.py` from the Godot project directory regenerates all six PNGs. It requires Python and Pillow (`python -m pip install Pillow`). The exporter supports single opaque normal layers, full-size raw or compressed RGBA cels, and one 24×24 frame; it rejects unsupported document structures. Use Aseprite's normal PNG export when adding layers or animation. The game itself does not require Python or Aseprite.
 
 ## Verification
 
 The C# build passed without warnings or errors. The sandbox suite passed existing movement, mining, building, background-wall, tool damage, combat, and reset checks, plus slot-seven selection, seven-slot wheel wrapping, ore tool restrictions, harvest timing, collection, placement cost, and recovery. The standalone combat suite passed. Surface, excavated-wall, and cave/ore previews were rendered and inspected, including the expanded hotbar layout.
+
+
+## Dedicated wall art and tree backgrounds — 2026-10-25
+
+The new dirt and cave background sources and PNG exports are versioned alongside the original block artwork. Backgrounds remain limited to generated solid cells; original sky and cave air remain without block walls. Mining ore reveals a plain cave wall, so the harvested ore does not remain visible in the background.
+
+Tree trunks already had persistent wooden wall cells; tree canopy rendering now follows those wall cells too. Harvesting the entire trunk leaves a dim background tree. Its wall cells can support foreground construction and cannot be mined for additional wood. New player builds do not create extra background cells.
+
+The build and sandbox checks passed, including full-tree harvesting, preserved wall cells, no repeated harvest, no wall collision, and placing/removing a wall-supported block on the tree. Dirt/cave wall and fully harvested tree previews were rendered and inspected.

@@ -197,3 +197,10 @@ Godot checks passed for empty-air swings with both tools, repeated held swings, 
 The developer’s dirt, stone, wood, and iron ore Aseprite tiles now replace the corresponding placeholder blocks. The same art is used for darkened background walls, drops, held materials, and hotbar icons, with nearest filtering. Source documents and PNG exports are preserved in Git. See [[Artwork]] for the export workflow and verification.
 
 A four-block iron ore deposit sits beside the right edge of the underground cavity. The pickaxe harvests it in 0.8 seconds; it has its own collectible, placeable stack in the new seventh hotbar slot. Existing six slots retain their mappings. Ore crafting and smelting remain future work.
+
+
+## Dedicated background tiles and persistent tree scenery — 2026-10-25
+
+Back walls now use the developer’s new dirt and cave background tiles at their original brightness. Dirt uses the dirt background; stone and ore use the cave background. Trees keep darkened wooden wall cells after harvesting, and their canopy now remains as dim scenery even when the top trunk block is removed. These backgrounds have no collision, cannot be mined, and support foreground placement. Original air cells remain without block walls. See [[Artwork]] for assets and export instructions.
+
+Build and sandbox checks passed, including harvesting every trunk segment, preserving each background cell, preventing extra wood harvests, verifying no wall collision, and placing/removing foreground wood on a tree background. Rendered excavation and harvested-tree previews were inspected.

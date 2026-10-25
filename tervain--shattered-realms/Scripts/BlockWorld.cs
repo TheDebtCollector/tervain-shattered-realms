@@ -133,16 +133,19 @@ public partial class BlockWorld : Node2D
             DrawCircle(new Vector2(px + 11, 240), 69, new Color("234348"));
         }
         foreach (int x in TreeColumns)
-            if (HasBlock(new Vector2I(x, 13)))
+            if (HasWall(new Vector2I(x, 13)))
             {
-                DrawCircle(new Vector2(x * TileSize + TileSize / 2f, 294), 57, new Color("426951"));
-                DrawCircle(new Vector2(x * TileSize - 10, 282), 35, new Color("4d7658"));
+                bool backgroundOnly = !HasBlock(new Vector2I(x, 13));
+                Color canopy = new("426951"), highlights = new("4d7658");
+                if (backgroundOnly) { canopy = canopy.Darkened(0.58f); highlights = highlights.Darkened(0.58f); }
+                DrawCircle(new Vector2(x * TileSize + TileSize / 2f, 294), 57, canopy);
+                DrawCircle(new Vector2(x * TileSize - 10, 282), 35, highlights);
             }
         foreach (var entry in _walls)
         {
             if (HasBlock(entry.Key)) continue; // Opaque foreground already covers this scenery.
             Rect2 rect = CellRect(entry.Key);
-            BlockArt.Draw(this, rect, entry.Value, new Color(0.42f, 0.42f, 0.42f));
+            BlockArt.DrawWall(this, rect, entry.Value);
         }
         foreach (var entry in _blocks)
         {

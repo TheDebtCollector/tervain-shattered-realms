@@ -7,6 +7,25 @@ namespace Tervain;
 public static class BlockArt
 {
     private static readonly Dictionary<BlockKind, Texture2D> Textures = new();
+    private static readonly Dictionary<string, Texture2D> WallTextures = new();
+
+    public static void DrawWall(CanvasItem canvas, Rect2 rect, BlockKind kind)
+    {
+        // There is no separate wood-wall tile yet; keep a recessed version of the trunk.
+        if (kind == BlockKind.Wood)
+        {
+            Draw(canvas, rect, kind, new Color(0.42f, 0.42f, 0.42f));
+            return;
+        }
+        string name = kind == BlockKind.Dirt ? "dirt" : "cave";
+        if (!WallTextures.TryGetValue(name, out Texture2D? texture))
+        {
+            texture = GD.Load<Texture2D>($"res://Art-work/Exported/{name}-background-24.png");
+            WallTextures[name] = texture;
+        }
+        // These tiles already include their background shading.
+        canvas.DrawTextureRect(texture, rect, false);
+    }
 
     public static Texture2D? Texture(BlockKind kind)
     {

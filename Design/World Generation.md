@@ -18,6 +18,7 @@ Related: [[MVP Design]] · [[Sandbox Prototype]]
 - Generate terrain and biome layouts based on a world seed when the player creates a new world.
 - The current biome set is **plains, jungle, tundra, desert, and swamp**.
 - Every generated world must contain all five current biomes. The seed determines their sizes, positions, and terrain shapes; minimum region widths remain to be defined.
+- Initial player spawn is always at world coordinates **(0, 0)** and always within the **plains** biome, for every seed. Terrain and biome generation must accommodate this fixed spawn rather than move the spawn to a different location.
 - The system must support adding more biomes and future structures.
 - The game uses a 2D side-view world. Generation rules must describe a horizontal surface and vertical terrain, rather than assume a top-down map.
 
@@ -59,6 +60,6 @@ These terrain identities are proposals; exact climate ranges, materials, frequen
 - Minimum biome widths, repetition, and frequency, while guaranteeing all five current biomes in every world.
 - Climate distribution, adjacency rules, and biome transition width.
 - Water, caves, and resource placement rules.
-- Starting biome and safe spawn requirements.
+- Starting plains region size, spawn clearance and ground support, and any additional safe spawn requirements. Initial spawn coordinates and biome are fixed at (0, 0) in plains; respawn behavior remains undecided.
 - Seed input format and handling of existing worlds after generation updates.
 - First structure types and placement guarantees.

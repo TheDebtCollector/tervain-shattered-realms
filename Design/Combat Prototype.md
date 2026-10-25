@@ -95,6 +95,10 @@ Mining, resource drops and collection, hotbar stacks, and block placement are no
 
 At the developer's request, combat is now available directly in [[Sandbox Prototype]] alongside mining and building. J attacks from any hotbar slot; mouse clicks use the selected tool or material. The creature waits to the right of spawn until approached. Built terrain shields both sides from melee damage, and blocks cannot be placed inside a living enemy. Movement and combat timing values remain at the accepted baseline. The isolated combat room remains available for tuning and regression checks.
 
-## Current movement tuning — 2026-10-25
+## Earlier 16px movement tuning — 2026-10-25
 
 The developer subsequently requested one extra block of jump height and a player four blocks tall on a 16px grid. Current player height is 64px, and jump speed is 606.3542. Measured held-jump height increased from about 107.8px to 123.8px. Run speed, gravity, dodge, damage, and combat timing values remain as above. These explicit requests supersede the original baseline's jump speed and character proportions. See [[Sandbox Prototype]] for the full scale and mining changes.
+
+## Current movement scale — 2026-10-25
+
+The latest requested grid uses 24px blocks and a 72px player, exactly three blocks tall. Jump speed remains 606.3542 and full jump height remains approximately 123.8px. Run speed, gravity, dodge settings, and combat timings are preserved. Collision and melee coverage use the new player proportions. Mining reach is now 192px (eight blocks). See [[Sandbox Prototype]] for current values and validation.

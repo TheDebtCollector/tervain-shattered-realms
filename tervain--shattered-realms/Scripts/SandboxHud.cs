@@ -53,7 +53,7 @@ public partial class SandboxHud : CanvasLayer
             {
                 CustomMinimumSize = new Vector2(115, 68), ToggleMode = true,
                 FocusMode = Control.FocusModeEnum.None,
-                TooltipText = i == 0 ? "Hold left mouse to mine within 24 blocks, through terrain." : "Left or right click to place the selected material."
+                TooltipText = i == 0 ? $"Hold left mouse to mine within {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks, through terrain." : "Left or right click to place the selected material."
             };
             button.AddThemeFontSizeOverride("font_size", 15);
             button.AddThemeStyleboxOverride("normal", Box("263e43", "46615e", 1));

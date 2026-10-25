@@ -44,7 +44,7 @@ Press **F5** in the Godot .NET project. The main scene is now `Scenes/SandboxPla
 2. Move near the dropped item to collect it; nearby drops are drawn toward the character.
 3. Select dirt and place it on the ground nearby.
 4. Harvest tree trunks for wood. Stone is available underground and in the surface outcrop to the right of spawn.
-5. Build walls and a roof. The player is four blocks tall; leave a five-block-high entrance for comfortable headroom.
+5. Build walls and a roof. The player is three blocks tall; leave a four-block-high entrance for comfortable headroom.
 6. Try jumping onto your construction, mining underfoot, and recovering placed blocks.
 7. Approach the creature to the right of spawn. Read its wind-up, dodge with Shift, and attack with J. Try building a barrier, mining it away, fighting, and then continuing construction in the same world.
 
@@ -52,12 +52,12 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 
 ## Implemented rules
 
-- Small authored terrain: 144 by 48 cells, with 16-pixel blocks, trees, surface stone, and an underground cavity. Physical world dimensions remain 2304 by 768 pixels.
+- Small authored terrain: 96 by 32 cells, with 24-pixel blocks, trees, surface stone, and an underground cavity. Physical world dimensions remain 2304 by 768 pixels.
 - Dirt, stone, and wood are mineable, collectible, and placeable. Each has its own stack in the hotbar.
 - Pickaxe is a permanent starter tool. Material stacks start empty.
 - Dirt takes 0.28 seconds to mine, wood 0.4 seconds, and stone 0.6 seconds.
 - Changing the target or hotbar slot interrupts unfinished mining.
-- Mining reaches 384 pixels (24 blocks) from the player body centre and ignores intervening blocks. Only distance, world bounds, player state, and protected bedrock determine whether a target can be mined. Building reaches 160 pixels (10 blocks) and still requires a clear path.
+- Mining reaches 192 pixels (8 blocks) from the player body centre and ignores intervening blocks. Only distance, world bounds, player state, and protected bedrock determine whether a target can be mined. Building reaches 160 pixels (about 6.7 blocks) and still requires a clear path.
 - Placed blocks need an adjacent foreground block or a background wall in the target cell. They cannot overlap the player or a living enemy.
 - Successful placement spends one item. Rejected placement spends nothing.
 - Blocks remain suspended if their support is later removed; structural collapse is outside this milestone.
@@ -113,7 +113,7 @@ Crafting, a separate inventory window, placing or mining background walls, doors
 - Does movement still feel as good as the accepted baseline?
 - Can you switch comfortably between mining, fighting, and building without leaving the scene?
 
-## Grid, jump, and mining update — 2026-10-25
+## Earlier 16px tuning — 2026-10-25
 
 The developer requested a finer 16px block grid, a four-block-tall player, a jump one block higher, much longer mining range, and mining through solid terrain.
 
@@ -137,3 +137,16 @@ A wall in the target cell is an alternative to an adjacent foreground block when
 To try it, excavate a chamber in the terrain, select dirt, stone, or wood, and place a block on a darker wall away from other foreground blocks. Mining that block returns its material and reveals the original wall again. In original open air, construction still needs an adjacent foreground block.
 
 Verification passed in Godot for generation only behind original solid cells, unchanged sky/cave air, persistent walls after mining, unmineable wall-only cells, zero wall collision, walking through exposed walls, isolated wall-supported placement and material cost, normal collision on the new foreground block, and recovering that block without removing the wall. Existing sandbox and combined combat checks also passed. The C# build had zero warnings and errors, and an excavated chamber with an isolated foreground block was rendered and inspected.
+
+## Current 24px scale and shorter reach — 2026-10-25
+
+The developer requested halving mining reach and changing blocks to 24px with a player three blocks tall. This supersedes the earlier 16px proportions and 384px mining reach above.
+
+- Blocks are now 24 by 24 pixels. The player drawing and collision body are 72 pixels high, exactly three blocks.
+- Mining reach is 192 pixels, half the previous physical distance. This equals eight blocks on the new grid. Mining through intervening blocks remains enabled.
+- The world uses 96 by 32 cells, retaining its overall 2304 by 768 pixel size. Terrain, trees, cave bounds, and surface stone are aligned to the new grid; the surface is now at y=456.
+- Jump speed remains 606.3542, and the measured full jump is still approximately 123.8 pixels. Run speed, dodge settings, and combat timings are preserved.
+- Building reach remains 160 pixels. Generated background walls remain non-solid, unmineable, and usable as foreground construction supports.
+- Player drawing, collision, and the melee swing's vertical coverage have been adjusted for the taller body. Mining hints derive their block count from the current reach and tile size.
+
+The C# build passed with zero warnings and errors. Godot checks passed for the exact three-block player size, world dimensions, preserved jump height, halved mining boundary, buried-block mining, material recovery, building collisions, non-solid background walls, wall-supported construction, and combat. The isolated combat suite also passed. Surface and excavated-wall previews were rendered and inspected.

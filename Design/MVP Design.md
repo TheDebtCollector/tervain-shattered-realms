@@ -125,7 +125,7 @@ Gate consequences are a promising future identity feature. They are not required
 
 ## Open design questions
 
-- Final visual style. Prototype tile scale is now 16px, with a four-block-tall player, as requested by the developer.
+- Final visual style. Prototype tile scale is now 24px, with a three-block-tall player, as requested by the developer.
 - Target platforms; desktop is the current working assumption.
 - Second realm theme and its signature reward.
 - Gate discovery and activation requirements.

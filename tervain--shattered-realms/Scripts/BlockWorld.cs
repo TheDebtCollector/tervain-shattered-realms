@@ -6,12 +6,14 @@ namespace Tervain;
 /// <summary>Small authored block terrain. Generation and chunking come in later milestones.</summary>
 public partial class BlockWorld : Node2D
 {
-    public const int TileSize = 16;
-    public const int Width = 144;
-    public const int Height = 48;
+    public const int TileSize = 24;
+    public const int Width = 96;
+    public const int Height = 32;
+    public const int SurfaceRow = 19;
+    public const int CaveBottomRow = 28;
     public const float BuildReach = 160;
-    public const float MiningReach = 384;
-    private static readonly int[] TreeColumns = { 8, 14, 40, 48, 84, 94, 120, 130 };
+    public const float MiningReach = 192;
+    private static readonly int[] TreeColumns = { 5, 9, 27, 32, 56, 63, 80, 87 };
     private readonly Dictionary<Vector2I, BlockKind> _blocks = new();
     // Generated scenery only: kept independently of foreground blocks, with no physics bodies.
     private readonly Dictionary<Vector2I, BlockKind> _walls = new();
@@ -24,7 +26,7 @@ public partial class BlockWorld : Node2D
     public static Vector2I CellAt(Vector2 point) => new(Mathf.FloorToInt(point.X / TileSize), Mathf.FloorToInt(point.Y / TileSize));
     public static Vector2 Center(Vector2I cell) => new Vector2(cell.X + 0.5f, cell.Y + 0.5f) * TileSize;
     public static Rect2 CellRect(Vector2I cell) => new(new Vector2(cell.X, cell.Y) * TileSize, Vector2.One * TileSize);
-    public static bool InBounds(Vector2I cell) => cell.X >= 0 && cell.X < Width && cell.Y >= 6 && cell.Y < Height;
+    public static bool InBounds(Vector2I cell) => cell.X >= 0 && cell.X < Width && cell.Y >= 4 && cell.Y < Height;
     public bool TryGetBlock(Vector2I cell, out BlockKind kind) => _blocks.TryGetValue(cell, out kind);
     public bool HasBlock(Vector2I cell) => _blocks.ContainsKey(cell);
     public bool HasWall(Vector2I cell) => _walls.ContainsKey(cell);
@@ -38,17 +40,15 @@ public partial class BlockWorld : Node2D
     public override void _Ready()
     {
         for (int x = 0; x < Width; x++)
-            for (int y = 28; y < Height; y++)
+            for (int y = SurfaceRow; y < Height; y++)
             {
-                if (y is >= 36 and <= 41 && x is >= 58 and <= 81) continue;
-                SetBlock(new Vector2I(x, y), y == Height - 1 ? BlockKind.Bedrock : y < 34 ? BlockKind.Dirt : BlockKind.Stone);
+                if (y >= 24 && y < CaveBottomRow && x is >= 39 and <= 54) continue;
+                SetBlock(new Vector2I(x, y), y == Height - 1 ? BlockKind.Bedrock : y < 23 ? BlockKind.Dirt : BlockKind.Stone);
             }
         foreach (int x in TreeColumns)
-            for (int dx = 0; dx < 2; dx++)
-                for (int y = 20; y < 28; y++) SetBlock(new Vector2I(x + dx, y), BlockKind.Wood);
+            for (int y = 13; y < SurfaceRow; y++) SetBlock(new Vector2I(x, y), BlockKind.Wood);
         // Surface stone outcrops offer stone without forcing a deep excavation.
-        for (int x = 58; x <= 65; x++)
-            for (int y = 26; y < 28; y++) SetBlock(new Vector2I(x, y), BlockKind.Stone);
+        for (int x = 39; x <= 43; x++) SetBlock(new Vector2I(x, SurfaceRow - 1), BlockKind.Stone);
         // Snapshot only generated solid cells. Open sky, cave air, and later player builds
         // do not create walls; mining the foreground leaves this scenery intact.
         foreach (var block in _blocks) _walls[block.Key] = block.Value;
@@ -123,17 +123,17 @@ public partial class BlockWorld : Node2D
     {
         DrawRect(new Rect2(0, 0, Width * TileSize, Height * TileSize), new Color("182f37"));
         DrawCircle(new Vector2(650, 180), 55, new Color("5e7163"));
-        for (int x = 0; x < Width; x += 8)
+        for (int x = 0; x < Width; x += 5)
         {
             float px = x * TileSize + 40;
             DrawRect(new Rect2(px, 250, 22, 240), new Color("234348"));
             DrawCircle(new Vector2(px + 11, 240), 69, new Color("234348"));
         }
         foreach (int x in TreeColumns)
-            if (HasBlock(new Vector2I(x, 20)) || HasBlock(new Vector2I(x + 1, 20)))
+            if (HasBlock(new Vector2I(x, 13)))
             {
-                DrawCircle(new Vector2(x * TileSize + 16, 302), 57, new Color("426951"));
-                DrawCircle(new Vector2(x * TileSize - 10, 290), 35, new Color("4d7658"));
+                DrawCircle(new Vector2(x * TileSize + TileSize / 2f, 294), 57, new Color("426951"));
+                DrawCircle(new Vector2(x * TileSize - 10, 282), 35, new Color("4d7658"));
             }
         foreach (var entry in _walls)
         {
@@ -144,7 +144,7 @@ public partial class BlockWorld : Node2D
             DrawLine(rect.Position, rect.Position + new Vector2(TileSize, 0), colour.Lightened(0.08f), 1);
             DrawLine(rect.Position, rect.Position + new Vector2(0, TileSize), colour.Darkened(0.15f), 1);
             // Recessed seams distinguish scenery from the brighter foreground grid.
-            DrawLine(rect.Position + new Vector2(4, 8), rect.Position + new Vector2(12, 8), colour.Darkened(0.14f), 1);
+            DrawLine(rect.Position + new Vector2(4, TileSize / 2f), rect.Position + new Vector2(TileSize - 4, TileSize / 2f), colour.Darkened(0.14f), 1);
         }
         foreach (var entry in _blocks)
         {
@@ -159,11 +159,11 @@ public partial class BlockWorld : Node2D
                 DrawRect(new Rect2(rect.Position, new Vector2(TileSize, 3)), new Color("8ca773"));
             if (entry.Value == BlockKind.Wood)
             {
-                DrawLine(rect.Position + new Vector2(4, 2), rect.Position + new Vector2(4, 13), colour.Darkened(0.2f), 1);
-                DrawLine(rect.Position + new Vector2(11, 4), rect.Position + new Vector2(11, 15), colour.Darkened(0.2f), 1);
+                DrawLine(rect.Position + new Vector2(TileSize * 0.28f, 3), rect.Position + new Vector2(TileSize * 0.28f, TileSize - 4), colour.Darkened(0.2f), 1);
+                DrawLine(rect.Position + new Vector2(TileSize * 0.72f, 6), rect.Position + new Vector2(TileSize * 0.72f, TileSize - 1), colour.Darkened(0.2f), 1);
             }
             if (entry.Value == BlockKind.Stone)
-                DrawLine(rect.Position + new Vector2(3, 11), rect.Position + new Vector2(10, 7), colour.Darkened(0.2f), 1);
+                DrawLine(rect.Position + new Vector2(4, TileSize * 0.68f), rect.Position + new Vector2(TileSize * 0.6f, TileSize * 0.45f), colour.Darkened(0.2f), 1);
         }
         if (HighlightCell is Vector2I selected)
         {

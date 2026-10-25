@@ -33,7 +33,7 @@ Press **F5** in the Godot .NET project. The main scene is now `Scenes/SandboxPla
 | 3 | Select sword |
 | 4 / 5 / 6 / 7 | Select dirt / stone / wood / iron ore |
 | 8 / 9 / 0 / Minus | Select sand / sandstone / cracked earth / cactus |
-| Mouse wheel or hotbar buttons | Change selection |
+| Mouse wheel or hotbar buttons | Change selection, including snow / ice / frozen earth / tundra wood |
 | Hold left mouse with pickaxe | Repeat swings; mine dirt, stone, or iron ore when targeted |
 | Hold left mouse with axe | Repeat swings; harvest wood when targeted |
 | Left mouse with sword | Melee attack |
@@ -58,7 +58,7 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 
 ## Implemented rules
 
-- Small authored terrain: 96 by 32 cells, with 24-pixel blocks, trees, surface stone, and an underground cavity. Physical world dimensions remain 2304 by 768 pixels.
+- Small authored terrain: 128 by 32 cells, with 24-pixel blocks, forest, desert, tundra, surface stone, and an underground cavity. Physical world dimensions remain 3072 by 768 pixels.
 - Dirt, stone, wood, and iron ore are mineable, collectible, and placeable. Each has its own stack in the hotbar.
 - Pickaxe, axe, and sword are permanent starter equipment. The pickaxe is selected on spawn. Material stacks start empty.
 - Dirt takes 0.28 seconds to mine, wood 0.4 seconds, stone 0.6 seconds, and iron ore 0.8 seconds.
@@ -85,9 +85,9 @@ The outline is pale green when an action is allowed and red when it is blocked. 
 | `Scripts/FallingSand.cs` | Full-size falling sand physics and settlement |
 | `Scripts/BlockWorld.cs` | Foreground terrain, generated background walls, collision, reach/visibility checks, mining, placement, target rendering |
 | `Scripts/SandboxInventory.cs` | Material stack counts and spending |
-| `Scripts/Equipment.cs` | Shared eleven-slot equipment mapping and tool/material rules |
+| `Scripts/Equipment.cs` | Shared fifteen-slot equipment mapping and tool/material rules |
 | `Scripts/MaterialDrop.cs` | Dropped material gravity, terrain collision, attraction, and collection |
-| `Scripts/SandboxHud.cs` | Hotbar, counts, status, and controls |
+| `Scripts/SandboxHud.cs` | Scrolling hotbar, counts, status, and controls |
 | `Scripts/SandboxPlayground.cs` | Tool selection, combat/tool priority, integration checks, and optional scene switching |
 | `Scripts/CombatRules.cs` | Shared terrain visibility check for melee damage |
 | `Scenes/SandboxPlayground.tscn` | Combined world, player, training creature, and camera |
@@ -239,3 +239,8 @@ Selection considers the nearest block before checking its tool requirement: a pi
 Keyboard mining ignores cursor position and mouse hover over the HUD. Ctrl by itself does not attack with a sword or build with material slots. Normal mouse-targeted mining and building remain available when Ctrl is released.
 
 Focused verification uses -- --ctrl-mining-test and is included in the full sandbox suite. Checks cover the actual Ctrl input binding, nearest-first harvesting and drops, both facing directions, ignoring a closer block behind, preserving the floor, stopping outside reach, wrong-tool restrictions, axe harvesting, release cancellation, no sword/building actions from Ctrl, and returning to mouse mining.
+
+
+## Snow and tundra biome — 2026-10-25
+
+The world extends to 128×32 cells with a snow/tundra biome after the desert, beginning at column 96. Snow, ice, and frozen earth require the pickaxe; pine wood requires the axe. Tundra shrubs break from any connected tool or weapon hit and drop nothing. Pines preserve their background after harvesting. The fifteen-slot hotbar scrolls to follow selection, and the mouse wheel reaches all new material stacks. Existing shortcuts remain unchanged. See [[Tundra Prototype]] for the complete implementation and validation.

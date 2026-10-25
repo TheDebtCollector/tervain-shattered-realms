@@ -13,7 +13,7 @@ Related: [[Sandbox Prototype]] · [[Artwork]]
 
 ## Explore
 
-Walk right from the forest into the desert, starting at column 68 (x=1632). The authored prototype world retains its existing size and starter area. Its rightmost 28 columns now contain sand, sandstone, cracked-earth patches, a low dune, four cacti, and three dead bushes. A warm sky, sun, and distant dunes replace the forest backdrop in this area. Realm generation and saving remain later milestones.
+Walk right from the forest into the desert, starting at column 68 (x=1632). The desert retains its original 28-column span (columns 68–95) and is followed by the new [[Tundra Prototype]]. These columns contain sand, sandstone, cracked-earth patches, a low dune, four cacti, and three dead bushes. A warm sky, sun, and distant dunes replace the forest backdrop in this area. Realm generation and saving remain later milestones.
 
 All seven new desert Aseprite assets are preserved with their PNG exports: `sand-block-24`, `sand-background-24`, `sandstone-block-24`, `sandstone-background-24`, `cracked-earth-block-24`, `cactus-24`, and `dry-bush-24`.
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Tervain;
 
-public enum BlockKind { Dirt, Stone, Wood, Bedrock, IronOre, Sand, Sandstone, CrackedEarth, Cactus }
+public enum BlockKind { Dirt, Stone, Wood, Bedrock, IronOre, Sand, Sandstone, CrackedEarth, Cactus, Snow, Ice, FrozenEarth, TundraWood }
 
 /// <summary>Material stacks for this prototype. Starter tools are permanent equipment, not stacks.</summary>
 public sealed class SandboxInventory

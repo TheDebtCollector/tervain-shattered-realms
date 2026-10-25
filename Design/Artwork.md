@@ -10,7 +10,7 @@ created: 2026-10-25
 
 Related: [[Sandbox Prototype]]
 
-The developer's thirteen integrated Aseprite documents are preserved in `tervain--shattered-realms/Art-work/`: the original dirt/stone/wood/ore tiles and dirt/cave walls, plus seven desert assets listed in [[Desert Prototype]]. Each is a single-frame, single-layer 24×24 RGBA tile. Runtime PNG exports live in `Art-work/Exported/`; both the editable sources and exports are versioned.
+The developer's twenty-one integrated Aseprite documents are preserved in `tervain--shattered-realms/Art-work/`: the original dirt/stone/wood/ore tiles and dirt/cave walls, plus seven desert assets listed in [[Desert Prototype]] and eight winter assets listed in [[Tundra Prototype]]. Each is a single-frame, single-layer 24×24 RGBA tile. Runtime PNG exports live in `Art-work/Exported/`; both the editable sources and exports are versioned.
 
 `Scripts/BlockArt.cs` loads and shares these textures across foreground blocks, background walls, dropped resources, held building materials, and hotbar icons. Terrain uses the original 24×24 pixels with nearest filtering. Pickups use 12×12 thumbnails; held materials and hotbar icons use 24×24. Exposed dirt keeps the existing grass strip. Dirt walls use `dirt-background-24.png`; stone, iron ore, and bedrock walls use `cave-background-24.png`. These dedicated background tiles are drawn at their authored brightness. Tree walls use the wood tile at 42% brightness. All background walls retain their separate, non-solid, unmineable behaviour. Harvested trees also keep a dim canopy, including after their top trunk segment is removed. Bedrock keeps its existing protected-floor appearance.
 
@@ -40,4 +40,9 @@ The build and sandbox checks passed, including full-tree harvesting, preserved w
 
 ## Desert art — 2026-10-25
 
-The desert now uses all seven desert assets: sand and sandstone foreground/background tiles, cracked earth, cactus, and dry bush. Sand uses its sand background; sandstone and cracked earth use the sandstone background. Cacti and bushes leave no background-wall silhouettes. See [[Desert Prototype]] for gathering, bush hit behaviour, falling sand, and controls. Other new biome source art is outside this checkpoint.
+The desert now uses all seven desert assets: sand and sandstone foreground/background tiles, cracked earth, cactus, and dry bush. Sand uses its sand background; sandstone and cracked earth use the sandstone background. Cacti and bushes leave no background-wall silhouettes. See [[Desert Prototype]] for gathering, bush hit behaviour, falling sand, and controls. The snow and tundra assets are now integrated as described below.
+
+
+## Snow and tundra art — 2026-10-25
+
+All eight winter sources are integrated: snow and ice foreground/background tiles, frozen earth, tundra wood, snow pine, and tundra shrub. Snow/frozen earth use the snow wall tile, ice uses the ice wall tile, and pine trunks leave dim tundra-wood walls. Pine sprites use their visible 12×17-pixel region at six-times nearest scale. Shrubs use their native 24×24 tile. See [[Tundra Prototype]] for location, gathering rules, and validation.

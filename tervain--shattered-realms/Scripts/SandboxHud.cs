@@ -9,6 +9,8 @@ public partial class SandboxHud : CanvasLayer
     private readonly Button[] _slots = new Button[EquipmentRules.SlotCount];
     private Label _status = null!, _target = null!, _notice = null!, _enemyStatus = null!;
     private float _noticeLeft;
+    private ScrollContainer _hotbarScroll = null!;
+    private int _lastSelected = -1;
     public override void _Ready()
     {
         var root = new Control { MouseFilter = Control.MouseFilterEnum.Ignore };
@@ -38,15 +40,18 @@ public partial class SandboxHud : CanvasLayer
         footer.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
         footer.OffsetTop = -166;
         root.AddChild(footer);
-        var hotbar = new HBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore };
-        hotbar.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterBottom);
-        float halfWidth = (EquipmentRules.SlotCount * 94 + (EquipmentRules.SlotCount - 1) * 6) / 2f;
-        hotbar.OffsetLeft = -halfWidth;
-        hotbar.OffsetRight = halfWidth;
-        hotbar.OffsetTop = -158;
-        hotbar.OffsetBottom = -62;
+        _hotbarScroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Auto,
+            VerticalScrollMode = ScrollContainer.ScrollMode.Disabled, MouseFilter = Control.MouseFilterEnum.Ignore };
+        _hotbarScroll.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
+        _hotbarScroll.OffsetLeft = 28;
+        _hotbarScroll.OffsetRight = -28;
+        _hotbarScroll.OffsetTop = -158;
+        _hotbarScroll.OffsetBottom = -62;
+        root.AddChild(_hotbarScroll);
+        var hotbar = new HBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore,
+            SizeFlagsVertical = Control.SizeFlags.ExpandFill };
         hotbar.AddThemeConstantOverride("separation", 6);
-        root.AddChild(hotbar);
+        _hotbarScroll.AddChild(hotbar);
         root.TextureFilter = CanvasItem.TextureFilterEnum.Nearest;
         for (int i = 0; i < EquipmentRules.SlotCount; i++)
         {
@@ -104,6 +109,11 @@ public partial class SandboxHud : CanvasLayer
                 ? inventory.Count(material).ToString() : EquipmentRules.Purpose(item).Replace(" / ", " /\n");
             _slots[i].Text = $"{EquipmentRules.Shortcut(i)} {EquipmentRules.Name(item).ToUpperInvariant()}\n{detail}";
             _slots[i].SetPressedNoSignal(i == selected);
+        }
+        if (_lastSelected != selected)
+        {
+            _hotbarScroll.EnsureControlVisible(_slots[selected]);
+            _lastSelected = selected;
         }
     }
 

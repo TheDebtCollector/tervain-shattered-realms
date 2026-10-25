@@ -42,6 +42,7 @@ public partial class SandboxPlayground : Node2D
         AddChild(_hud);
         RenderingServer.SetDefaultClearColor(new Color("182f37"));
         if (HasArgument("--ctrl-mining-test")) CallDeferred(MethodName.RunCtrlMiningTests);
+        if (HasArgument("--tundra-test")) CallDeferred(MethodName.RunTundraTests);
         if (HasArgument("--desert-test")) CallDeferred(MethodName.RunDesertTests);
         if (HasArgument("--sandbox-test"))
         {
@@ -54,7 +55,7 @@ public partial class SandboxPlayground : Node2D
             }
             else CallDeferred(MethodName.RunSandboxTests);
         }
-        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview") || HasArgument("--equipment-preview") || HasArgument("--ore-preview") || HasArgument("--tree-preview") || HasArgument("--desert-preview"))
+        if (HasArgument("--sandbox-preview") || HasArgument("--wall-preview") || HasArgument("--equipment-preview") || HasArgument("--ore-preview") || HasArgument("--tree-preview") || HasArgument("--desert-preview") || HasArgument("--tundra-preview") || HasArgument("--tundra-wall-preview"))
             CallDeferred(MethodName.SavePreview);
     }
 
@@ -140,13 +141,13 @@ public partial class SandboxPlayground : Node2D
         {
             string instruction = building ? "This space is occupied."
                 : block == BlockKind.Bedrock ? "This foundation cannot be mined."
-                : !EquipmentRules.CanMine(item, block) ? block is BlockKind.Wood or BlockKind.Cactus ? "Requires axe (2)." : "Requires pickaxe (1)."
+                : !EquipmentRules.CanMine(item, block) ? block is BlockKind.Wood or BlockKind.Cactus or BlockKind.TundraWood ? "Requires axe (2)." : "Requires pickaxe (1)."
                 : valid ? mineForward ? "CTRL  /  Mining the closest block ahead." : "Hold left mouse or Ctrl to harvest."
                 : $"Move closer; tool reach is {BlockWorld.MiningReach / BlockWorld.TileSize:0} blocks through terrain.";
             target = $"{(block == BlockKind.IronOre ? "IRON ORE" : block.ToString().ToUpperInvariant())}  /  {instruction}";
         }
         else if (!overUi && _world.HasBush(cell))
-            target = "DEAD BUSH  /  Hit with any tool or weapon. No drops.";
+            target = cell.X >= BlockWorld.TundraStartColumn ? "TUNDRA SHRUB  /  Hit with any tool or weapon. No drops." : "DEAD BUSH  /  Hit with any tool or weapon. No drops.";
         else if (miningTool && !overUi && _world.HasWall(cell))
             target = "BACKGROUND WALL  /  Select a building material to attach a block here.";
         if (miningTool && primary && valid)
@@ -207,6 +208,27 @@ public partial class SandboxPlayground : Node2D
             return;
         }
         bool wallPreview = HasArgument("--wall-preview");
+        if (HasArgument("--tundra-preview") || HasArgument("--tundra-wall-preview"))
+        {
+            _enemy.ProcessMode = ProcessModeEnum.Disabled;
+            _player.Position = new Vector2(113.5f * BlockWorld.TileSize, GroundY);
+            _player.Velocity = Vector2.Zero;
+            if (HasArgument("--tundra-wall-preview"))
+            {
+                for (int x = 111; x <= 116; x++)
+                    for (int y = 19; y <= 24; y++) _world.TryMine(new Vector2I(x, y), _player, out _);
+                await Frames(2);
+                _player.Position = new Vector2(113.5f * BlockWorld.TileSize, 25 * BlockWorld.TileSize);
+                _player.Velocity = Vector2.Zero;
+                SelectSlot(1);
+                _world.TryMine(new Vector2I(115, 17), _player, out _);
+                _world.TryMine(new Vector2I(115, 18), _player, out _);
+                _inventory.Add(BlockKind.Stone);
+                _world.TryPlace(new Vector2I(115, 18), BlockKind.Stone, _player, _inventory);
+            }
+            _inventory.Add(BlockKind.TundraWood);
+            SelectSlot(14);
+        }
         if (HasArgument("--desert-preview"))
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
@@ -247,7 +269,7 @@ public partial class SandboxPlayground : Node2D
         }
         await Frames(30);
         await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
-        string preview = HasArgument("--desert-preview") ? "desert-preview" : HasArgument("--tree-preview") ? "tree-preview" : HasArgument("--ore-preview") ? "ore-preview" : wallPreview ? "wall-preview" : "sandbox-preview";
+        string preview = HasArgument("--tundra-wall-preview") ? "tundra-wall-preview" : HasArgument("--tundra-preview") ? "tundra-preview" : HasArgument("--desert-preview") ? "desert-preview" : HasArgument("--tree-preview") ? "tree-preview" : HasArgument("--ore-preview") ? "ore-preview" : wallPreview ? "wall-preview" : "sandbox-preview";
         Error result = GetViewport().GetTexture().GetImage().SavePng($"res://.godot/{preview}.png");
         GD.Print("Sandbox preview: " + result);
         GetTree().Quit(result == Error.Ok ? 0 : 1);
@@ -297,8 +319,8 @@ public partial class SandboxPlayground : Node2D
             Check(BlockWorld.TileSize == 24 && _player.BodyBounds.Size.Y == 68
                 && BlockWorld.TileSize * 3 - _player.BodyBounds.Size.Y == 4,
                 "The 68px player has four pixels of clearance in a three-block tunnel.");
-            Check(BlockWorld.Width * BlockWorld.TileSize == 2304 && BlockWorld.Height * BlockWorld.TileSize == 768,
-                "The grid preserves the world's physical dimensions.");
+            Check(BlockWorld.Width * BlockWorld.TileSize == 3072 && BlockWorld.Height * BlockWorld.TileSize == 768,
+                "The expanded world spans 3072 by 768 pixels.");
             float newSpeed = _player.JumpSpeed;
             float newHeight = await MeasureJump(newSpeed);
             Check(Mathf.Abs(newHeight - 123.8f) < 1,
@@ -314,7 +336,7 @@ public partial class SandboxPlayground : Node2D
             SelectSlot(EquipmentRules.SlotCount - 1);
             GetViewport().PushInput(new InputEventMouseButton { ButtonIndex = MouseButton.WheelDown, Pressed = true });
             await Frames(2);
-            Check(_player.EquippedItem == EquipmentKind.Pickaxe, "Mouse wheel selection wraps across all eleven equipment slots.");
+            Check(_player.EquippedItem == EquipmentKind.Pickaxe, "Mouse wheel selection wraps across all fifteen equipment slots.");
             int blocksBeforeSwinging = _world.BlockCount;
             for (int slot = 0; slot < 2; slot++)
             {
@@ -427,10 +449,132 @@ public partial class SandboxPlayground : Node2D
             await TestTunnelClearance();
             await TestDesert();
             await TestCtrlMining();
+            await TestTundra();
             _testingRestart = true;
             Check(GetTree().ReloadCurrentScene() == Error.Ok, "Sandbox can restart.");
         }
         catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async void RunTundraTests()
+    {
+        try
+        {
+            _enemy.ProcessMode = ProcessModeEnum.Disabled;
+            _enemy.Position = new Vector2(200, GroundY);
+            await TestTundra();
+            GD.Print("TUNDRA TESTS PASSED.");
+            GetTree().Quit();
+        }
+        catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async Task TestTundra()
+    {
+        Check(BlockWorld.Width == 128 && GetNode<Camera2D>("Player/Camera2D").LimitRight == BlockWorld.Width * BlockWorld.TileSize,
+            "The expanded world and camera include the tundra beyond the desert.");
+        foreach (var (cell, expected) in new[] { (new Vector2I(98, 19), BlockKind.Snow),
+            (new Vector2I(98, 21), BlockKind.FrozenEarth), (new Vector2I(98, 24), BlockKind.Ice),
+            (new Vector2I(108, 19), BlockKind.Ice), (new Vector2I(115, 17), BlockKind.TundraWood) })
+            Check(_world.TryGetBlock(cell, out BlockKind generated) && generated == expected && _world.HasWall(cell),
+                $"The tundra generates {expected} with a persistent background wall.");
+        foreach (BlockKind material in new[] { BlockKind.Snow, BlockKind.Ice, BlockKind.FrozenEarth })
+            Check(EquipmentRules.CanMine(EquipmentKind.Pickaxe, material) && !EquipmentRules.CanMine(EquipmentKind.Axe, material),
+                "Snow, ice, and frozen earth require a pickaxe.");
+        Check(_world.HasBush(new Vector2I(112, 18)) && !_world.HasWall(new Vector2I(112, 18)),
+            "Tundra shrubs generate without background walls.");
+
+        _player.Position = new Vector2(97.5f * BlockWorld.TileSize, GroundY);
+        _player.Velocity = Vector2.Zero;
+        SelectSlot(0);
+        await Frames(5);
+        int snowBefore = _inventory.Count(BlockKind.Snow);
+        await UseTool(new Vector2I(98, 19), 20);
+        await Frames(20);
+        Check(!_world.HasBlock(new Vector2I(98, 19)) && _inventory.Count(BlockKind.Snow) == snowBefore + 1,
+            "Snow can be mined and its gravity-affected drop collected.");
+        SelectSlot(11);
+        await UseTool(new Vector2I(98, 19), 3);
+        Check(_world.TryGetBlock(new Vector2I(98, 19), out BlockKind kind) && kind == BlockKind.Snow
+            && _inventory.Count(BlockKind.Snow) == snowBefore, "The snow slot places and spends the correct material.");
+        SelectSlot(0);
+        int earthBefore = _inventory.Count(BlockKind.FrozenEarth);
+        await UseTool(new Vector2I(98, 21), 39);
+        await Frames(20);
+        Check(_inventory.Count(BlockKind.FrozenEarth) == earthBefore + 1 && _world.HasWall(new Vector2I(98, 21)),
+            "Frozen earth yields its own resource and leaves a snow background wall.");
+        SelectSlot(13);
+        await UseTool(new Vector2I(95, 18), 3);
+        Check(_world.TryGetBlock(new Vector2I(95, 18), out kind) && kind == BlockKind.FrozenEarth
+            && _inventory.Count(BlockKind.FrozenEarth) == earthBefore, "Frozen earth can be built outside its native biome.");
+        SelectSlot(0);
+        await UseTool(new Vector2I(95, 18), 39);
+        Check(_inventory.Count(BlockKind.FrozenEarth) == earthBefore + 1,
+            "Placed frozen earth can be recovered as the same material.");
+
+        _player.Position = new Vector2(107.5f * BlockWorld.TileSize, GroundY);
+        _player.Velocity = Vector2.Zero;
+        SelectSlot(1);
+        await UseTool(new Vector2I(108, 19), 35);
+        Check(_world.HasBlock(new Vector2I(108, 19)), "The axe does not harvest the frozen pond.");
+        SelectSlot(0);
+        int iceBefore = _inventory.Count(BlockKind.Ice);
+        await UseTool(new Vector2I(108, 19), 32);
+        await Frames(20);
+        Check(_inventory.Count(BlockKind.Ice) == iceBefore + 1 && _world.HasWall(new Vector2I(108, 19)),
+            "The frozen pond yields ice and preserves its ice background.");
+        SelectSlot(12);
+        await UseTool(new Vector2I(109, 18), 3);
+        Check(_world.TryGetBlock(new Vector2I(109, 18), out kind) && kind == BlockKind.Ice
+            && _inventory.Count(BlockKind.Ice) == iceBefore, "Ice can be placed from its own stack.");
+        SelectSlot(0);
+        await UseTool(new Vector2I(109, 18), 32);
+        Check(_inventory.Count(BlockKind.Ice) == iceBefore + 1, "Placed ice can be mined and recovered.");
+
+        _player.Position = new Vector2(114 * BlockWorld.TileSize, GroundY);
+        _player.Velocity = Vector2.Zero;
+        SelectSlot(0);
+        await UseTool(new Vector2I(115, 17), 30);
+        Check(_world.HasBlock(new Vector2I(115, 17)), "Pine wood cannot be harvested with the pickaxe.");
+        SelectSlot(1);
+        int woodBefore = _inventory.Count(BlockKind.TundraWood);
+        await UseTool(new Vector2I(115, 17), 30);
+        await Frames(20);
+        Check(!_world.HasBlock(new Vector2I(115, 17)) && _world.HasWall(new Vector2I(115, 17))
+            && _inventory.Count(BlockKind.TundraWood) == woodBefore + 1,
+            "Axe harvesting yields tundra wood and preserves the background pine.");
+        SelectSlot(14);
+        await UseTool(new Vector2I(115, 17), 3);
+        Check(_world.TryGetBlock(new Vector2I(115, 17), out kind) && kind == BlockKind.TundraWood
+            && _inventory.Count(BlockKind.TundraWood) == woodBefore, "Tundra wood is placeable from the final hotbar slot.");
+        SelectSlot(1);
+        await UseTool(new Vector2I(115, 17), 30);
+        await UseTool(new Vector2I(115, 18), 30);
+        Check(!_world.HasBlock(new Vector2I(115, 18)) && _world.HasWall(new Vector2I(115, 17))
+            && _world.HasWall(new Vector2I(115, 18)) && _inventory.Count(BlockKind.TundraWood) == woodBefore + 2,
+            "Harvesting the whole pine preserves its background and collects both trunk segments.");
+        var pinePoint = new PhysicsPointQueryParameters2D { Position = BlockWorld.Center(new Vector2I(115, 17)), CollisionMask = 1 };
+        Check(!_world.CanMine(new Vector2I(115, 17), _player)
+            && _world.GetWorld2D().DirectSpaceState.IntersectPoint(pinePoint).Count == 0,
+            "Background pine trunks have no collision and cannot be harvested again.");
+
+        // Use a shrub outside the earlier pine-harvesting swings in either facing direction.
+        Vector2I shrub = new(119, 18);
+        _player.Position = new Vector2(BlockWorld.Center(shrub).X - _player.Facing * 45, GroundY);
+        _player.Velocity = Vector2.Zero;
+        SelectSlot(2);
+        int bushes = _world.BushCount;
+        int drops = 0;
+        foreach (Node node in GetChildren()) if (node is MaterialDrop) drops++;
+        await Frames(3);
+        Input.ActionPress("attack");
+        await Frames(1);
+        Input.ActionRelease("attack");
+        await Frames(28);
+        int remainingDrops = 0;
+        foreach (Node node in GetChildren()) if (node is MaterialDrop) remainingDrops++;
+        Check(!_world.HasBush(shrub) && _world.BushCount == bushes - 1 && remainingDrops <= drops,
+            "Tundra shrubs break on a connected weapon hit and drop nothing.");
     }
 
     private async void RunCtrlMiningTests()
@@ -517,7 +661,7 @@ public partial class SandboxPlayground : Node2D
     private async Task TestTunnelClearance()
     {
         // Isolated geometry avoids changing the authored biome and earlier mining fixtures.
-        var tunnel = new Node2D { Position = new Vector2(2600, 300) };
+        var tunnel = new Node2D { Position = new Vector2(BlockWorld.Width * BlockWorld.TileSize + 300, 300) };
         AddChild(tunnel);
         void Solid(Rect2 rect)
         {

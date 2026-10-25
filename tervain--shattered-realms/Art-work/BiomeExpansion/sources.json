@@ -1,0 +1,62 @@
+[
+  {
+    "id": "temperate_forest",
+    "path": "References/temperate_forest-sheet.png"
+  },
+  {
+    "id": "taiga",
+    "path": "References/taiga-sheet.png"
+  },
+  {
+    "id": "badlands",
+    "path": "References/badlands-sheet.png"
+  },
+  {
+    "id": "alpine",
+    "path": "References/alpine-sheet.png"
+  },
+  {
+    "id": "volcanic_wasteland",
+    "path": "References/volcanic_wasteland-sheet.png"
+  },
+  {
+    "id": "limestone_caverns",
+    "path": "References/limestone_caverns-sheet.png"
+  },
+  {
+    "id": "crystal_caverns",
+    "path": "References/crystal_caverns-sheet.png"
+  },
+  {
+    "id": "fungal_caves",
+    "path": "References/fungal_caves-sheet.png"
+  },
+  {
+    "id": "frozen_caves",
+    "path": "References/frozen_caves-sheet.png"
+  },
+  {
+    "id": "magma_caverns",
+    "path": "References/magma_caverns-sheet.png"
+  },
+  {
+    "id": "shattered_islands",
+    "path": "References/shattered_islands-sheet.png"
+  },
+  {
+    "id": "enchanted_forest",
+    "path": "References/enchanted_forest-sheet.png"
+  },
+  {
+    "id": "corrupted_wilderness",
+    "path": "References/corrupted_wilderness-sheet.png"
+  },
+  {
+    "id": "living_biome",
+    "path": "References/living_biome-sheet.png"
+  },
+  {
+    "id": "voidlands",
+    "path": "References/voidlands-sheet.png"
+  }
+]

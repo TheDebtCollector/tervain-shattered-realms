@@ -46,3 +46,7 @@ The desert now uses all seven desert assets: sand and sandstone foreground/backg
 ## Snow and tundra art — 2026-10-25
 
 All eight winter sources are integrated: snow and ice foreground/background tiles, frozen earth, tundra wood, snow pine, and tundra shrub. Snow/frozen earth use the snow wall tile, ice uses the ice wall tile, and pine trunks leave dim tundra-wood walls. Pine sprites use their visible 12×17-pixel region at six-times nearest scale. Shrubs use their native 24×24 tile. See [[Tundra Prototype]] for location, gathering rules, and validation.
+
+## Biome expansion art — 2026-10-25
+
+The fifteen new biomes now have a separate environmental art package with 180 native 24×24 tiles, matching editable Aseprite sources, and previews. See [[Biome Artwork]] for the catalog, validation, and editing workflow. Integration into the game is pending.

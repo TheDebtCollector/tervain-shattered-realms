@@ -96,6 +96,8 @@ public partial class BlockWorld : Node2D
         if (player.IsDead || HasBlock(cell) || !CanReach(cell, player, false)) return false;
         Rect2 playerBounds = new(player.GlobalPosition + new Vector2(-14, -48), new Vector2(28, 48));
         if (CellRect(cell).Intersects(playerBounds)) return false;
+        foreach (Node node in GetTree().GetNodesInGroup("enemies"))
+            if (node is Enemy enemy && !enemy.IsDead && CellRect(cell).Intersects(enemy.BodyBounds)) return false;
         return HasBlock(cell + Vector2I.Down) || HasBlock(cell + Vector2I.Up) ||
             HasBlock(cell + Vector2I.Left) || HasBlock(cell + Vector2I.Right);
     }

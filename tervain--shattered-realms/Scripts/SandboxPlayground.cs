@@ -8,6 +8,7 @@ public partial class SandboxPlayground : Node2D
 {
     private Player _player = null!;
     private BlockWorld _world = null!;
+    private Enemy _enemy = null!;
     private SandboxHud _hud = null!;
     private readonly SandboxInventory _inventory = new();
     private int _selected;
@@ -33,6 +34,7 @@ public partial class SandboxPlayground : Node2D
         BindMouse("use_secondary", MouseButton.Right);
         _player = GetNode<Player>("Player");
         _world = GetNode<BlockWorld>("World");
+        _enemy = GetNode<Enemy>("TrainingCreature");
         _hud = new SandboxHud { SlotSelected = SelectSlot };
         AddChild(_hud);
         RenderingServer.SetDefaultClearColor(new Color("182f37"));
@@ -40,7 +42,8 @@ public partial class SandboxPlayground : Node2D
         {
             if (_testingRestart)
             {
-                Check(_inventory.Count(BlockKind.Dirt) == 0 && _world.HasBlock(new Vector2I(11, 14)), "Reset restores terrain and clears inventory.");
+                Check(_inventory.Count(BlockKind.Dirt) == 0 && _world.HasBlock(new Vector2I(11, 14))
+                    && _player.Health == 100 && _enemy.Health == 100, "Reset restores terrain, inventory, and both combatants.");
                 GetTree().ChangeSceneToFile("res://Scenes/CombatPlayground.tscn");
             }
             else CallDeferred(MethodName.RunSandboxTests);
@@ -93,7 +96,10 @@ public partial class SandboxPlayground : Node2D
         Vector2I cell = BlockWorld.CellAt(point);
         bool overUi = _testTarget == null && (GetViewport().GuiGetHoveredControl() != null ||
             GetViewport().GetMousePosition().Y < 114 || GetViewport().GetMousePosition().Y > GetViewportRect().Size.Y - 142);
-        bool busy = _player.IsDead || _player.IsDodging || _player.IsAttacking;
+        // This parent runs before Player. Reserve held combat inputs too, so a tool action
+        // cannot spend a block before Player starts an attack or dodge on the same frame.
+        bool busy = _player.IsDead || _player.IsDodging || _player.IsAttacking ||
+            Input.IsActionPressed("attack") || Input.IsActionPressed("dodge");
         bool primary = Input.IsActionPressed("use_primary");
         bool secondary = Input.IsActionPressed("use_secondary");
         bool mine = _selected == 0;
@@ -123,11 +129,11 @@ public partial class SandboxPlayground : Node2D
             if (_world.TryPlace(cell, (BlockKind)(_selected - 1), _player, _inventory)) _placeCooldown = 0.16f;
             else if (Input.IsActionJustPressed("use_primary") || Input.IsActionJustPressed("use_secondary"))
                 _hud.Notify(_inventory.Count((BlockKind)(_selected - 1)) == 0 ? "Mine and collect this material first."
-                    : "Place within reach, against an existing block, with a clear path and room for your character.");
+                    : "Place within reach, against an existing block, with a clear path and room for characters.");
         }
         _world.MiningProgress = _miningCell != null ? Mathf.Clamp(_mineElapsed / BlockWorld.MineDuration(material), 0, 1) : 0;
         _world.QueueRedraw();
-        _hud.Refresh(_player, _inventory, _selected, target);
+        _hud.Refresh(_player, _enemy, _inventory, _selected, target);
         if (Input.IsActionJustPressed("restart")) GetTree().ReloadCurrentScene();
         if (Input.IsActionJustPressed("combat_playground"))
         {
@@ -156,6 +162,8 @@ public partial class SandboxPlayground : Node2D
     {
         try
         {
+            _enemy.ProcessMode = ProcessModeEnum.Disabled;
+            _enemy.Position = new Vector2(2000, 448); // Keep pure sandbox checks clear of the live-enemy placement rule.
             await Frames(30);
             Check(_player.IsOnFloor(), "Player stands on editable terrain.");
             Check(_player.MoveSpeed == 280 && _player.JumpSpeed == 565 && _player.DodgeDuration == 0.18f, "Accepted movement settings are preserved.");
@@ -243,9 +251,97 @@ public partial class SandboxPlayground : Node2D
             Vector2 screenPosition = _player.GetGlobalTransformWithCanvas().Origin;
             Check(screenPosition.Y > 170 && screenPosition.Y < GetViewportRect().Size.Y - 150,
                 "Camera keeps underground exploration clear of the HUD.");
+            await TestCombinedSystems();
             _testingRestart = true;
             Check(GetTree().ReloadCurrentScene() == Error.Ok, "Sandbox can restart.");
         }
         catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+    }
+
+    private async Task TestCombinedSystems()
+    {
+        Check(_enemy.NoticeRange == 180, "The scene configures a short enemy notice range.");
+        _player.Position = new Vector2(336, 448);
+        _player.Velocity = Vector2.Zero;
+        _enemy.Position = new Vector2(592, 448);
+        _enemy.Velocity = Vector2.Zero;
+        _enemy.ProcessMode = ProcessModeEnum.Inherit;
+        await Frames(20);
+        Check(Mathf.Abs(_enemy.Position.X - 592) < 1 && _player.Health == 100,
+            "The creature waits outside notice range so gathering can begin peacefully.");
+        _enemy.ProcessMode = ProcessModeEnum.Disabled;
+        _player.Position = new Vector2(448, 448);
+        _player.Velocity = Vector2.Zero;
+        _enemy.Position = new Vector2(544, 448);
+        _enemy.Velocity = Vector2.Zero;
+        _inventory.Add(BlockKind.Wood, 10);
+        await Frames(3);
+        int woodBefore = _inventory.Count(BlockKind.Wood);
+        Check(!_world.TryPlace(new Vector2I(17, 13), BlockKind.Wood, _player, _inventory)
+            && _inventory.Count(BlockKind.Wood) == woodBefore, "Building cannot trap a live enemy inside a block.");
+
+        Vector2I wall = new(15, 13);
+        SelectSlot(3);
+        _testTarget = BlockWorld.Center(wall);
+        Input.ActionPress("use_primary");
+        await Frames(3);
+        Input.ActionRelease("use_primary");
+        Check(_world.HasBlock(wall), "A defensive block can be built between combatants.");
+        Input.ActionPress("attack");
+        await Frames(28);
+        Input.ActionRelease("attack");
+        Check(_enemy.Health == 100, "Player attacks cannot damage enemies through built terrain.");
+
+        _enemy.ProcessMode = ProcessModeEnum.Inherit;
+        await Frames(5);
+        Check(_enemy.State == Enemy.Intent.Windup, "The enemy signals attacks in the same editable world.");
+        await Frames(54);
+        Check(_player.Health == 100, "Built terrain shields the player from enemy strikes.");
+        _enemy.ProcessMode = ProcessModeEnum.Disabled;
+
+        SelectSlot(0);
+        Input.ActionPress("use_primary");
+        await Frames(4);
+        Input.ActionPress("attack");
+        await Frames(28);
+        Input.ActionRelease("attack");
+        Check(_world.HasBlock(wall), "Attacking interrupts unfinished mining without breaking the block.");
+        await Frames(35);
+        Input.ActionRelease("use_primary");
+        await Frames(25);
+        Check(!_world.HasBlock(wall) && _inventory.Count(BlockKind.Wood) == woodBefore,
+            "Mining resumes after combat and recovers the defensive block.");
+
+        Input.ActionPress("attack");
+        await Frames(28);
+        Input.ActionRelease("attack");
+        Check(_enemy.Health == 75, "Melee damages an exposed enemy while the pickaxe is selected.");
+        _enemy.ProcessMode = ProcessModeEnum.Inherit;
+        await Frames(115);
+        Check(_player.Health < 100, "Enemy attacks deal damage after the defensive block is removed.");
+        _enemy.ProcessMode = ProcessModeEnum.Disabled;
+        _player.Position = new Vector2(448, 448);
+        _player.Velocity = Vector2.Zero;
+        _enemy.Position = new Vector2(544, 448);
+        _enemy.Velocity = Vector2.Zero;
+        SelectSlot(3);
+        for (int i = 0; i < 3; i++)
+        {
+            Input.ActionPress("attack");
+            await Frames(28);
+            Input.ActionRelease("attack");
+            await Frames(2);
+        }
+        Check(_enemy.IsDead, "The enemy can be defeated with a building material selected.");
+        Input.ActionPress("use_secondary");
+        Input.ActionPress("attack");
+        await Frames(3);
+        Check(!_world.HasBlock(wall) && _inventory.Count(BlockKind.Wood) == woodBefore,
+            "Simultaneous attack and build input does not place or spend a block.");
+        Input.ActionRelease("attack");
+        await Frames(30);
+        Input.ActionRelease("use_secondary");
+        Check(_world.HasBlock(wall) && _inventory.Count(BlockKind.Wood) == woodBefore - 1,
+            "Building continues after victory without switching scenes or losing inventory.");
     }
 }

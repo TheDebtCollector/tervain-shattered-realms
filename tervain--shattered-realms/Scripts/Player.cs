@@ -94,7 +94,8 @@ public partial class Player : CharacterBody2D
             if (_attackLeft <= 0.27f && _attackLeft >= 0.14f && !_attackConnected)
             {
                 foreach (Node node in GetTree().GetNodesInGroup("enemies"))
-                    if (node is Enemy enemy && !enemy.IsDead && AttackBounds.Intersects(enemy.BodyBounds))
+                    if (node is Enemy enemy && !enemy.IsDead && AttackBounds.Intersects(enemy.BodyBounds)
+                        && CombatRules.HasClearPath(this, enemy))
                     {
                         enemy.ReceiveHit(AttackDamage, Facing);
                         _attackConnected = true;

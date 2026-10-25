@@ -7,7 +7,7 @@ public partial class SandboxHud : CanvasLayer
 {
     public Action<int>? SlotSelected { get; set; }
     private readonly Button[] _slots = new Button[4];
-    private Label _status = null!, _target = null!, _notice = null!;
+    private Label _status = null!, _target = null!, _notice = null!, _enemyStatus = null!;
     private float _noticeLeft;
     public override void _Ready()
     {
@@ -26,10 +26,11 @@ public partial class SandboxHud : CanvasLayer
             root.AddChild(label);
             return label;
         }
-        Text("TERVAIN / SANDBOX FOUNDATION", new Vector2(28, 14), 13, "94bcb0");
+        Text("TERVAIN / BUILD · EXPLORE · FIGHT", new Vector2(28, 14), 13, "94bcb0");
         Text("A place to call home", new Vector2(26, 33), 28, "f1e5cb");
-        Text("Gather dirt, stone and wood. Use your materials to build a shelter.", new Vector2(28, 77), 16, "b5c7bd");
+        Text("Gather, build, and face the creature to your right. J attacks with any slot.", new Vector2(28, 77), 16, "b5c7bd");
         _status = Text("", new Vector2(825, 27), 16, "b3e9d8");
+        _enemyStatus = Text("", new Vector2(825, 83), 12, "f4c396");
         _target = Text("", new Vector2(28, 124), 17, "e4e3c8");
         _notice = Text("", new Vector2(28, 151), 15, "ffcb8a");
 
@@ -67,7 +68,7 @@ public partial class SandboxHud : CanvasLayer
             Vector2.Zero, 15, "dfddc8");
         controls.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
         controls.OffsetLeft = 28; controls.OffsetTop = -52; controls.OffsetRight = -20; controls.OffsetBottom = -28;
-        var warning = Text("F2 Combat playground  /  R Reset world  /  Prototype progress is not saved",
+        var warning = Text("R Reset world  /  Prototype progress is not saved  /  F2 Combat test room",
             Vector2.Zero, 12, "92ada7");
         warning.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
         warning.OffsetLeft = 28; warning.OffsetTop = -27; warning.OffsetRight = -20; warning.OffsetBottom = -6;
@@ -80,10 +81,11 @@ public partial class SandboxHud : CanvasLayer
         CornerRadiusBottomLeft = 5, CornerRadiusBottomRight = 5, CornerRadiusTopLeft = 5, CornerRadiusTopRight = 5
     };
 
-    public void Refresh(Player player, SandboxInventory inventory, int selected, string target)
+    public void Refresh(Player player, Enemy enemy, SandboxInventory inventory, int selected, string target)
     {
         _status.Text = $"HEALTH  {player.Health}/100\n" + (player.DodgeReadyIn <= 0 ? "DODGE  Ready" : $"DODGE  {player.DodgeReadyIn:0.0}s");
         _target.Text = player.IsDead ? "You fell. Press R to reset this unsaved world." : target;
+        _enemyStatus.Text = $"CREATURE {enemy.Health}/100 · {enemy.StateText}";
         _slots[0].Text = "1  PICKAXE\nMine blocks";
         for (int i = 1; i <= 3; i++)
         {

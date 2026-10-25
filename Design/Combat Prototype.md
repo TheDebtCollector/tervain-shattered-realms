@@ -60,7 +60,7 @@ A rendered screenshot was inspected for layout. On 2026-10-25, the developer pla
 To rerun the engine smoke test from a terminal, use your Godot executable:
 
 ```powershell
-& '<path-to-Godot-.NET.exe>' --headless --path 'C:\Tervain_Shattered_Realms\tervain--shattered-realms' -- --prototype-test
+& '<path-to-Godot-.NET.exe>' --headless --path 'C:\Tervain_Shattered_Realms\tervain--shattered-realms' 'res://Scenes/CombatPlayground.tscn' -- --prototype-test
 ```
 
 ## First playtest questions
@@ -90,3 +90,7 @@ Sandbox foundation: mining and placing blocks, collecting materials, a basic hot
 ## Sandbox implementation update — 2026-10-25
 
 Mining, resource drops and collection, hotbar stacks, and block placement are now implemented in [[Sandbox Prototype]]. The accepted Player script was kept unchanged, and the combat regression checks passed. Simple crafting remains the next part of the sandbox foundation milestone.
+
+## Combined world update — 2026-10-25
+
+At the developer's request, combat is now available directly in [[Sandbox Prototype]] alongside mining and building. J attacks from any hotbar slot; mouse clicks use the selected tool or material. The creature waits to the right of spawn until approached. Built terrain shields both sides from melee damage, and blocks cannot be placed inside a living enemy. Movement and combat timing values remain at the accepted baseline. The isolated combat room remains available for tuning and regression checks.

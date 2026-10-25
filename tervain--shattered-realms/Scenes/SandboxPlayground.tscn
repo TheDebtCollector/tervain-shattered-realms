@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://Scripts/SandboxPlayground.cs" id="1"]
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="2"]
 [ext_resource type="Script" path="res://Scripts/BlockWorld.cs" id="3"]
+[ext_resource type="Script" path="res://Scripts/Enemy.cs" id="4"]
 
 [node name="SandboxPlayground" type="Node2D"]
 script = ExtResource("1")
@@ -22,3 +23,8 @@ limit_right = 2304
 limit_bottom = 1120
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
+
+[node name="TrainingCreature" type="CharacterBody2D" parent="."]
+position = Vector2(592, 440)
+script = ExtResource("4")
+NoticeRange = 180.0

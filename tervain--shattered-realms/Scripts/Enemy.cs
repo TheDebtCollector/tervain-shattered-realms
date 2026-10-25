@@ -9,6 +9,8 @@ public partial class Enemy : CharacterBody2D
     [Export] public float WindupDuration { get; set; } = 0.65f;
     [Export] public float RecoveryDuration { get; set; } = 0.85f;
     [Export] public int AttackDamage { get; set; } = 20;
+    // Zero keeps the original combat room's always-active behaviour.
+    [Export] public float NoticeRange { get; set; }
     public int Health { get; private set; } = 100;
     public bool IsDead => Health <= 0;
     public Intent State { get; private set; } = Intent.Approach;
@@ -20,12 +22,13 @@ public partial class Enemy : CharacterBody2D
         Intent.Recover => "RECOVERING — ATTACK!",
         Intent.Hurt => "STAGGERED",
         Intent.Dead => "DEFEATED",
-        _ => "APPROACHING"
+        _ => _alerted ? "APPROACHING" : "WATCHING"
     };
     private Player _player = null!;
     private float _timer;
     private int _facing = -1;
     private bool _didHit;
+    private bool _alerted;
 
     public override void _Ready()
     {
@@ -38,6 +41,7 @@ public partial class Enemy : CharacterBody2D
         });
         _player = GetTree().GetFirstNodeInGroup("player") as Player ?? throw new System.InvalidOperationException("Player missing.");
         AddToGroup("enemies");
+        _alerted = NoticeRange <= 0;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -51,6 +55,8 @@ public partial class Enemy : CharacterBody2D
             switch (State)
             {
                 case Intent.Approach:
+                    _alerted = NoticeRange <= 0 || GlobalPosition.DistanceTo(_player.GlobalPosition) <= NoticeRange;
+                    if (!_alerted) break;
                     _facing = distance >= 0 ? 1 : -1;
                     horizontal = _facing * MoveSpeed;
                     if (Mathf.Abs(distance) < 108 && Mathf.Abs(_player.Position.Y - Position.Y) < 65)
@@ -64,7 +70,8 @@ public partial class Enemy : CharacterBody2D
                     horizontal = _facing * 230;
                     Rect2 hit = new(GlobalPosition + new Vector2(_facing > 0 ? 0 : -105, -60), new Vector2(105, 65));
                     Rect2 target = new(_player.GlobalPosition + new Vector2(-14, -48), new Vector2(28, 48));
-                    if (!_didHit && hit.Intersects(target)) { _player.ReceiveHit(AttackDamage, _facing); _didHit = true; }
+                    if (!_didHit && hit.Intersects(target) && CombatRules.HasClearPath(this, _player))
+                    { _player.ReceiveHit(AttackDamage, _facing); _didHit = true; }
                     if (_timer <= 0) SetState(Intent.Recover, RecoveryDuration);
                     break;
                 case Intent.Recover:

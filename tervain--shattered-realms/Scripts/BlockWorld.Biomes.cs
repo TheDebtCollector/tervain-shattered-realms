@@ -245,8 +245,9 @@ public partial class BlockWorld
         if (BiomeCatalog.Materials.TryGetValue(kind, out BiomeMaterial? material))
         {
             bool surface = material.Surface.Length > 0 && !HasBlock(cell + Vector2I.Up) && !HasLiquid(cell + Vector2I.Up);
-            DrawTextureRect(BiomeArt.Texture(surface ? material.Surface : material.Texture), rect, false);
+            TileArt.Draw(this, BiomeArt.Texture(surface ? material.Surface : material.Texture), rect);
         }
+        else if (BlockArt.Texture(kind) is Texture2D texture) TileArt.Draw(this, texture, rect);
         else BlockArt.Draw(this, rect, kind);
     }
 }

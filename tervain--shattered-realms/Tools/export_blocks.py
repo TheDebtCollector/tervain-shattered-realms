@@ -12,8 +12,8 @@ from PIL import Image
 def export(source: Path, destination: Path):
     data = source.read_bytes()
     size, magic, frames, width, height, depth = struct.unpack_from('<IHHHHH', data)
-    if (size, magic, frames, width, height, depth) != (len(data), 0xA5E0, 1, 24, 24, 32):
-        raise ValueError(f'{source.name}: expected a single 24x24 RGBA frame')
+    if (size, magic, frames, depth) != (len(data), 0xA5E0, 1, 32) or (width, height) not in ((16, 16), (24, 24)):
+        raise ValueError(f'{source.name}: expected a single 16x16 or legacy 24x24 RGBA frame')
     frame_size, frame_magic, chunks = struct.unpack_from('<IHH', data, 128)
     if frame_magic != 0xF1FA or frame_size + 128 != len(data):
         raise ValueError(f'{source.name}: invalid frame')
@@ -49,7 +49,7 @@ def export(source: Path, destination: Path):
 if __name__ == '__main__':
     import sys
     project = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parents[1]
-    art = project / 'Art-work'
-    for source in sorted(art.glob('*.ase')):
+    art = project / 'Art-work' / 'Pixel16'
+    for source in sorted((art / 'Sources').glob('*.ase')):
         export(source, art / 'Exported')
         print(f'Exported {source.name}')

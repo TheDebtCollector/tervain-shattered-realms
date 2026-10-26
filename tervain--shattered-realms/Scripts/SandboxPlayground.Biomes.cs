@@ -55,14 +55,25 @@ public partial class SandboxPlayground
                 return;
             }
             Check(BiomeCatalog.All.Length == 20 && BlockWorld.Width == 944, "All twenty biomes have playable regions.");
+            var variations = new HashSet<int>();
+            for (int x = -16; x < 16; x++)
+                for (int y = -4; y < 4; y++)
+                {
+                    var cell = new Vector2I(x, y);
+                    int index = TileArt.VariantIndex(cell);
+                    Check(index >= 0 && index < 4 && index == TileArt.VariantIndex(cell),
+                        "Terrain variants are stable and valid, including negative cells.");
+                    variations.Add(index);
+                }
+            Check(variations.Count == 4, "Terrain uses all four art variants.");
             int validated = 0;
             foreach (BiomeDefinition biome in BiomeCatalog.All)
             {
                 foreach (string path in biome.Decorations)
-                    Check(BiomeArt.Texture(path).GetWidth() == 24 && BiomeArt.Texture(path).GetHeight() == 24, biome.Name + " decorations use native 24px assets.");
+                    Check(BiomeArt.Texture(path).GetWidth() == 16 && BiomeArt.Texture(path).GetHeight() == 16, biome.Name + " decorations use native 16px assets.");
                 foreach (BiomeMaterial material in biome.Materials)
                 {
-                    Check(BiomeArt.Texture(material.Texture).GetWidth() == 24 && BiomeArt.Texture(material.Wall).GetWidth() == 24,
+                    Check(BiomeArt.Texture(material.Texture).GetWidth() == 16 && BiomeArt.Texture(material.Wall).GetWidth() == 16,
                         material.Name + " foreground/wall textures load.");
                     Check(EquipmentRules.CanMine(material.Wood ? EquipmentKind.Axe : EquipmentKind.Pickaxe, material.Kind)
                         && !EquipmentRules.CanMine(material.Wood ? EquipmentKind.Pickaxe : EquipmentKind.Axe, material.Kind),
@@ -73,7 +84,7 @@ public partial class SandboxPlayground
                         material.Name + " has a distinct inventory stack.");
                     validated++;
                 }
-                Check(BiomeArt.Texture(biome.Liquid).GetWidth() == 24 && BiomeArt.Texture(biome.LiquidSurface).GetWidth() == 24,
+                Check(BiomeArt.Texture(biome.Liquid).GetWidth() == 16 && BiomeArt.Texture(biome.LiquidSurface).GetWidth() == 16,
                     biome.Name + " liquid assets load.");
             }
             Check(validated == 51, "Fifty-one additional materials are registered without enum duplication.");

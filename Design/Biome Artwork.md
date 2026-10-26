@@ -9,6 +9,8 @@ status: integrated-in-sandbox
 
 # Biome Artwork
 
+Current runtime artwork: the simplified 16x16 package in `Art-work/Pixel16/`, including stable terrain variants. See [[Artwork]] for the 2026-10-26 update. The 24px package below remains as historical source material.
+
 Related: [[World Generation]] · [[Artwork]]
 
 ## Completed environmental package

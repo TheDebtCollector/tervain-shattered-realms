@@ -59,3 +59,10 @@ All twenty biomes now have playable authored regions, dedicated materials and wa
 ## Retained workshop resources
 
 [[Art Workshop]] preserves the earlier biome prompts, native exports, enlarged previews, source references, and portable foundation/preview scripts. The workshop guide distinguishes historical exports from the authoritative game art.
+
+## Simplified native 16px artwork — 2026-10-26
+
+The active environmental art now lives in `tervain--shattered-realms/Art-work/Pixel16/`: 220 simplified 16x16 base assets, editable ASE sources, matching PNGs, and three additional variants for repeating terrain, background walls, and liquids. Palettes and silhouettes preserve biome identity with much less detail. Material edges share base colors; exposed surface caps join horizontally. A coordinate hash chooses variants consistently so neighboring blocks avoid a uniform repeated stamp without flickering when the camera moves. Icons use the base tile.
+
+The original 24px packages and Art Workshop are retained as historical sources. Edit/export the new Pixel16 package for current gameplay. The simulation grid remains 24 world units, preserving established movement, collision, combat, and biome positions. Pixel dimensions describe source art, not physics. Native art uses nearest texture filtering.
+Verification: native art validation passed for all 676 PNG/ASE pairs (220 base assets and 152 four-variant sets). The C# build passed with no warnings/errors; biome, sandbox, and combat regression suites passed. Twenty updated biome captures and a contact sheet are saved under Pixel16/previews/.

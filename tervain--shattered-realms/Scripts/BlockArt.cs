@@ -19,7 +19,7 @@ public static class BlockArt
 		// There is no separate wood-wall tile yet; keep a recessed version of the trunk.
 		if (kind is BlockKind.Wood or BlockKind.TundraWood)
 		{
-			Draw(canvas, rect, kind, new Color(0.42f, 0.42f, 0.42f));
+			TileArt.Draw(canvas, Texture(kind)!, rect, new Color(0.42f, 0.42f, 0.42f));
 			return;
 		}
 		string name = kind switch
@@ -28,11 +28,11 @@ public static class BlockArt
 			BlockKind.Sandstone or BlockKind.CrackedEarth => "sandstone", _ => "cave" };
 		if (!WallTextures.TryGetValue(name, out Texture2D? texture))
 		{
-			texture = GD.Load<Texture2D>($"res://Art-work/Exported/{name}-background-24.png");
+			texture = GD.Load<Texture2D>($"res://Art-work/Pixel16/Exported/{name}-background-16.png");
 			WallTextures[name] = texture;
 		}
 		// These tiles already include their background shading.
-		canvas.DrawTextureRect(texture, rect, false);
+		TileArt.Draw(canvas, texture, rect);
 	}
 
 	public static Texture2D? Texture(BlockKind kind)
@@ -50,18 +50,18 @@ public static class BlockArt
 		if (name == null) return null; // Bedrock retains its distinct protected-floor appearance.
 		if (!Textures.TryGetValue(kind, out Texture2D? texture))
 		{
-			texture = GD.Load<Texture2D>($"res://Art-work/Exported/{name}-24.png");
+			texture = GD.Load<Texture2D>($"res://Art-work/Pixel16/Exported/{name}-16.png");
 			Textures[kind] = texture;
 		}
 		return texture;
 	}
 
 	private static Texture2D? _pineTexture, _shrubTexture;
-	public static Texture2D PineTexture => _pineTexture ??= GD.Load<Texture2D>("res://Art-work/Exported/snow-pine-24.png");
-	public static Texture2D ShrubTexture => _shrubTexture ??= GD.Load<Texture2D>("res://Art-work/Exported/tundra-shrub-24.png");
+	public static Texture2D PineTexture => _pineTexture ??= GD.Load<Texture2D>("res://Art-work/Pixel16/Exported/snow-pine-16.png");
+	public static Texture2D ShrubTexture => _shrubTexture ??= GD.Load<Texture2D>("res://Art-work/Pixel16/Exported/tundra-shrub-16.png");
 
 	private static Texture2D? _bushTexture;
-	public static Texture2D BushTexture => _bushTexture ??= GD.Load<Texture2D>("res://Art-work/Exported/dry-bush-24.png");
+	public static Texture2D BushTexture => _bushTexture ??= GD.Load<Texture2D>("res://Art-work/Pixel16/Exported/dry-bush-16.png");
 
 	public static void Draw(CanvasItem canvas, Rect2 rect, BlockKind kind, Color? tint = null)
 	{

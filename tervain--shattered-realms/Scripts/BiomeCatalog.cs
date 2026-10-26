@@ -80,7 +80,7 @@ public static class BiomeArt
     }
     public static void DrawWall(CanvasItem canvas, Rect2 rect, BiomeMaterial material)
     {
-        canvas.DrawTextureRect(Texture(material.Wall), rect, false,
+        TileArt.Draw(canvas, Texture(material.Wall), rect,
             material.Wood ? new Color(0.42f, 0.42f, 0.42f) : new Color(0.66f, 0.66f, 0.66f));
     }
 }

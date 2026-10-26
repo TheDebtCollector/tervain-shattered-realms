@@ -299,7 +299,7 @@ public partial class BlockWorld : Node2D
             {
                 bool backgroundOnly = !HasBlock(new Vector2I(x, 13));
                 Color tint = backgroundOnly ? new Color(0.42f, 0.42f, 0.42f) : Colors.White;
-                DrawTextureRect(BiomeArt.Texture("res://Art-work/BiomeExpansion/Exported/temperate-forest-canopy-formation-24.png"),
+                DrawTextureRect(BiomeArt.Texture("res://Art-work/Pixel16/Exported/temperate-forest-canopy-formation-16.png"),
                     new Rect2(x * TileSize - 36, 254, 96, 96), false, tint);
             }
         foreach (var entry in _walls)
@@ -312,9 +312,9 @@ public partial class BlockWorld : Node2D
         {
             if (!HasWall(new Vector2I(x, 17)) || !visible.Intersects(new Rect2(x * TileSize - 24, 354, 72, 102))) continue;
             Color tint = _blocks.TryGetValue(new Vector2I(x, 17), out BlockKind trunk) && trunk == BlockKind.TundraWood ? Colors.White : new Color(0.42f, 0.42f, 0.42f);
-            // Crop transparent padding and scale by six whole pixels to ground the pine sprite.
+            // Crop the native 16px pine while preserving its established world bounds.
             DrawTextureRectRegion(BlockArt.PineTexture, new Rect2(x * TileSize - 24, SurfaceRow * TileSize - 102, 72, 102),
-                new Rect2(6, 4, 12, 17), tint);
+                new Rect2(4, 3, 8, 11), tint);
         }
         DrawBiomeDetails(visible);
         foreach (var entry in _blocks)
@@ -330,7 +330,7 @@ public partial class BlockWorld : Node2D
         }
         foreach (var liquid in _liquids)
             if (!HasBlock(liquid.Key) && visible.Intersects(CellRect(liquid.Key)))
-                DrawTextureRect(BiomeArt.Texture(liquid.Value.Texture), CellRect(liquid.Key), false);
+                TileArt.Draw(this, BiomeArt.Texture(liquid.Value.Texture), CellRect(liquid.Key));
         foreach (Vector2I bush in _bushes)
             DrawTextureRect(bush.X >= TundraStartColumn ? BlockArt.ShrubTexture : BlockArt.BushTexture, CellRect(bush), false);
         if (HighlightCell is Vector2I selected)

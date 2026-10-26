@@ -18,7 +18,7 @@ for resource in sorted(paths):
     destination = project / resource.removeprefix('res://')
     if destination.exists():
         continue
-    source = project / 'Art-work' / (destination.stem + '.ase')
+    source = project / 'Art-work' / 'Pixel16' / 'Sources' / (destination.stem + '.ase')
     if not source.exists():
         raise FileNotFoundError(f'Missing both PNG and source for {resource}')
     exporter.export(source, destination.parent)

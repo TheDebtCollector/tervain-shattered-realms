@@ -1,0 +1,11 @@
+# Native 16px artwork
+
+This is the active environmental art package: 220 base tiles, editable flat RGBA Aseprite sources, matching 16x16 PNGs, and four variants for each repeating material/wall/liquid. Transparent decoration silhouettes use three colors; terrain uses three low-contrast colors (surface caps/ore may use four). There are no outlines, bevels, or dense crack networks around terrain tiles.
+
+`manifest.json` lists every active base tile and its variants. `Sources/` and `Exported/` share file stems. Edit the ASE and export matching PNGs; use `Tools/export_blocks.py` to export the entire active package. Legacy 24px artwork remains available for provenance. Historical workshop/biome converters do not overwrite this package.
+
+Variant edges share the same base colors. Surface caps join horizontally; interior textures and walls join in both axes. `TileArt` chooses one of four variants from world cell coordinates using a stable integer hash. Moving the camera never changes a cell's appearance. Inventory icons, held blocks, and drops use the base image. The gameplay grid remains 24 world units to preserve the accepted movement/combat baseline; source images are 16x16 and use the existing nearest filtering.
+
+`previews/all-assets.png` catalogs the native exports. `previews/repetition.png` shows mixed terrain variants at nearest scale. `References/simple-style-guide.png` is the imagegen art direction reference; its printed size labels are historical and do not describe the native exports. Ground textures are deliberately quieter than this reference.
+
+Art direction prompt: simplify the existing fifteen-biome overview into chunky 16px art, three or four flat colors, mostly flat terrain with sparse low-contrast clusters, no grid borders, bevels, dense cracks, noise, or dithering, and bold decoration silhouettes. Generated with the built-in imagegen tool; exact-size exports and variants are produced by the retained PowerShell tool from the legacy editable tile palettes and silhouettes. Rerunning that tool resets manual edits.

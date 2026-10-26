@@ -1,0 +1,2590 @@
+[
+  {
+    "name": "cactus-16",
+    "source": "Sources/cactus-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/cactus-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "cave-background-16",
+    "source": "Sources/cave-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/cave-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/cave-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/cave-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/cave-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "cracked-earth-block-16",
+    "source": "Sources/cracked-earth-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/cracked-earth-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/cracked-earth-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/cracked-earth-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/cracked-earth-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "desert-water-16",
+    "source": "Sources/desert-water-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/desert-water-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/desert-water-16-v1.png",
+      "res://Art-work/Pixel16/Exported/desert-water-16-v2.png",
+      "res://Art-work/Pixel16/Exported/desert-water-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "dirt-background-16",
+    "source": "Sources/dirt-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/dirt-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/dirt-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/dirt-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/dirt-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "dirt-block-16",
+    "source": "Sources/dirt-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/dirt-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/dirt-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/dirt-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/dirt-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "dry-bush-16",
+    "source": "Sources/dry-bush-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/dry-bush-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "frozen-earth-block-16",
+    "source": "Sources/frozen-earth-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-earth-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/frozen-earth-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/frozen-earth-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/frozen-earth-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "ice-background-16",
+    "source": "Sources/ice-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/ice-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/ice-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/ice-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/ice-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "ice-block-16",
+    "source": "Sources/ice-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/ice-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/ice-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/ice-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/ice-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "iron-ore-block-16",
+    "source": "Sources/iron-ore-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/iron-ore-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/iron-ore-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/iron-ore-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/iron-ore-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "jungle-fern-16",
+    "source": "Sources/jungle-fern-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/jungle-fern-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "jungle-soil-background-16",
+    "source": "Sources/jungle-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/jungle-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/jungle-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/jungle-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/jungle-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "jungle-soil-block-16",
+    "source": "Sources/jungle-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/jungle-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/jungle-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/jungle-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/jungle-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "jungle-stone-background-16",
+    "source": "Sources/jungle-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/jungle-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/jungle-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/jungle-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/jungle-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "jungle-vine-16",
+    "source": "Sources/jungle-vine-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/jungle-vine-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "jungle-water-16",
+    "source": "Sources/jungle-water-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/jungle-water-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/jungle-water-16-v1.png",
+      "res://Art-work/Pixel16/Exported/jungle-water-16-v2.png",
+      "res://Art-work/Pixel16/Exported/jungle-water-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "jungle-wood-block-16",
+    "source": "Sources/jungle-wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/jungle-wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/jungle-wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/jungle-wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/jungle-wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "mossy-stone-block-16",
+    "source": "Sources/mossy-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/mossy-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/mossy-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/mossy-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/mossy-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "sand-background-16",
+    "source": "Sources/sand-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/sand-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/sand-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/sand-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/sand-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "sand-block-16",
+    "source": "Sources/sand-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/sand-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/sand-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/sand-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/sand-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "sandstone-background-16",
+    "source": "Sources/sandstone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/sandstone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/sandstone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/sandstone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/sandstone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "sandstone-block-16",
+    "source": "Sources/sandstone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/sandstone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/sandstone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/sandstone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/sandstone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "snow-background-16",
+    "source": "Sources/snow-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/snow-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/snow-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/snow-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/snow-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "snow-block-16",
+    "source": "Sources/snow-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/snow-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/snow-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/snow-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/snow-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "snow-pine-16",
+    "source": "Sources/snow-pine-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/snow-pine-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "stone-block-16",
+    "source": "Sources/stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "swamp-mud-background-16",
+    "source": "Sources/swamp-mud-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/swamp-mud-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/swamp-mud-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/swamp-mud-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/swamp-mud-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "swamp-mud-block-16",
+    "source": "Sources/swamp-mud-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/swamp-mud-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/swamp-mud-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/swamp-mud-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/swamp-mud-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "swamp-mushroom-16",
+    "source": "Sources/swamp-mushroom-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/swamp-mushroom-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "swamp-reeds-16",
+    "source": "Sources/swamp-reeds-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/swamp-reeds-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "swamp-stone-background-16",
+    "source": "Sources/swamp-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/swamp-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/swamp-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/swamp-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/swamp-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "swamp-stone-block-16",
+    "source": "Sources/swamp-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/swamp-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/swamp-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/swamp-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/swamp-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "swamp-water-16",
+    "source": "Sources/swamp-water-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/swamp-water-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/swamp-water-16-v1.png",
+      "res://Art-work/Pixel16/Exported/swamp-water-16-v2.png",
+      "res://Art-work/Pixel16/Exported/swamp-water-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "swamp-wood-block-16",
+    "source": "Sources/swamp-wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/swamp-wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/swamp-wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/swamp-wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/swamp-wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "temperate-water-16",
+    "source": "Sources/temperate-water-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-water-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/temperate-water-16-v1.png",
+      "res://Art-work/Pixel16/Exported/temperate-water-16-v2.png",
+      "res://Art-work/Pixel16/Exported/temperate-water-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "tundra-shrub-16",
+    "source": "Sources/tundra-shrub-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/tundra-shrub-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "tundra-water-16",
+    "source": "Sources/tundra-water-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/tundra-water-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/tundra-water-16-v1.png",
+      "res://Art-work/Pixel16/Exported/tundra-water-16-v2.png",
+      "res://Art-work/Pixel16/Exported/tundra-water-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "tundra-wood-block-16",
+    "source": "Sources/tundra-wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/tundra-wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/tundra-wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/tundra-wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/tundra-wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "wood-block-16",
+    "source": "Sources/wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "alpine-canopy-formation-16",
+    "source": "Sources/alpine-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "alpine-hanging-decoration-16",
+    "source": "Sources/alpine-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "alpine-liquid-body-16",
+    "source": "Sources/alpine-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/alpine-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/alpine-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/alpine-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "alpine-liquid-surface-16",
+    "source": "Sources/alpine-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/alpine-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/alpine-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/alpine-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "alpine-small-decoration-16",
+    "source": "Sources/alpine-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "alpine-soil-background-16",
+    "source": "Sources/alpine-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/alpine-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/alpine-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/alpine-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "alpine-soil-block-16",
+    "source": "Sources/alpine-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/alpine-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/alpine-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/alpine-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "alpine-stone-background-16",
+    "source": "Sources/alpine-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/alpine-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/alpine-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/alpine-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "alpine-stone-block-16",
+    "source": "Sources/alpine-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/alpine-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/alpine-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/alpine-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "alpine-surface-block-16",
+    "source": "Sources/alpine-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/alpine-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/alpine-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/alpine-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "alpine-tall-decoration-16",
+    "source": "Sources/alpine-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "alpine-wood-block-16",
+    "source": "Sources/alpine-wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/alpine-wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/alpine-wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/alpine-wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/alpine-wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "badlands-canopy-formation-16",
+    "source": "Sources/badlands-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "badlands-hanging-decoration-16",
+    "source": "Sources/badlands-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "badlands-liquid-body-16",
+    "source": "Sources/badlands-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/badlands-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/badlands-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/badlands-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "badlands-liquid-surface-16",
+    "source": "Sources/badlands-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/badlands-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/badlands-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/badlands-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "badlands-small-decoration-16",
+    "source": "Sources/badlands-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "badlands-soil-background-16",
+    "source": "Sources/badlands-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/badlands-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/badlands-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/badlands-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "badlands-soil-block-16",
+    "source": "Sources/badlands-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/badlands-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/badlands-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/badlands-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "badlands-stone-background-16",
+    "source": "Sources/badlands-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/badlands-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/badlands-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/badlands-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "badlands-stone-block-16",
+    "source": "Sources/badlands-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/badlands-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/badlands-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/badlands-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "badlands-surface-block-16",
+    "source": "Sources/badlands-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/badlands-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/badlands-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/badlands-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "badlands-tall-decoration-16",
+    "source": "Sources/badlands-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "badlands-wood-block-16",
+    "source": "Sources/badlands-wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/badlands-wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/badlands-wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/badlands-wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/badlands-wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "corrupted-wilderness-canopy-formation-16",
+    "source": "Sources/corrupted-wilderness-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "corrupted-wilderness-hanging-decoration-16",
+    "source": "Sources/corrupted-wilderness-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "corrupted-wilderness-liquid-body-16",
+    "source": "Sources/corrupted-wilderness-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "corrupted-wilderness-liquid-surface-16",
+    "source": "Sources/corrupted-wilderness-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "corrupted-wilderness-small-decoration-16",
+    "source": "Sources/corrupted-wilderness-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "corrupted-wilderness-soil-background-16",
+    "source": "Sources/corrupted-wilderness-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "corrupted-wilderness-soil-block-16",
+    "source": "Sources/corrupted-wilderness-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "corrupted-wilderness-stone-background-16",
+    "source": "Sources/corrupted-wilderness-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "corrupted-wilderness-stone-block-16",
+    "source": "Sources/corrupted-wilderness-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "corrupted-wilderness-surface-block-16",
+    "source": "Sources/corrupted-wilderness-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "corrupted-wilderness-tall-decoration-16",
+    "source": "Sources/corrupted-wilderness-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "corrupted-wilderness-wood-block-16",
+    "source": "Sources/corrupted-wilderness-wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/corrupted-wilderness-wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/corrupted-wilderness-wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "crystal-caverns-canopy-formation-16",
+    "source": "Sources/crystal-caverns-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "crystal-caverns-hanging-decoration-16",
+    "source": "Sources/crystal-caverns-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "crystal-caverns-liquid-body-16",
+    "source": "Sources/crystal-caverns-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/crystal-caverns-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "crystal-caverns-liquid-surface-16",
+    "source": "Sources/crystal-caverns-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/crystal-caverns-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "crystal-caverns-material-block-16",
+    "source": "Sources/crystal-caverns-material-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-material-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/crystal-caverns-material-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-material-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-material-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "crystal-caverns-small-decoration-16",
+    "source": "Sources/crystal-caverns-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "crystal-caverns-soil-background-16",
+    "source": "Sources/crystal-caverns-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/crystal-caverns-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "crystal-caverns-soil-block-16",
+    "source": "Sources/crystal-caverns-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/crystal-caverns-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "crystal-caverns-stone-background-16",
+    "source": "Sources/crystal-caverns-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/crystal-caverns-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "crystal-caverns-stone-block-16",
+    "source": "Sources/crystal-caverns-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/crystal-caverns-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "crystal-caverns-surface-block-16",
+    "source": "Sources/crystal-caverns-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/crystal-caverns-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/crystal-caverns-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "crystal-caverns-tall-decoration-16",
+    "source": "Sources/crystal-caverns-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/crystal-caverns-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "enchanted-forest-canopy-formation-16",
+    "source": "Sources/enchanted-forest-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "enchanted-forest-hanging-decoration-16",
+    "source": "Sources/enchanted-forest-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "enchanted-forest-liquid-body-16",
+    "source": "Sources/enchanted-forest-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/enchanted-forest-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "enchanted-forest-liquid-surface-16",
+    "source": "Sources/enchanted-forest-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/enchanted-forest-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "enchanted-forest-small-decoration-16",
+    "source": "Sources/enchanted-forest-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "enchanted-forest-soil-background-16",
+    "source": "Sources/enchanted-forest-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/enchanted-forest-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "enchanted-forest-soil-block-16",
+    "source": "Sources/enchanted-forest-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/enchanted-forest-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "enchanted-forest-stone-background-16",
+    "source": "Sources/enchanted-forest-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/enchanted-forest-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "enchanted-forest-stone-block-16",
+    "source": "Sources/enchanted-forest-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/enchanted-forest-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "enchanted-forest-surface-block-16",
+    "source": "Sources/enchanted-forest-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/enchanted-forest-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "enchanted-forest-tall-decoration-16",
+    "source": "Sources/enchanted-forest-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "enchanted-forest-wood-block-16",
+    "source": "Sources/enchanted-forest-wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/enchanted-forest-wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/enchanted-forest-wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/enchanted-forest-wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "frozen-caves-canopy-formation-16",
+    "source": "Sources/frozen-caves-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "frozen-caves-hanging-decoration-16",
+    "source": "Sources/frozen-caves-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "frozen-caves-liquid-body-16",
+    "source": "Sources/frozen-caves-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/frozen-caves-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "frozen-caves-liquid-surface-16",
+    "source": "Sources/frozen-caves-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/frozen-caves-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "frozen-caves-material-block-16",
+    "source": "Sources/frozen-caves-material-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-material-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/frozen-caves-material-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-material-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-material-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "frozen-caves-small-decoration-16",
+    "source": "Sources/frozen-caves-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "frozen-caves-soil-background-16",
+    "source": "Sources/frozen-caves-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/frozen-caves-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "frozen-caves-soil-block-16",
+    "source": "Sources/frozen-caves-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/frozen-caves-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "frozen-caves-stone-background-16",
+    "source": "Sources/frozen-caves-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/frozen-caves-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "frozen-caves-stone-block-16",
+    "source": "Sources/frozen-caves-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/frozen-caves-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "frozen-caves-surface-block-16",
+    "source": "Sources/frozen-caves-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/frozen-caves-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/frozen-caves-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "frozen-caves-tall-decoration-16",
+    "source": "Sources/frozen-caves-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/frozen-caves-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "fungal-caves-canopy-formation-16",
+    "source": "Sources/fungal-caves-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "fungal-caves-hanging-decoration-16",
+    "source": "Sources/fungal-caves-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "fungal-caves-liquid-body-16",
+    "source": "Sources/fungal-caves-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/fungal-caves-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "fungal-caves-liquid-surface-16",
+    "source": "Sources/fungal-caves-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/fungal-caves-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "fungal-caves-material-block-16",
+    "source": "Sources/fungal-caves-material-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-material-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/fungal-caves-material-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-material-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-material-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "fungal-caves-small-decoration-16",
+    "source": "Sources/fungal-caves-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "fungal-caves-soil-background-16",
+    "source": "Sources/fungal-caves-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/fungal-caves-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "fungal-caves-soil-block-16",
+    "source": "Sources/fungal-caves-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/fungal-caves-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "fungal-caves-stone-background-16",
+    "source": "Sources/fungal-caves-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/fungal-caves-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "fungal-caves-stone-block-16",
+    "source": "Sources/fungal-caves-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/fungal-caves-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "fungal-caves-surface-block-16",
+    "source": "Sources/fungal-caves-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/fungal-caves-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/fungal-caves-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "fungal-caves-tall-decoration-16",
+    "source": "Sources/fungal-caves-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/fungal-caves-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "limestone-caverns-canopy-formation-16",
+    "source": "Sources/limestone-caverns-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "limestone-caverns-hanging-decoration-16",
+    "source": "Sources/limestone-caverns-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "limestone-caverns-liquid-body-16",
+    "source": "Sources/limestone-caverns-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/limestone-caverns-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "limestone-caverns-liquid-surface-16",
+    "source": "Sources/limestone-caverns-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/limestone-caverns-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "limestone-caverns-material-block-16",
+    "source": "Sources/limestone-caverns-material-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-material-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/limestone-caverns-material-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-material-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-material-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "limestone-caverns-small-decoration-16",
+    "source": "Sources/limestone-caverns-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "limestone-caverns-soil-background-16",
+    "source": "Sources/limestone-caverns-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/limestone-caverns-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "limestone-caverns-soil-block-16",
+    "source": "Sources/limestone-caverns-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/limestone-caverns-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "limestone-caverns-stone-background-16",
+    "source": "Sources/limestone-caverns-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/limestone-caverns-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "limestone-caverns-stone-block-16",
+    "source": "Sources/limestone-caverns-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/limestone-caverns-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "limestone-caverns-surface-block-16",
+    "source": "Sources/limestone-caverns-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/limestone-caverns-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/limestone-caverns-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "limestone-caverns-tall-decoration-16",
+    "source": "Sources/limestone-caverns-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/limestone-caverns-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "living-biome-canopy-formation-16",
+    "source": "Sources/living-biome-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "living-biome-hanging-decoration-16",
+    "source": "Sources/living-biome-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "living-biome-liquid-body-16",
+    "source": "Sources/living-biome-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/living-biome-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/living-biome-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/living-biome-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "living-biome-liquid-surface-16",
+    "source": "Sources/living-biome-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/living-biome-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/living-biome-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/living-biome-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "living-biome-material-block-16",
+    "source": "Sources/living-biome-material-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-material-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/living-biome-material-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/living-biome-material-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/living-biome-material-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "living-biome-small-decoration-16",
+    "source": "Sources/living-biome-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "living-biome-soil-background-16",
+    "source": "Sources/living-biome-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/living-biome-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/living-biome-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/living-biome-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "living-biome-soil-block-16",
+    "source": "Sources/living-biome-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/living-biome-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/living-biome-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/living-biome-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "living-biome-stone-background-16",
+    "source": "Sources/living-biome-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/living-biome-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/living-biome-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/living-biome-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "living-biome-stone-block-16",
+    "source": "Sources/living-biome-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/living-biome-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/living-biome-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/living-biome-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "living-biome-surface-block-16",
+    "source": "Sources/living-biome-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/living-biome-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/living-biome-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/living-biome-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "living-biome-tall-decoration-16",
+    "source": "Sources/living-biome-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/living-biome-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "magma-caverns-canopy-formation-16",
+    "source": "Sources/magma-caverns-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "magma-caverns-hanging-decoration-16",
+    "source": "Sources/magma-caverns-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "magma-caverns-liquid-body-16",
+    "source": "Sources/magma-caverns-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/magma-caverns-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "magma-caverns-liquid-surface-16",
+    "source": "Sources/magma-caverns-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/magma-caverns-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "magma-caverns-material-block-16",
+    "source": "Sources/magma-caverns-material-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-material-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/magma-caverns-material-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-material-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-material-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "magma-caverns-small-decoration-16",
+    "source": "Sources/magma-caverns-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "magma-caverns-soil-background-16",
+    "source": "Sources/magma-caverns-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/magma-caverns-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "magma-caverns-soil-block-16",
+    "source": "Sources/magma-caverns-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/magma-caverns-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "magma-caverns-stone-background-16",
+    "source": "Sources/magma-caverns-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/magma-caverns-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "magma-caverns-stone-block-16",
+    "source": "Sources/magma-caverns-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/magma-caverns-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "magma-caverns-surface-block-16",
+    "source": "Sources/magma-caverns-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/magma-caverns-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/magma-caverns-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "magma-caverns-tall-decoration-16",
+    "source": "Sources/magma-caverns-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/magma-caverns-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "shattered-islands-canopy-formation-16",
+    "source": "Sources/shattered-islands-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "shattered-islands-hanging-decoration-16",
+    "source": "Sources/shattered-islands-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "shattered-islands-liquid-body-16",
+    "source": "Sources/shattered-islands-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/shattered-islands-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "shattered-islands-liquid-surface-16",
+    "source": "Sources/shattered-islands-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/shattered-islands-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "shattered-islands-small-decoration-16",
+    "source": "Sources/shattered-islands-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "shattered-islands-soil-background-16",
+    "source": "Sources/shattered-islands-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/shattered-islands-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "shattered-islands-soil-block-16",
+    "source": "Sources/shattered-islands-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/shattered-islands-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "shattered-islands-stone-background-16",
+    "source": "Sources/shattered-islands-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/shattered-islands-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "shattered-islands-stone-block-16",
+    "source": "Sources/shattered-islands-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/shattered-islands-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "shattered-islands-surface-block-16",
+    "source": "Sources/shattered-islands-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/shattered-islands-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "shattered-islands-tall-decoration-16",
+    "source": "Sources/shattered-islands-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "shattered-islands-wood-block-16",
+    "source": "Sources/shattered-islands-wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/shattered-islands-wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/shattered-islands-wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/shattered-islands-wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "taiga-canopy-formation-16",
+    "source": "Sources/taiga-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "taiga-hanging-decoration-16",
+    "source": "Sources/taiga-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "taiga-liquid-body-16",
+    "source": "Sources/taiga-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/taiga-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/taiga-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/taiga-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "taiga-liquid-surface-16",
+    "source": "Sources/taiga-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/taiga-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/taiga-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/taiga-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "taiga-small-decoration-16",
+    "source": "Sources/taiga-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "taiga-soil-background-16",
+    "source": "Sources/taiga-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/taiga-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/taiga-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/taiga-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "taiga-soil-block-16",
+    "source": "Sources/taiga-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/taiga-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/taiga-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/taiga-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "taiga-stone-background-16",
+    "source": "Sources/taiga-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/taiga-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/taiga-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/taiga-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "taiga-stone-block-16",
+    "source": "Sources/taiga-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/taiga-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/taiga-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/taiga-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "taiga-surface-block-16",
+    "source": "Sources/taiga-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/taiga-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/taiga-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/taiga-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "taiga-tall-decoration-16",
+    "source": "Sources/taiga-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "taiga-wood-block-16",
+    "source": "Sources/taiga-wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/taiga-wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/taiga-wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/taiga-wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/taiga-wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "temperate-forest-canopy-formation-16",
+    "source": "Sources/temperate-forest-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "temperate-forest-hanging-decoration-16",
+    "source": "Sources/temperate-forest-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "temperate-forest-liquid-body-16",
+    "source": "Sources/temperate-forest-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/temperate-forest-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "temperate-forest-liquid-surface-16",
+    "source": "Sources/temperate-forest-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/temperate-forest-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "temperate-forest-small-decoration-16",
+    "source": "Sources/temperate-forest-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "temperate-forest-soil-background-16",
+    "source": "Sources/temperate-forest-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/temperate-forest-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "temperate-forest-soil-block-16",
+    "source": "Sources/temperate-forest-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/temperate-forest-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "temperate-forest-stone-background-16",
+    "source": "Sources/temperate-forest-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/temperate-forest-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "temperate-forest-stone-block-16",
+    "source": "Sources/temperate-forest-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/temperate-forest-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "temperate-forest-surface-block-16",
+    "source": "Sources/temperate-forest-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/temperate-forest-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "temperate-forest-tall-decoration-16",
+    "source": "Sources/temperate-forest-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "temperate-forest-wood-block-16",
+    "source": "Sources/temperate-forest-wood-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/temperate-forest-wood-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/temperate-forest-wood-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-wood-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/temperate-forest-wood-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "voidlands-canopy-formation-16",
+    "source": "Sources/voidlands-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "voidlands-hanging-decoration-16",
+    "source": "Sources/voidlands-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "voidlands-liquid-body-16",
+    "source": "Sources/voidlands-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/voidlands-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/voidlands-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/voidlands-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "voidlands-liquid-surface-16",
+    "source": "Sources/voidlands-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/voidlands-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/voidlands-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/voidlands-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "voidlands-material-block-16",
+    "source": "Sources/voidlands-material-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-material-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/voidlands-material-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/voidlands-material-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/voidlands-material-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "voidlands-small-decoration-16",
+    "source": "Sources/voidlands-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "voidlands-soil-background-16",
+    "source": "Sources/voidlands-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/voidlands-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/voidlands-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/voidlands-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "voidlands-soil-block-16",
+    "source": "Sources/voidlands-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/voidlands-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/voidlands-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/voidlands-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "voidlands-stone-background-16",
+    "source": "Sources/voidlands-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/voidlands-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/voidlands-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/voidlands-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "voidlands-stone-block-16",
+    "source": "Sources/voidlands-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/voidlands-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/voidlands-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/voidlands-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "voidlands-surface-block-16",
+    "source": "Sources/voidlands-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/voidlands-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/voidlands-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/voidlands-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "voidlands-tall-decoration-16",
+    "source": "Sources/voidlands-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/voidlands-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "volcanic-wasteland-canopy-formation-16",
+    "source": "Sources/volcanic-wasteland-canopy-formation-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-canopy-formation-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "volcanic-wasteland-hanging-decoration-16",
+    "source": "Sources/volcanic-wasteland-hanging-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-hanging-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "volcanic-wasteland-liquid-body-16",
+    "source": "Sources/volcanic-wasteland-liquid-body-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-liquid-body-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-liquid-body-16-v1.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-liquid-body-16-v2.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-liquid-body-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "volcanic-wasteland-liquid-surface-16",
+    "source": "Sources/volcanic-wasteland-liquid-surface-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-liquid-surface-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-liquid-surface-16-v1.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-liquid-surface-16-v2.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-liquid-surface-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "volcanic-wasteland-material-block-16",
+    "source": "Sources/volcanic-wasteland-material-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-material-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-material-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-material-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-material-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "volcanic-wasteland-small-decoration-16",
+    "source": "Sources/volcanic-wasteland-small-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-small-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  },
+  {
+    "name": "volcanic-wasteland-soil-background-16",
+    "source": "Sources/volcanic-wasteland-soil-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-soil-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-soil-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-soil-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-soil-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "volcanic-wasteland-soil-block-16",
+    "source": "Sources/volcanic-wasteland-soil-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-soil-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-soil-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-soil-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-soil-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "volcanic-wasteland-stone-background-16",
+    "source": "Sources/volcanic-wasteland-stone-background-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-stone-background-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-stone-background-16-v1.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-stone-background-16-v2.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-stone-background-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "volcanic-wasteland-stone-block-16",
+    "source": "Sources/volcanic-wasteland-stone-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-stone-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-stone-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-stone-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-stone-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "volcanic-wasteland-surface-block-16",
+    "source": "Sources/volcanic-wasteland-surface-block-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-surface-block-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-surface-block-16-v1.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-surface-block-16-v2.png",
+      "res://Art-work/Pixel16/Exported/volcanic-wasteland-surface-block-16-v3.png"
+    ],
+    "transparent": false
+  },
+  {
+    "name": "volcanic-wasteland-tall-decoration-16",
+    "source": "Sources/volcanic-wasteland-tall-decoration-16.ase",
+    "png": "res://Art-work/Pixel16/Exported/volcanic-wasteland-tall-decoration-16.png",
+    "width": 16,
+    "height": 16,
+    "variants": [],
+    "transparent": true
+  }
+]

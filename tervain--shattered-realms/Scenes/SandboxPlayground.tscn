@@ -17,6 +17,7 @@ script = ExtResource("2")
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(0, -64)
+zoom = Vector2(0.75, 0.75)
 limit_left = 0
 limit_top = -256
 limit_right = 15104

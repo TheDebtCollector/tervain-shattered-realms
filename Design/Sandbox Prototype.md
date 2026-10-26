@@ -274,3 +274,7 @@ Verification: the C# build passed with zero warnings/errors. Biome, sandbox, des
 ## Fullscreen startup — 2026-10-26
 
 The game now starts in fullscreen mode using the current display resolution. Existing canvas stretch settings keep the HUD anchored to the screen. A Godot startup check confirmed both the configured and actual display mode are fullscreen.
+
+## Wider camera view — 2026-10-26
+
+The sandbox camera now uses 0.75x zoom, showing about one-third more world horizontally and vertically. The HUD keeps its existing size. A fullscreen render was checked for player visibility, terrain, and HUD placement; the preview is saved at Art-work/Pixel16/previews/fullscreen-zoom-out.png.

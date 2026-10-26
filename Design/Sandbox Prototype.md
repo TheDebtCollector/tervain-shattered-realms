@@ -270,3 +270,7 @@ Falling sand uses 16px bounds and a matching collider. Resource drops use an 8px
 Run speed, gravity, the approximately 124px full jump, dodge speed/timing, attack damage/timing, and horizontal melee reach retain their accepted values. The vertical player attack area now follows the resized body. The isolated combat room retains its own authored world geometry and uses the resized player.
 
 Verification: the C# build passed with zero warnings/errors. Biome, sandbox, desert, and standalone combat suites passed. Sandbox coverage includes exact 20x40 player collision, 16px coordinate conversion (including negative positions), 16px falling-sand bounds, 8px drop collision, mining/building, keyboard mining, pickup gravity/collection, vegetation, enemy cover, three-block tunnel traversal in both directions, two-block tunnel rejection, and reset/scene switching. All twenty native-grid biome captures are saved in Pixel16/previews/in-game/.
+
+## Fullscreen startup — 2026-10-26
+
+The game now starts in fullscreen mode using the current display resolution. Existing canvas stretch settings keep the HUD anchored to the screen. A Godot startup check confirmed both the configured and actual display mode are fullscreen.

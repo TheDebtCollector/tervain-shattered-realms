@@ -54,3 +54,8 @@ The fifteen new biomes now have a separate environmental art package with 180 na
 ## Biome integration follow-up — 2026-10-25
 
 All twenty biomes now have playable authored regions, dedicated materials and walls, vegetation/formations, pools, and matching scenery. The frozen-cave sheet was corrected after in-game inspection exposed repeat lines. See [[Biome Integration]] for controls, current limits, and validation.
+
+
+## Retained workshop resources
+
+[[Art Workshop]] preserves the earlier biome prompts, native exports, enlarged previews, source references, and portable foundation/preview scripts. The workshop guide distinguishes historical exports from the authoritative game art.

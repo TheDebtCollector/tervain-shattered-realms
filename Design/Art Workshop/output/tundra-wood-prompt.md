@@ -1,0 +1,3 @@
+Created with built-in imagegen.
+
+Use case: stylized-concept. Asset type: retro pixel-art tundra wood terrain block, matching a 24x24 warm brown wood grain tile. One square wood surface texture filling the entire image edge to edge. Exact logical 24 by 24 pixel grid enlarged. Cold weathered gray-brown wood with predominantly vertical irregular dark grain lines, a subtle knot, sparse subdued pale blue-gray frost streaks. Mostly wood, no snow cap. Restrained 7-color earthy cool palette, simple chunky flat pixels readable at 24x24. Flat orthographic material texture. No whole tree, no foliage, no branches, no trunk silhouette, no background, no border, no cube, no perspective, no text, no antialiasing, no gradients.

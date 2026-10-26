@@ -1,0 +1,21 @@
+{
+  "References/exec-902cce6b-b906-4f00-b541-c6e87a26e37a.png": [
+    "make-cave-background.ps1"
+  ],
+  "References/exec-719b9670-27b3-44c1-9c89-fb3b26cc36df.png": [
+    "make-desert-asset.ps1",
+    "make-dirt.ps1"
+  ],
+  "References/exec-d89d7713-5590-49fe-9f47-3a88e1f858ae.png": [
+    "make-dirt-background.ps1"
+  ],
+  "References/exec-ef88250b-2911-4887-bea7-23ea0dc4766e.png": [
+    "make-iron-ore.ps1"
+  ],
+  "References/exec-eb2138c7-d9b2-4903-88cc-517cb2cfaa9c.png": [
+    "make-stone.ps1"
+  ],
+  "References/exec-4890aa56-0ae9-46c1-8354-bdb3ff343207.png": [
+    "make-wood.ps1"
+  ]
+}

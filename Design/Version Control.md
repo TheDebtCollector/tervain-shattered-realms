@@ -49,3 +49,8 @@ git show sandbox-baseline-v1
 For an isolated experiment, start a branch such as `codex/building-experiment` from the current working version. A branch preserves the original line of development while the experiment is tested.
 
 Git records project files and design notes. It does not provide game save/load; the prototype's in-game terrain changes remain temporary.
+
+
+## Continue on another device
+
+See [[Continue on Another Device]] for cloning/pulling `main`, opening this repository as an Obsidian vault, installing the Godot .NET prerequisites, and running the current project.

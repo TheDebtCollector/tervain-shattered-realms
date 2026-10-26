@@ -142,3 +142,11 @@ Resolve movement and combat questions through the prototype before committing to
 - Movement and combat playground: implemented and accepted after developer playtesting. See [[Combat Prototype]].
 - Combined sandbox foundation: mining, collectible materials, hotbar stacks, block placement, generated background walls with wall-supported construction, separate pickaxe/axe/sword equipment, and a combat encounter now work in the same scene; awaiting playtest feedback. Simple crafting remains. See [[Sandbox Prototype]].
 - Realm travel, persistence, and procedural world generation: not started.
+
+
+## Development status — 2026-10-26
+
+- All twenty biomes are playable in the authored sandbox, including fifteen new biome art sets, distinct materials, walls, scenery, and prototype travel. See [[Biome Integration]] and [[Biome Artwork]].
+- Build, sandbox/combat regression checks, twenty-biome tour/reset, and all 180 new ASE/PNG pairs passed validation. The twenty rendered biome views are retained with the artwork.
+- Seed-based world creation remains pending. Confirmed seed, spawn, and extensibility rules and open generation decisions are in [[World Generation]]. Realm travel, persistence, crafting, and liquid gameplay also remain pending.
+- Setup, controls, tool commands, and next steps are consolidated in [[Continue on Another Device]]. Earlier art prompts, previews, reference images, and authoring scripts are retained in [[Art Workshop]].

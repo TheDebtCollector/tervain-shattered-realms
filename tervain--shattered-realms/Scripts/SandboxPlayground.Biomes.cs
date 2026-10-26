@@ -109,7 +109,7 @@ public partial class SandboxPlayground
                     biome.Name + " mining preserves the dedicated background wall.");
                 _inventory.Add(mined);
                 // Move aside before restoring the excavated floor, retaining the original biome identity.
-                _player.Position += new Vector2(36, 0);
+                _player.Position += new Vector2(BlockWorld.TileSize * 1.5f, 0);
                 await Frames(2);
                 Check(_world.TryPlace(floor, mined, _player, _inventory) && _inventory.Count(mined) == count
                     && _world.TryGetBlock(floor, out BlockKind placed) && placed == original,

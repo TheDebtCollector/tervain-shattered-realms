@@ -21,12 +21,14 @@ public partial class Player : CharacterBody2D
     public float DodgeReadyIn => _dodgeCooldownLeft;
     public bool IsDead => Health <= 0;
     public EquipmentKind EquippedItem { get; private set; } = EquipmentKind.Sword;
-    // Four pixels of clearance in a three-tile (72px) tunnel.
-    public const float BodyHeight = 68;
+    // Eight pixels of clearance in a three-tile (48px) tunnel.
+    public const float BodyWidth = 20;
+    public const float BodyHeight = 40;
+    public float FallDeathY { get; set; } = 850;
     public Vector2 BodyCenter => GlobalPosition + new Vector2(0, -BodyHeight / 2);
-    public Rect2 BodyBounds => new(GlobalPosition + new Vector2(-14, -BodyHeight), new Vector2(28, BodyHeight));
+    public Rect2 BodyBounds => new(GlobalPosition + new Vector2(-BodyWidth / 2, -BodyHeight), new Vector2(BodyWidth, BodyHeight));
     public Rect2 AttackBounds => new(
-        GlobalPosition + new Vector2(Facing > 0 ? 0 : -96, -73), new Vector2(96, 84));
+        GlobalPosition + new Vector2(Facing > 0 ? 0 : -96, -BodyHeight - 5), new Vector2(96, BodyHeight + 16));
 
     private float _dodgeLeft, _dodgeCooldownLeft, _attackLeft, _invulnerableLeft;
     private float _coyoteLeft, _jumpBufferLeft, _hurtLeft;
@@ -39,8 +41,9 @@ public partial class Player : CharacterBody2D
         CollisionMask = 1;
         AddChild(new CollisionShape2D
         {
+            Name = "BodyCollision",
             Position = new Vector2(0, -BodyHeight / 2),
-            Shape = new RectangleShape2D { Size = new Vector2(28, BodyHeight) }
+            Shape = new RectangleShape2D { Size = new Vector2(BodyWidth, BodyHeight) }
         });
         AddToGroup("player");
     }
@@ -109,7 +112,7 @@ public partial class Player : CharacterBody2D
                     }
             }
         }
-        if (Position.Y > 850) ReceiveHit(1000, 0);
+        if (Position.Y > FallDeathY) ReceiveHit(1000, 0);
         QueueRedraw();
     }
 
@@ -146,17 +149,18 @@ public partial class Player : CharacterBody2D
         Color coat = IsDead ? new Color("657176") : IsDodging ? new Color("9bf4ec") : new Color("58c8bd");
         if (_hurtLeft > 0) coat = Colors.White;
         if (_invulnerableLeft > 0 && (int)(_invulnerableLeft * 20) % 2 == 0) coat.A = 0.5f;
-        DrawCircle(new Vector2(0, 1), 17, new Color(0, 0, 0, 0.2f));
-        DrawRect(new Rect2(-13, -47, 26, 43), coat);
-        DrawCircle(new Vector2(0, -56), 12, new Color("edcfaa"));
-        DrawRect(new Rect2(-12, -BodyHeight, 24, 10), new Color("263d49"));
-        DrawCircle(new Vector2(Facing * 5, -56), 2, new Color("182b36"));
-        DrawLine(new Vector2(-7, -5), new Vector2(-7, 0), new Color("243a46"), 7);
-        DrawLine(new Vector2(7, -5), new Vector2(7, 0), new Color("243a46"), 7);
-        Vector2 hand = new(Facing * 17, -BodyHeight / 2);
+        DrawRect(new Rect2(-10, 0, 20, 3), new Color(0, 0, 0, 0.2f));
+        // The visible body stays within the same 20x40 bounds as collision and placement.
+        DrawRect(new Rect2(-10, -28, 20, 23), coat);
+        DrawRect(new Rect2(-8, -38, 16, 12), new Color("edcfaa"));
+        DrawRect(new Rect2(-9, -BodyHeight, 18, 5), new Color("263d49"));
+        DrawRect(new Rect2(Facing > 0 ? 4 : -6, -33, 2, 2), new Color("182b36"));
+        DrawRect(new Rect2(-8, -5, 6, 5), new Color("243a46"));
+        DrawRect(new Rect2(2, -5, 6, 5), new Color("243a46"));
+        Vector2 hand = new(Facing * (BodyWidth / 2 + 1), -BodyHeight / 2);
         // Animation follows the swing itself, including swings into empty air.
         float toolAngle = IsAttacking ? Mathf.Lerp(-0.65f, 1.15f, 1 - _attackLeft / 0.38f) : 0;
-        DrawSetTransform(hand, toolAngle * Facing, new Vector2(Facing, 1));
+        DrawSetTransform(hand, toolAngle * Facing, new Vector2(Facing, 1) * (2f / 3f));
         Color steel = new("d9e8e9");
         Color handle = new("bd8c56");
         switch (EquippedItem)
@@ -179,7 +183,8 @@ public partial class Player : CharacterBody2D
             default:
                 if (EquipmentRules.TryGetMaterial(EquippedItem, out BlockKind block))
                 {
-                    BlockArt.Draw(this, new Rect2(0, -24, 24, 24), block);
+                    DrawSetTransform(hand, 0, new Vector2(Facing, 1));
+                    BlockArt.Draw(this, new Rect2(0, -BlockWorld.TileSize, BlockWorld.TileSize, BlockWorld.TileSize), block);
                 }
                 break;
         }
@@ -188,7 +193,7 @@ public partial class Player : CharacterBody2D
         {
             DrawRect(AttackBounds with { Position = AttackBounds.Position - GlobalPosition }, new Color(0.65f, 1, 0.9f, 0.12f));
             float angle = Facing > 0 ? 0 : Mathf.Pi;
-            DrawArc(new Vector2(0, -35), 73, angle - 0.75f, angle + 0.75f, 16, new Color("d4fff0"), 7, true);
+            DrawArc(new Vector2(0, -BodyHeight / 2), 73, angle - 0.75f, angle + 0.75f, 16, new Color("d4fff0"), 7, true);
         }
     }
 }

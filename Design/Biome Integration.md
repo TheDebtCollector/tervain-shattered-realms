@@ -15,7 +15,7 @@ Related: [[World Generation]] · [[Biome Artwork]] · [[Sandbox Prototype]]
 
 Run the sandbox with F5. All twenty biomes are now playable. Use the biome selector in the header, Page Down for the next biome, or Page Up for the previous biome. Walking also connects the regions. Travel keeps inventory, harvested terrain, and construction in the current session. R resets the unsaved sandbox.
 
-The existing plains, desert, and tundra region stays at columns 0–127, with its accepted movement, combat, harvesting, and construction behavior. Jungle, swamp, and the fifteen new biomes extend the authored test trail to 944×32 blocks. Each additional region is 48 blocks wide; a block remains exactly 24×24 pixels.
+The existing plains, desert, and tundra region stays at columns 0–127, with its accepted movement, combat, harvesting, and construction behavior. Jungle, swamp, and the fifteen new biomes extend the authored test trail to 944×32 blocks. Each additional region is 48 blocks wide; a block is now exactly 16×16 pixels, with a 20×40 player (updated 2026-10-26).
 
 This is an authored sandbox integration for reviewing and playing the artwork. It does not implement seed-based world creation, realm gates, save/load, or the future world-creation spawn at (0, 0). Those rules remain in [[World Generation]]; the existing sandbox start is preserved.
 
@@ -33,7 +33,7 @@ Structure eligibility can refer to stable biome IDs in a separate future structu
 
 ## Visual polish
 
-- All terrain and decorations use nearest filtering with native 24px source tiles and integer-sized decoration scaling.
+- All terrain and decorations use nearest filtering with the active native 16px Pixel16 source tiles and integer-sized decoration scaling.
 - New surface regions have shaped ground, material outcrops, vegetation/formations, and recessed pools. Cave regions have irregular ceilings, darker walls, hanging formations, and pools below the cave floor.
 - Shattered islands and voidlands include floating terrain fragments and distant island silhouettes.
 - Background colors blend near biome borders; distant silhouettes stay subdued so the player and foreground are readable.

@@ -66,3 +66,15 @@ The active environmental art now lives in `tervain--shattered-realms/Art-work/Pi
 
 The original 24px packages and Art Workshop are retained as historical sources. Edit/export the new Pixel16 package for current gameplay. The simulation grid remains 24 world units, preserving established movement, collision, combat, and biome positions. Pixel dimensions describe source art, not physics. Native art uses nearest texture filtering.
 Verification: native art validation passed for all 676 PNG/ASE pairs (220 base assets and 152 four-variant sets). The C# build passed with no warnings/errors; biome, sandbox, and combat regression suites passed. Twenty updated biome captures and a contact sheet are saved under Pixel16/previews/.
+
+## Native 16px grid and 20×40 player — 2026-10-26
+
+Terrain now occupies actual 16×16 world pixels, matching the simplified Pixel16 exports at 1:1 size. The authored world remains 944×32 cells (15,104×512 pixels). All foreground blocks, background walls, liquids, highlight targeting, cell conversion, collision, mining, construction, and biome transitions follow the shared tile size.
+
+The player drawing, collision rectangle, body bounds, placement exclusions, pickup/mining origins, safe biome arrivals, and held-tool position now share a 20px width and 40px height. Three blocks provide a 48px opening with 8px clearance; two blocks provide only 32px and block passage. Background trees, pine cropping, formations, scenery, spawn positions, camera bounds, and the fall-death limit follow the smaller grid. The enemy body remains unchanged.
+
+Falling sand uses 16px bounds and a matching collider. Resource drops use an 8px collider/drawing; vegetation-crush drops spawn above the correct surface. Hotbar icons and held materials use the native 16px images. Mining stays eight blocks (128px), building stays 6⅔ blocks (about 106.67px), pickup attraction stays five blocks (80px), and collection stays one block (16px). The sandbox creature notice range stays 7.5 blocks (120px).
+
+Run speed, gravity, the approximately 124px full jump, dodge speed/timing, attack damage/timing, and horizontal melee reach retain their accepted values. The vertical player attack area now follows the resized body. The isolated combat room retains its own authored world geometry and uses the resized player.
+
+Verification: the C# build passed with zero warnings/errors. Biome, sandbox, desert, and standalone combat suites passed. Sandbox coverage includes exact 20x40 player collision, 16px coordinate conversion (including negative positions), 16px falling-sand bounds, 8px drop collision, mining/building, keyboard mining, pickup gravity/collection, vegetation, enemy cover, three-block tunnel traversal in both directions, two-block tunnel rejection, and reset/scene switching. All twenty native-grid biome captures are saved in Pixel16/previews/in-game/.

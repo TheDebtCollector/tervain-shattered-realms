@@ -33,7 +33,7 @@ Open that repository folder as an existing vault in Obsidian. No cloud drive, ab
 2. Import `tervain--shattered-realms/project.godot` in Godot and let it import assets.
 3. Build the C# project and press F5. From a terminal in the game folder, `dotnet restore` followed by `dotnet build` performs a fresh build.
 
-The default scene is `Scenes/SandboxPlayground.tscn`. The twenty-biome authored sandbox uses 24×24 blocks and a 68px player. Use the header selector or Page Up/Page Down to travel. A/D moves, Space jumps, Shift dodges, 1/2/3 selects pickaxe/axe/sword, left mouse or J swings, Ctrl mines ahead, and selected material stacks can be placed with left/right mouse. Collected materials appear in the hotbar. R resets the unsaved scene; F2 opens the combat room, and F3 returns to a fresh sandbox.
+The default scene is `Scenes/SandboxPlayground.tscn`. The twenty-biome authored sandbox uses 16×16 blocks and a 20px-wide, 40px-tall player. Use the header selector or Page Up/Page Down to travel. A/D moves, Space jumps, Shift dodges, 1/2/3 selects pickaxe/axe/sword, left mouse or J swings, Ctrl mines ahead, and selected material stacks can be placed with left/right mouse. Collected materials appear in the hotbar. R resets the unsaved scene; F2 opens the combat room, and F3 returns to a fresh sandbox.
 
 ## Current state
 

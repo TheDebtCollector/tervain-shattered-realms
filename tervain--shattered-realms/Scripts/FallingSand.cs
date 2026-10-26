@@ -6,7 +6,7 @@ namespace Tervain;
 public partial class FallingSand : CharacterBody2D
 {
     public BlockWorld World { get; init; } = null!;
-    public Rect2 BodyBounds => new(GlobalPosition - Vector2.One * 12, Vector2.One * 24);
+    public Rect2 BodyBounds => new(GlobalPosition - Vector2.One * BlockWorld.TileSize / 2, Vector2.One * BlockWorld.TileSize);
 
     public override void _Ready()
     {
@@ -27,5 +27,5 @@ public partial class FallingSand : CharacterBody2D
         if (IsOnFloor()) World.TrySettleSand(this);
     }
 
-    public override void _Draw() => BlockArt.Draw(this, new Rect2(-12, -12, 24, 24), BlockKind.Sand);
+    public override void _Draw() => BlockArt.Draw(this, new Rect2(-Vector2.One * BlockWorld.TileSize / 2, Vector2.One * BlockWorld.TileSize), BlockKind.Sand);
 }

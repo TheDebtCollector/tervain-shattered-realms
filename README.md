@@ -4,10 +4,10 @@ An open-source 2D side-view sandbox built with **Godot .NET and C#**. Build a ho
 
 ## Current prototype
 
-- Responsive movement, variable jumping, dodging, and deliberate melee combat. A 68px-tall character explores a 24px block grid, fitting through three-block-high tunnels with 4px of clearance.
+- Responsive movement, variable jumping, dodging, and deliberate melee combat. A 20px-wide, 40px-tall character explores a native 16px block grid, fitting through three-block-high tunnels with 8px of clearance.
 - One authored sandbox connects all **twenty biomes**, with matching terrain, background walls, vegetation/formations, scenery, and visual pools. Use the header selector or Page Up/Page Down to travel between regions.
 - Mine, collect, and build with the original materials and 51 distinct added material stacks. The scrolling hotbar shows tools, collected materials, and the selected stack. Mining reaches 8 blocks (192px); background walls support construction, and unsupported sand falls.
-- The fifteen added biome art sets include 180 editable native 24×24 ASE/PNG pairs. Art sources, prompts, export tools, validation, and twenty reviewed in-game captures are versioned.
+- The active Pixel16 environmental art includes 220 simplified 16×16 base assets with editable ASE/PNG pairs and four seamless variants for 152 repeating materials. Art sources, prompts, export tools, validation, and twenty reviewed in-game captures are versioned; the original 24px sets remain as historical sources.
 - A standalone combat playground and automated sandbox, combat, and twenty-biome regression checks are included.
 
 Seed-based world creation, realm travel, crafting, liquid mechanics, and save/load are planned. The current sandbox terrain is authored; prototype play progress is not saved. The future generated-world spawn is always (0, 0) in plains.

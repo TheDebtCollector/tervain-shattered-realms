@@ -128,10 +128,10 @@ public partial class BlockWorld
                 {
                     if (!IsSolidCell(new Vector2I(x, y)) || HasLiquid(new Vector2I(x, y - 1))) continue;
                     Vector2 feet = new((x + 0.5f) * TileSize, y * TileSize);
-                    var bounds = new Rect2(feet + new Vector2(-14, -Player.BodyHeight), new Vector2(28, Player.BodyHeight - 0.1f));
+                    var bounds = new Rect2(feet + new Vector2(-Player.BodyWidth / 2, -Player.BodyHeight), new Vector2(Player.BodyWidth, Player.BodyHeight - 0.1f));
                     bool blocked = false;
-                    for (int bx = x - 1; bx <= x + 1; bx++)
-                        for (int by = y - 3; by < y; by++)
+                    for (int bx = CellAt(bounds.Position).X; bx <= CellAt(bounds.End - Vector2.One * 0.01f).X; bx++)
+                        for (int by = CellAt(bounds.Position).Y; by < y; by++)
                             if (IsSolidCell(new Vector2I(bx, by)) && bounds.Intersects(CellRect(new Vector2I(bx, by)))) blocked = true;
                     if (!blocked) return feet;
                 }
@@ -167,7 +167,7 @@ public partial class BlockWorld
             Color sky = BiomeColor(x + 0.5f, b => b.Sky), horizon = BiomeColor(x + 0.5f, b => b.Horizon);
             for (int y = Mathf.FloorToInt(visible.Position.Y / TileSize); y * TileSize < visible.End.Y; y++)
             {
-                float t = Mathf.Clamp((y * TileSize + 120) / 680f, 0, 1);
+                float t = Mathf.Clamp((y + 5f) / (SurfaceRow + 9f), 0, 1);
                 Color color = sky.Lerp(horizon, t);
                 if (y >= SurfaceRow) color = color.Darkened(Mathf.Clamp((y - SurfaceRow) / 12f, 0, 0.72f));
                 DrawRect(new Rect2(x * TileSize, y * TileSize, TileSize, TileSize), color);
@@ -178,27 +178,27 @@ public partial class BlockWorld
             BiomeDefinition biome = BiomeCatalog.All[BiomeCatalog.IndexAtColumn(x)];
             Color shade = BiomeColor(x, b => b.Silhouette);
             int px = x * TileSize;
-            int ridge = 360 + Mathf.RoundToInt(Mathf.Sin(x * 0.17f) * 24 + Mathf.Sin(x * 0.07f) * 36);
+            int ridge = 15 * TileSize + Mathf.RoundToInt(Mathf.Sin(x * 0.17f) * TileSize + Mathf.Sin(x * 0.07f) * TileSize * 1.5f);
             if (biome.Profile == "shattered")
             {
-                int top = 190 + (x * 13 % 5) * 24;
-                DrawRect(new Rect2(px, top, 60, 12), new Color(shade, 0.5f));
-                DrawRect(new Rect2(px + 12, top + 12, 36, 12), new Color(shade, 0.5f));
-                DrawRect(new Rect2(px + 24, top + 24, 12, 12), new Color(shade, 0.5f));
+                int top = 8 * TileSize + (x * 13 % 5) * TileSize;
+                DrawRect(new Rect2(px, top, TileSize * 2.5f, TileSize / 2f), new Color(shade, 0.5f));
+                DrawRect(new Rect2(px + TileSize / 2f, top + TileSize / 2f, TileSize * 1.5f, TileSize / 2f), new Color(shade, 0.5f));
+                DrawRect(new Rect2(px + TileSize, top + TileSize, TileSize / 2f, TileSize / 2f), new Color(shade, 0.5f));
                 continue;
             }
             DrawRect(new Rect2(px, ridge, 3 * TileSize, Height * TileSize - ridge), new Color(shade, 0.44f));
             if (biome.Trees && biome.Profile != "alpine")
             {
-                int top = 240 + ((x * 13) % 4) * 12;
+                int top = 10 * TileSize + ((x * 13) % 4) * TileSize / 2;
                 Color silhouette = new(shade, 0.38f);
-                DrawRect(new Rect2(px + 30, top + 36, 12, 210), silhouette);
-                DrawRect(new Rect2(px + 12, top - 12, 48, 72), silhouette);
-                DrawRect(new Rect2(px, top + 12, 72, 36), silhouette);
+                DrawRect(new Rect2(px + TileSize * 1.25f, top + TileSize * 1.5f, TileSize / 2f, TileSize * 8.75f), silhouette);
+                DrawRect(new Rect2(px + TileSize / 2f, top - TileSize / 2f, TileSize * 2, TileSize * 3), silhouette);
+                DrawRect(new Rect2(px, top + TileSize / 2f, TileSize * 3, TileSize * 1.5f), silhouette);
             }
             else if (!biome.Underground)
                 for (int band = 0; band < 6; band++)
-                    DrawRect(new Rect2(px + 36 - band * 6, ridge - 96 + band * 18, 12 + band * 12, 24), new Color(shade, 0.5f));
+                    DrawRect(new Rect2(px + TileSize * (1.5f - band * 0.25f), ridge - TileSize * (4 - band * 0.75f), TileSize * (0.5f + band * 0.5f), TileSize), new Color(shade, 0.5f));
         }
     }
 
@@ -207,18 +207,18 @@ public partial class BlockWorld
         foreach (var tree in _biomeTrees)
         {
             if (!HasWall(tree.Top)) continue;
-            var rect = new Rect2(tree.Top.X * TileSize - 36, tree.Top.Y * TileSize - 48, 96, 96);
+            var rect = new Rect2((tree.Top.X - 1.5f) * TileSize, (tree.Top.Y - 2) * TileSize, 4 * TileSize, 4 * TileSize);
             if (!visible.Intersects(rect)) continue;
             Color tint = _vegetation.Contains(tree.Top) ? Colors.White : new Color(0.42f, 0.42f, 0.42f);
             if (tree.Conifer)
             {
-                DrawTextureRect(BiomeArt.Texture(tree.Crown), new Rect2(rect.Position + new Vector2(24, -12), new Vector2(48, 48)), false, tint);
-                DrawTextureRect(BiomeArt.Texture(tree.Crown), new Rect2(rect.Position + new Vector2(12, 12), new Vector2(72, 72)), false, tint);
+                DrawTextureRect(BiomeArt.Texture(tree.Crown), new Rect2(rect.Position + new Vector2(1, -0.5f) * TileSize, Vector2.One * TileSize * 2), false, tint);
+                DrawTextureRect(BiomeArt.Texture(tree.Crown), new Rect2(rect.Position + Vector2.One * TileSize / 2, Vector2.One * TileSize * 3), false, tint);
             }
             else
             {
-                DrawTextureRect(BiomeArt.Texture(tree.Crown), new Rect2(rect.Position + new Vector2(-24, 18), new Vector2(72, 72)), false, tint);
-                DrawTextureRect(BiomeArt.Texture(tree.Crown), new Rect2(rect.Position + new Vector2(48, 18), new Vector2(72, 72)), false, tint);
+                DrawTextureRect(BiomeArt.Texture(tree.Crown), new Rect2(rect.Position + new Vector2(-1, 0.75f) * TileSize, Vector2.One * TileSize * 3), false, tint);
+                DrawTextureRect(BiomeArt.Texture(tree.Crown), new Rect2(rect.Position + new Vector2(2, 0.75f) * TileSize, Vector2.One * TileSize * 3), false, tint);
             }
             DrawTextureRect(BiomeArt.Texture(tree.Crown), rect, false, tint);
         }

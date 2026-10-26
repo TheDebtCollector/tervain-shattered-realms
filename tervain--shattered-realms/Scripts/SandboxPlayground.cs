@@ -40,6 +40,14 @@ public partial class SandboxPlayground : Node2D
         _world.MaterialReleased += (position, material) => AddChild(new MaterialDrop
             { Kind = material, Position = position, Player = _player, Inventory = _inventory });
         _enemy = GetNode<Enemy>("TrainingCreature");
+        _enemy.NoticeRange = BlockWorld.TileSize * 7.5f;
+        _player.Position = new Vector2(14 * BlockWorld.TileSize, GroundY - BlockWorld.TileSize);
+        _enemy.Position = new Vector2((24 + 2f / 3f) * BlockWorld.TileSize, GroundY - BlockWorld.TileSize);
+        _player.FallDeathY = (BlockWorld.Height + 4) * BlockWorld.TileSize;
+        var camera = GetNode<Camera2D>("Player/Camera2D");
+        camera.Position = new Vector2(0, -4 * BlockWorld.TileSize);
+        camera.LimitBottom = (BlockWorld.Height + 4) * BlockWorld.TileSize;
+
         SelectSlot(0);
         _hud = new SandboxHud { SlotSelected = SelectSlot, BiomeSelected = TravelToBiome };
         AddChild(_hud);
@@ -246,7 +254,7 @@ public partial class SandboxPlayground : Node2D
         if (HasArgument("--tree-preview"))
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
-            _player.Position = new Vector2(168, GroundY);
+            _player.Position = new Vector2(7f * BlockWorld.TileSize, GroundY);
             _player.Velocity = Vector2.Zero;
             SelectSlot(1);
             foreach (int x in new[] { 5, 9 })
@@ -264,7 +272,7 @@ public partial class SandboxPlayground : Node2D
         if (wallPreview)
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
-            _player.Position = new Vector2(348, GroundY);
+            _player.Position = new Vector2(14.5f * BlockWorld.TileSize, GroundY);
             _player.Velocity = Vector2.Zero;
             for (int x = 12; x <= 18; x++)
                 for (int y = BlockWorld.SurfaceRow; y <= BlockWorld.SurfaceRow + 5; y++)
@@ -285,7 +293,7 @@ public partial class SandboxPlayground : Node2D
 
     private async Task<float> MeasureJump(float speed)
     {
-        _player.Position = new Vector2(336, GroundY);
+        _player.Position = new Vector2(14f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         _player.JumpSpeed = speed;
         await Frames(5);
@@ -317,19 +325,26 @@ public partial class SandboxPlayground : Node2D
         try
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
-            _enemy.Position = new Vector2(2000, GroundY);
+            _enemy.Position = new Vector2(83.3333333f * BlockWorld.TileSize, GroundY);
             await Frames(30);
             Check(_player.IsOnFloor(), "Player stands on the current terrain grid.");
             Check(_world.HasWall(new Vector2I(15, BlockWorld.SurfaceRow)) && _world.HasWall(new Vector2I(5, 13)),
                 "Generated terrain and wood blocks receive background walls.");
             Check(!_world.HasWall(new Vector2I(14, BlockWorld.SurfaceRow - 5)) && !_world.HasWall(new Vector2I(47, 26)),
                 "Open sky and generated cave air keep scenery without block walls.");
-            Check(BlockWorld.TileSize == 24 && _player.BodyBounds.Size.Y == 68
-                && BlockWorld.TileSize * 3 - _player.BodyBounds.Size.Y == 4,
-                "The 68px player has four pixels of clearance in a three-block tunnel.");
+            Check(BlockWorld.TileSize == 16 && _player.BodyBounds.Size == new Vector2(20, 40)
+                && BlockWorld.TileSize * 3 - _player.BodyBounds.Size.Y == 8,
+                "The 20x40 player has eight pixels of clearance in a three-block tunnel.");
+            Check(_player.GetNode<CollisionShape2D>("BodyCollision").Shape is RectangleShape2D shape
+                && shape.Size == _player.BodyBounds.Size, "Player collision matches its 20x40 placement bounds.");
             Check(BlockWorld.Width == BlockWorld.LegacyWidth + (BiomeCatalog.All.Length - 3) * BlockWorld.BiomeWidth
-                && BlockWorld.Height * BlockWorld.TileSize == 768,
-                "The expanded world includes every biome and preserves its original vertical scale.");
+                && BlockWorld.Height * BlockWorld.TileSize == 512,
+                "The expanded world includes every biome and uses its native 16px grid.");
+            Check(BlockWorld.CellAt(new Vector2(-0.1f, -0.1f)) == new Vector2I(-1, -1)
+                && BlockWorld.CellAt(new Vector2(16, 16)) == Vector2I.One
+                && BlockWorld.CellAt(BlockWorld.Center(new Vector2I(55, 26))) == new Vector2I(55, 26)
+                && BlockWorld.CellRect(Vector2I.One).Size == new Vector2(16, 16),
+                "Cell conversion, negative coordinates, centers, and drawn blocks use the 16px grid.");
             float newSpeed = _player.JumpSpeed;
             float newHeight = await MeasureJump(newSpeed);
             Check(Mathf.Abs(newHeight - 123.8f) < 1,
@@ -371,7 +386,7 @@ public partial class SandboxPlayground : Node2D
             await UseTool(minedCell, 24);
             await Frames(20);
             Check(!_world.HasBlock(minedCell) && _inventory.Count(BlockKind.Dirt) == 1,
-                "Mining removes a 24px block and collects one material.");
+                "Mining removes a 16px block and collects one material.");
             SelectSlot(3);
             Vector2I placedCell = new(16, BlockWorld.SurfaceRow - 1);
             await UseTool(placedCell, 3);
@@ -380,13 +395,13 @@ public partial class SandboxPlayground : Node2D
             Check(!_world.TryPlace(new Vector2I(17, BlockWorld.SurfaceRow - 1), BlockKind.Dirt, _player, _inventory), "Empty inventory cannot create free blocks.");
             _inventory.Add(BlockKind.Wood, 10);
             Check(!_world.TryPlace(placedCell, BlockKind.Wood, _player, _inventory), "Occupied cells reject placement.");
-            Check(!_world.TryPlace(new Vector2I(13, BlockWorld.SurfaceRow - 2), BlockKind.Wood, _player, _inventory), "Placement respects the full 68px player body.");
+            Check(!_world.TryPlace(new Vector2I(13, BlockWorld.SurfaceRow - 2), BlockKind.Wood, _player, _inventory), "Placement respects the full 20x40 player body.");
             Check(!_world.TryPlace(new Vector2I(14, BlockWorld.SurfaceRow - 5), BlockKind.Wood, _player, _inventory), "Floating unsupported blocks are rejected.");
             Check(!_world.TryPlace(new Vector2I(27, BlockWorld.SurfaceRow - 1), BlockKind.Wood, _player, _inventory), "Building still uses its shorter reach.");
             SelectSlot(0);
             Check(!_world.CanMine(new Vector2I(80, BlockWorld.SurfaceRow), _player), "Mining beyond the extended range is rejected.");
             Check(_world.CanMine(new Vector2I(21, BlockWorld.SurfaceRow), _player) && !_world.CanMine(new Vector2I(22, BlockWorld.SurfaceRow), _player),
-                "The halved 192px mining distance is enforced at its boundary.");
+                "The eight-block mining distance is enforced at its boundary.");
             Check(!_world.CanMine(new Vector2I(14, BlockWorld.Height - 1), _player), "Bedrock remains unmineable.");
             SelectSlot(0);
             await UseTool(new Vector2I(20, BlockWorld.SurfaceRow + 2), 24);
@@ -394,16 +409,16 @@ public partial class SandboxPlayground : Node2D
                 "Long-range mining removes a buried block without clearing intervening terrain.");
             Check(_inventory.Count(BlockKind.Wood) == 10, "Rejected placements preserve material counts.");
 
-            _player.Position = new Vector2(396, GroundY - 120);
+            _player.Position = new Vector2(16.5f * BlockWorld.TileSize, GroundY - 120);
             _player.Velocity = Vector2.Zero;
             await Frames(40);
-            Check(_player.IsOnFloor() && Mathf.Abs(_player.Position.Y - (GroundY - BlockWorld.TileSize)) < 1, "A single 24px block supports the taller player.");
+            Check(_player.IsOnFloor() && Mathf.Abs(_player.Position.Y - (GroundY - BlockWorld.TileSize)) < 1, "A single 16px block supports the taller player.");
             await UseTool(placedCell, 24);
             await Frames(20);
             Check(_player.IsOnFloor() && Mathf.Abs(_player.Position.Y - GroundY) < 1, "Mining removes the support's collision.");
             Check(_inventory.Count(BlockKind.Dirt) == 1, "Placed material can be recovered.");
 
-            _player.Position = new Vector2(906, GroundY);
+            _player.Position = new Vector2(37.75f * BlockWorld.TileSize, GroundY);
             _player.Velocity = Vector2.Zero;
             await Frames(3);
             SelectSlot(1);
@@ -419,7 +434,7 @@ public partial class SandboxPlayground : Node2D
             Input.ActionRelease("use_primary");
             await Frames(35);
             Check(_inventory.Count(BlockKind.Stone) == 1, "Stone can be mined and collected on the current grid.");
-            _player.Position = new Vector2(618, GroundY);
+            _player.Position = new Vector2(25.75f * BlockWorld.TileSize, GroundY);
             _player.Velocity = Vector2.Zero;
             await Frames(3);
             await UseTool(new Vector2I(27, BlockWorld.SurfaceRow - 1), 40);
@@ -428,7 +443,7 @@ public partial class SandboxPlayground : Node2D
             SelectSlot(1);
             await UseTool(new Vector2I(27, BlockWorld.SurfaceRow - 1), 30);
             await Frames(20);
-            Check(_inventory.Count(BlockKind.Wood) == 11, "Tree trunks yield individual 24px wood blocks.");
+            Check(_inventory.Count(BlockKind.Wood) == 11, "Tree trunks yield individual 16px wood blocks.");
             SelectSlot(5);
             await UseTool(new Vector2I(23, BlockWorld.SurfaceRow - 1), 3, true);
             Check(_world.TryGetBlock(new Vector2I(23, BlockWorld.SurfaceRow - 1), out BlockKind built) && built == BlockKind.Wood,
@@ -444,7 +459,7 @@ public partial class SandboxPlayground : Node2D
             await Frames(25);
             Input.ActionRelease("use_primary");
             Check(_world.HasBlock(new Vector2I(25, BlockWorld.SurfaceRow)), "Tool switching cancels unfinished mining.");
-            _player.Position = new Vector2(1140, BlockWorld.CaveBottomRow * BlockWorld.TileSize);
+            _player.Position = new Vector2(47.5f * BlockWorld.TileSize, BlockWorld.CaveBottomRow * BlockWorld.TileSize);
             _player.Velocity = Vector2.Zero;
             await Frames(60);
             Vector2 screenPosition = _player.GetGlobalTransformWithCanvas().Origin;
@@ -471,7 +486,7 @@ public partial class SandboxPlayground : Node2D
         try
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
-            _enemy.Position = new Vector2(2000, GroundY);
+            _enemy.Position = new Vector2(83.3333333f * BlockWorld.TileSize, GroundY);
             await TestVegetation();
             GD.Print("VEGETATION TESTS PASSED.");
             GetTree().Quit();
@@ -501,7 +516,7 @@ public partial class SandboxPlayground : Node2D
                 "Vegetation does not obstruct melee visibility or construction rays.");
         }
 
-        _player.Position = new Vector2(540, GroundY);
+        _player.Position = new Vector2(22.5f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         _inventory.Add(BlockKind.Wood);
         Vector2I wall = new(24, 18);
@@ -510,12 +525,12 @@ public partial class SandboxPlayground : Node2D
         Input.ActionPress("move_right");
         await Frames(30);
         Input.ActionRelease("move_right");
-        Check(!_world.IsVegetation(wall) && _player.Position.X <= 562.2f && _player.IsOnWall(),
+        Check(!_world.IsVegetation(wall) && _player.Position.X <= BlockWorld.CellRect(wall).Position.X - Player.BodyWidth / 2 + 0.2f && _player.IsOnWall(),
             "Player-built wooden walls remain solid and stop movement.");
         SelectSlot(1);
         Check(_world.TryMine(wall, _player, out _), "Built wood remains recoverable with an axe.");
         await Frames(2);
-        _player.Position = new Vector2(540, GroundY);
+        _player.Position = new Vector2(22.5f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         _inventory.Add(BlockKind.Cactus);
         Check(_world.TryPlace(wall, BlockKind.Cactus, _player, _inventory), "Cactus can be replanted.");
@@ -523,7 +538,7 @@ public partial class SandboxPlayground : Node2D
         Input.ActionPress("move_right");
         await Frames(30);
         Input.ActionRelease("move_right");
-        Check(_world.IsVegetation(wall) && _player.Position.X > 620, "Replanted cacti remain passable vegetation.");
+        Check(_world.IsVegetation(wall) && _player.Position.X > BlockWorld.CellRect(wall).End.X + BlockWorld.TileSize / 2, "Replanted cacti remain passable vegetation.");
 
         _player.Position = new Vector2(90.5f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
@@ -552,11 +567,11 @@ public partial class SandboxPlayground : Node2D
             Player = _player, Inventory = new SandboxInventory() };
         AddChild(drop);
         await Frames(55);
-        Check(drop.IsOnFloor() && Mathf.Abs(drop.Position.Y - (GroundY - 6)) < 1,
+        Check(drop.IsOnFloor() && Mathf.Abs(drop.Position.Y - (GroundY - MaterialDrop.Size / 2f)) < 1,
             "Resource drops fall through pine branches and trunks onto the terrain.");
         drop.QueueFree();
 
-        _player.Position = new Vector2(107 * BlockWorld.TileSize, GroundY);
+        _player.Position = new Vector2(112 * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         var creature = new Enemy { Position = new Vector2(BlockWorld.Center(new Vector2I(99, 18)).X - 60, GroundY) };
         AddChild(creature);
@@ -572,7 +587,7 @@ public partial class SandboxPlayground : Node2D
         try
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
-            _enemy.Position = new Vector2(200, GroundY);
+            _enemy.Position = new Vector2(8.33333333f * BlockWorld.TileSize, GroundY);
             await TestTundra();
             GD.Print("TUNDRA TESTS PASSED.");
             GetTree().Quit();
@@ -693,7 +708,7 @@ public partial class SandboxPlayground : Node2D
         try
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
-            _enemy.Position = new Vector2(2000, GroundY);
+            _enemy.Position = new Vector2(83.3333333f * BlockWorld.TileSize, GroundY);
             await TestCtrlMining();
             GD.Print("CTRL MINING TESTS PASSED.");
             GetTree().Quit();
@@ -703,7 +718,7 @@ public partial class SandboxPlayground : Node2D
 
     private async Task TestCtrlMining()
     {
-        _player.Position = new Vector2(252, GroundY);
+        _player.Position = new Vector2(10.5f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         SelectSlot(0);
         await Frames(5);
@@ -789,7 +804,7 @@ public partial class SandboxPlayground : Node2D
         Input.ActionPress("move_right");
         await Frames(30);
         Check(_player.Position.X > tunnel.Position.X + 120 && _player.IsOnFloor() && !_player.IsOnCeiling(),
-            "The player walks into a 72px-high tunnel without catching the ceiling.");
+            "The player walks into a 48px-high tunnel without catching the ceiling.");
         await Frames(30);
         Input.ActionRelease("move_right");
         Check(_player.Position.X > tunnel.Position.X + 240 && _player.IsOnFloor(),
@@ -799,6 +814,16 @@ public partial class SandboxPlayground : Node2D
         Input.ActionRelease("move_left");
         Check(_player.Position.X < tunnel.Position.X + 66 && _player.IsOnFloor(),
             "The player can enter and cross the same tunnel in the opposite direction.");
+        // A two-block opening is only 32px high and must reject the 40px body.
+        Solid(new Rect2(80, -BlockWorld.TileSize * 3, BlockWorld.TileSize * 6, BlockWorld.TileSize));
+        _player.Position = tunnel.Position + new Vector2(32, 0);
+        _player.Velocity = Vector2.Zero;
+        await Frames(5);
+        Input.ActionPress("move_right");
+        await Frames(30);
+        Input.ActionRelease("move_right");
+        Check(_player.Position.X <= tunnel.Position.X + 80 - Player.BodyWidth / 2 + 0.2f && _player.IsOnWall(),
+            "A two-block-high opening blocks the 40px player instead of clipping its head.");
         tunnel.QueueFree();
     }
 
@@ -807,7 +832,7 @@ public partial class SandboxPlayground : Node2D
         try
         {
             _enemy.ProcessMode = ProcessModeEnum.Disabled;
-            _enemy.Position = new Vector2(200, GroundY);
+            _enemy.Position = new Vector2(8.33333333f * BlockWorld.TileSize, GroundY);
             await TestDesert();
             GD.Print("DESERT TESTS PASSED.");
             GetTree().Quit();
@@ -827,9 +852,15 @@ public partial class SandboxPlayground : Node2D
             Check(EquipmentRules.CanMine(EquipmentKind.Pickaxe, terrain) && !EquipmentRules.CanMine(EquipmentKind.Axe, terrain),
                 "Desert terrain requires the pickaxe.");
 
-        _player.Position = new Vector2(69 * 24, GroundY);
+        _player.Position = new Vector2(69 * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         await Frames(5);
+        // Keep incidental melee away from the nearby bush while mouse-target mining the cactus.
+        // The smaller grid places that bush inside the preserved 96px melee range when facing right.
+        Input.ActionPress("move_left");
+        await Frames(2);
+        Input.ActionRelease("move_left");
+        await Frames(8);
         Vector2I cactus = new(70, 18);
         int cactusBefore = _inventory.Count(BlockKind.Cactus);
         SelectSlot(0);
@@ -854,7 +885,7 @@ public partial class SandboxPlayground : Node2D
         foreach (Node node in GetChildren()) if (node is MaterialDrop) dropsBefore++;
         foreach (var (cell, slot) in new[] { (new Vector2I(74, 18), 0), (new Vector2I(82, 17), 1), (new Vector2I(90, 18), 2) })
         {
-            float ground = cell.Y == 17 ? GroundY - 24 : GroundY;
+            float ground = cell.Y == 17 ? GroundY - BlockWorld.TileSize : GroundY;
             // Keep the previous accepted facing and put the bush inside the actual melee arc.
             _player.Position = new Vector2(BlockWorld.Center(cell).X - _player.Facing * 45, ground);
             _player.Velocity = Vector2.Zero;
@@ -870,9 +901,9 @@ public partial class SandboxPlayground : Node2D
         int dropsAfter = 0;
         foreach (Node node in GetChildren()) if (node is MaterialDrop) dropsAfter++;
         Check(_world.BushCount == bushesBefore - 3 && dropsAfter <= dropsBefore,
-            "Destroyed bushes do not spawn resource drops.");
+            $"Destroyed bushes do not spawn resource drops (bushes {bushesBefore}->{_world.BushCount}, drops {dropsBefore}->{dropsAfter}).");
 
-        _player.Position = new Vector2(71.5f * 24, GroundY);
+        _player.Position = new Vector2(71.5f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         SelectSlot(0);
         await Frames(3);
@@ -891,7 +922,7 @@ public partial class SandboxPlayground : Node2D
         Check(!_world.CanPlace(new Vector2I(69, 21), _player), "Settled sand remains solid occupied terrain.");
 
         _inventory.Add(BlockKind.Sand);
-        _player.Position = new Vector2(71.5f * 24, GroundY);
+        _player.Position = new Vector2(71.5f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         _inventory.Add(BlockKind.Wood);
         Check(_world.TryPlace(new Vector2I(68, 18), BlockKind.Wood, _player, _inventory),
@@ -917,6 +948,8 @@ public partial class SandboxPlayground : Node2D
         FallingSand? moving = null;
         foreach (Node node in _world.GetChildren()) if (node is FallingSand sand) moving = sand;
         Check(moving != null, "Placed sand enters the falling state before reaching the floor.");
+        Check(moving!.BodyBounds.Size == Vector2.One * BlockWorld.TileSize,
+            "Moving sand uses the same 16x16 bounds as static terrain.");
         SelectSlot(0);
         int beforeAirMining = _world.BlockCount;
         Check(_world.TryMine(BlockWorld.CellAt(moving!.GlobalPosition), _player, out kind) && kind == BlockKind.Sand,
@@ -929,17 +962,19 @@ public partial class SandboxPlayground : Node2D
 
     private async Task TestDropGravity()
     {
-        _player.Position = new Vector2(1018, GroundY);
+        _player.Position = new Vector2(42.4166667f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         var inventory = new SandboxInventory();
-        var drop = new MaterialDrop { Kind = BlockKind.Stone, Position = new Vector2(852, GroundY - 100),
+        var drop = new MaterialDrop { Kind = BlockKind.Stone, Position = new Vector2(35.5f * BlockWorld.TileSize, GroundY - 100),
             Player = _player, Inventory = inventory };
         AddChild(drop);
         await Frames(8);
+        Check(drop.GetChild<CollisionShape2D>(0).Shape is RectangleShape2D dropShape
+            && dropShape.Size == new Vector2(8, 8), "Resource drops use an 8px half-block collider.");
         Check(drop.Position.Y > GroundY - 95 && drop.Velocity.Y > 0 && inventory.Count(BlockKind.Stone) == 0,
             "Uncollected block drops accelerate downward outside pickup range.");
         await Frames(45);
-        Check(drop.IsOnFloor() && Mathf.Abs(drop.Position.Y - (GroundY - 6)) < 1,
+        Check(drop.IsOnFloor() && Mathf.Abs(drop.Position.Y - (GroundY - MaterialDrop.Size / 2f)) < 1,
             "Drops settle on foreground terrain with their bottom edge on the ground.");
         float restingY = drop.Position.Y;
         await Frames(15);
@@ -949,7 +984,7 @@ public partial class SandboxPlayground : Node2D
         Check(_world.TryMine(new Vector2I(35, BlockWorld.SurfaceRow), _player, out _),
             "The block supporting a resting drop can be mined.");
         await Frames(30);
-        Check(drop.IsOnFloor() && Mathf.Abs(drop.Position.Y - (GroundY + BlockWorld.TileSize - 6)) < 1,
+        Check(drop.IsOnFloor() && Mathf.Abs(drop.Position.Y - (GroundY + BlockWorld.TileSize - MaterialDrop.Size / 2f)) < 1,
             "Removing support makes a resting drop fall to the next solid block, through its scenery wall.");
         _player.Position = new Vector2(drop.Position.X + 48, GroundY);
         _player.Velocity = Vector2.Zero;
@@ -960,7 +995,7 @@ public partial class SandboxPlayground : Node2D
 
     private async Task TestTreeBackground()
     {
-        _player.Position = new Vector2(168, GroundY);
+        _player.Position = new Vector2(7f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         SelectSlot(1);
         for (int y = 13; y < BlockWorld.SurfaceRow; y++)
@@ -1017,7 +1052,7 @@ public partial class SandboxPlayground : Node2D
     private async Task TestBackgroundWalls()
     {
         SelectSlot(0);
-        _player.Position = new Vector2(1452, GroundY);
+        _player.Position = new Vector2(60.5f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         await Frames(3);
         int excavated = 0;
@@ -1033,14 +1068,14 @@ public partial class SandboxPlayground : Node2D
             "The exposed background wall cannot be mined.");
         var point = new PhysicsPointQueryParameters2D { Position = BlockWorld.Center(anchor), CollisionMask = 1 };
         Check(_world.GetWorld2D().DirectSpaceState.IntersectPoint(point).Count == 0, "Background walls have no solid collision.");
-        _player.Position = new Vector2(1404, floor);
+        _player.Position = new Vector2(58.5f * BlockWorld.TileSize, floor);
         _player.Velocity = Vector2.Zero;
         await Frames(3);
         Input.ActionPress("move_right");
         await Frames(20);
         Input.ActionRelease("move_right");
         Check(_player.Position.X > BlockWorld.Center(anchor).X && _player.IsOnFloor(), "The player can walk through exposed background walls.");
-        _player.Position = new Vector2(1404, floor);
+        _player.Position = new Vector2(58.5f * BlockWorld.TileSize, floor);
         _player.Velocity = Vector2.Zero;
         await Frames(3);
         Check(!_world.HasBlock(anchor + Vector2I.Up) && !_world.HasBlock(anchor + Vector2I.Down)
@@ -1062,17 +1097,17 @@ public partial class SandboxPlayground : Node2D
     }
     private async Task TestCombinedSystems()
     {
-        _player.Position = new Vector2(336, GroundY);
+        _player.Position = new Vector2(14f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
-        _enemy.Position = new Vector2(592, GroundY);
+        _enemy.Position = new Vector2(24.6666667f * BlockWorld.TileSize, GroundY);
         _enemy.Velocity = Vector2.Zero;
         _enemy.ProcessMode = ProcessModeEnum.Inherit;
         await Frames(20);
-        Check(Mathf.Abs(_enemy.Position.X - 592) < 1 && _player.Health == 100, "The creature waits outside notice range.");
+        Check(Mathf.Abs(_enemy.Position.X - (24 + 2f / 3f) * BlockWorld.TileSize) < 1 && _player.Health == 100, "The creature waits outside notice range.");
         _enemy.ProcessMode = ProcessModeEnum.Disabled;
-        _player.Position = new Vector2(448, GroundY);
+        _player.Position = new Vector2(18.6666667f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
-        _enemy.Position = new Vector2(544, GroundY);
+        _enemy.Position = new Vector2(22.6666667f * BlockWorld.TileSize, GroundY);
         _enemy.Velocity = Vector2.Zero;
         _inventory.Add(BlockKind.Wood, 10);
         await Frames(3);
@@ -1082,7 +1117,7 @@ public partial class SandboxPlayground : Node2D
         SelectSlot(5);
         await UseTool(lower, 3);
         await UseTool(upper, 3);
-        Check(_world.HasBlock(lower) && _world.HasBlock(upper), "Two 24px blocks form a defensive barrier.");
+        Check(_world.HasBlock(lower) && _world.HasBlock(upper), "Two 16px blocks form a defensive barrier.");
         Check(!_world.TryPlace(new Vector2I(24, BlockWorld.SurfaceRow - 1), BlockKind.Wood, _player, _inventory), "Building still requires a clear path.");
         SelectSlot(2);
         Input.ActionPress("attack");
@@ -1093,7 +1128,7 @@ public partial class SandboxPlayground : Node2D
         await Frames(59);
         Check(_player.Health == 100, "Built terrain still shields the taller player from enemy attacks.");
         _enemy.ProcessMode = ProcessModeEnum.Disabled;
-        _enemy.Position = new Vector2(2000, GroundY); // Isolate harvesting from intentional tool melee damage.
+        _enemy.Position = new Vector2(83.3333333f * BlockWorld.TileSize, GroundY); // Isolate harvesting from intentional tool melee damage.
         SelectSlot(1);
         _testTarget = BlockWorld.Center(upper);
         Input.ActionPress("use_primary");
@@ -1111,7 +1146,7 @@ public partial class SandboxPlayground : Node2D
         await Frames(20);
         Check(!_world.HasBlock(lower) && !_world.HasBlock(upper) && _inventory.Count(BlockKind.Wood) == woodBefore,
             "Mining recovers both defensive blocks after combat.");
-        _enemy.Position = new Vector2(544, GroundY);
+        _enemy.Position = new Vector2(22.6666667f * BlockWorld.TileSize, GroundY);
         _enemy.Velocity = Vector2.Zero;
         SelectSlot(0);
         Input.ActionPress("attack");
@@ -1131,9 +1166,9 @@ public partial class SandboxPlayground : Node2D
         await Frames(115);
         Check(_player.Health < 100, "Enemy attacks damage the taller player when exposed.");
         _enemy.ProcessMode = ProcessModeEnum.Disabled;
-        _player.Position = new Vector2(448, GroundY);
+        _player.Position = new Vector2(18.6666667f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
-        _enemy.Position = new Vector2(544, GroundY);
+        _enemy.Position = new Vector2(22.6666667f * BlockWorld.TileSize, GroundY);
         _enemy.Velocity = Vector2.Zero;
         SelectSlot(2);
         for (int i = 0; i < 2; i++)
@@ -1154,9 +1189,9 @@ public partial class SandboxPlayground : Node2D
         Input.ActionRelease("use_secondary");
         Check(_world.HasBlock(lower) && _inventory.Count(BlockKind.Wood) == woodBefore - 1,
             "Building continues after victory in the same scene.");
-        var nearbyEnemy = new Enemy { Position = new Vector2(544, GroundY), ProcessMode = ProcessModeEnum.Disabled };
+        var nearbyEnemy = new Enemy { Position = new Vector2(22.6666667f * BlockWorld.TileSize, GroundY), ProcessMode = ProcessModeEnum.Disabled };
         AddChild(nearbyEnemy);
-        _player.Position = new Vector2(448, GroundY);
+        _player.Position = new Vector2(18.6666667f * BlockWorld.TileSize, GroundY);
         _player.Velocity = Vector2.Zero;
         SelectSlot(0);
         await Frames(3);

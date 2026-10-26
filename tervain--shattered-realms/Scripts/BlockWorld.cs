@@ -7,7 +7,7 @@ namespace Tervain;
 /// <summary>Small authored block terrain. Generation and chunking come in later milestones.</summary>
 public partial class BlockWorld : Node2D
 {
-    public const int TileSize = 24;
+    public const int TileSize = 16;
     public const int LegacyWidth = 128;
     public const int BiomeWidth = 48;
     public static int Width => LegacyWidth + (BiomeCatalog.All.Length - 3) * BiomeWidth;
@@ -16,8 +16,8 @@ public partial class BlockWorld : Node2D
     public const int CaveBottomRow = 28;
     public const int DesertStartColumn = 68;
     public const int TundraStartColumn = 96;
-    public const float BuildReach = 160;
-    public const float MiningReach = 192;
+    public const float BuildReach = TileSize * (20f / 3f);
+    public const float MiningReach = TileSize * 8;
     private static readonly int[] TreeColumns = { 5, 9, 27, 32, 56, 63 };
     private static readonly int[] PineColumns = { 99, 103, 115, 123 };
     private readonly Dictionary<Vector2I, BlockKind> _blocks = new();
@@ -265,7 +265,7 @@ public partial class BlockWorld : Node2D
             BlockKind material = _blocks[cell];
             RemoveBlock(cell);
             // Environmental crushing releases the resource above the new sand surface.
-            MaterialReleased?.Invoke(Center(cell) - new Vector2(0, TileSize / 2f + 6), material);
+            MaterialReleased?.Invoke(Center(cell) - new Vector2(0, TileSize / 2f + MaterialDrop.Size / 2f), material);
         }
         _fallingSand.Remove(sand);
         sand.CollisionLayer = 0;
@@ -295,13 +295,14 @@ public partial class BlockWorld : Node2D
         Rect2 visible = VisibleWorld();
         DrawBiomeScenery(visible);
         foreach (int x in TreeColumns)
-            if (HasWall(new Vector2I(x, 13)) && visible.Intersects(new Rect2(x * TileSize - 60, 230, 144, 240)))
-            {
-                bool backgroundOnly = !HasBlock(new Vector2I(x, 13));
-                Color tint = backgroundOnly ? new Color(0.42f, 0.42f, 0.42f) : Colors.White;
-                DrawTextureRect(BiomeArt.Texture("res://Art-work/Pixel16/Exported/temperate-forest-canopy-formation-16.png"),
-                    new Rect2(x * TileSize - 36, 254, 96, 96), false, tint);
-            }
+        {
+            var crown = new Rect2((x - 1.5f) * TileSize, 11 * TileSize, 4 * TileSize, 4 * TileSize);
+            if (!HasWall(new Vector2I(x, 13)) || !visible.Intersects(crown)) continue;
+            bool backgroundOnly = !HasBlock(new Vector2I(x, 13));
+            Color tint = backgroundOnly ? new Color(0.42f, 0.42f, 0.42f) : Colors.White;
+            DrawTextureRect(BiomeArt.Texture("res://Art-work/Pixel16/Exported/temperate-forest-canopy-formation-16.png"),
+                crown, false, tint);
+        }
         foreach (var entry in _walls)
         {
             if (_blocks.ContainsKey(entry.Key) || !visible.Intersects(CellRect(entry.Key))) continue;
@@ -310,11 +311,13 @@ public partial class BlockWorld : Node2D
         }
         foreach (int x in PineColumns)
         {
-            if (!HasWall(new Vector2I(x, 17)) || !visible.Intersects(new Rect2(x * TileSize - 24, 354, 72, 102))) continue;
+            var source = new Rect2(4, 3, 8, 11);
+            Vector2 size = source.Size * (TileSize * 3f / source.Size.X);
+            var crown = new Rect2(new Vector2((x + 0.5f) * TileSize - size.X / 2,
+                SurfaceRow * TileSize - size.Y), size);
+            if (!HasWall(new Vector2I(x, 17)) || !visible.Intersects(crown)) continue;
             Color tint = _blocks.TryGetValue(new Vector2I(x, 17), out BlockKind trunk) && trunk == BlockKind.TundraWood ? Colors.White : new Color(0.42f, 0.42f, 0.42f);
-            // Crop the native 16px pine while preserving its established world bounds.
-            DrawTextureRectRegion(BlockArt.PineTexture, new Rect2(x * TileSize - 24, SurfaceRow * TileSize - 102, 72, 102),
-                new Rect2(4, 3, 8, 11), tint);
+            DrawTextureRectRegion(BlockArt.PineTexture, crown, source, tint);
         }
         DrawBiomeDetails(visible);
         foreach (var entry in _blocks)
@@ -326,7 +329,7 @@ public partial class BlockWorld : Node2D
             Rect2 rect = CellRect(entry.Key);
             DrawTerrainBlock(entry.Key, entry.Value, rect);
             if (entry.Value == BlockKind.Dirt && !HasBlock(entry.Key + Vector2I.Up))
-                DrawRect(new Rect2(rect.Position, new Vector2(TileSize, 3)), new Color("8ca773"));
+                DrawRect(new Rect2(rect.Position, new Vector2(TileSize, 2)), new Color("8ca773"));
         }
         foreach (var liquid in _liquids)
             if (!HasBlock(liquid.Key) && visible.Intersects(CellRect(liquid.Key)))

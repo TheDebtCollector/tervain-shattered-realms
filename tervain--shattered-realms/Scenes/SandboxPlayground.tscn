@@ -12,19 +12,19 @@ script = ExtResource("1")
 script = ExtResource("3")
 
 [node name="Player" type="CharacterBody2D" parent="."]
-position = Vector2(336, 440)
+position = Vector2(224, 288)
 script = ExtResource("2")
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
-position = Vector2(0, -80)
+position = Vector2(0, -64)
 limit_left = 0
 limit_top = -256
-limit_right = 3072
-limit_bottom = 1120
+limit_right = 15104
+limit_bottom = 576
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 
 [node name="TrainingCreature" type="CharacterBody2D" parent="."]
-position = Vector2(592, 440)
+position = Vector2(394.6667, 288)
 script = ExtResource("4")
-NoticeRange = 180.0
+NoticeRange = 120.0

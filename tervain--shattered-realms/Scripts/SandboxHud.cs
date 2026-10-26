@@ -94,7 +94,7 @@ public partial class SandboxHud : CanvasLayer
                 button.Icon = BlockArt.Texture(material);
                 button.IconAlignment = HorizontalAlignment.Center;
                 button.VerticalIconAlignment = VerticalAlignment.Top;
-                button.AddThemeConstantOverride("icon_max_width", 24);
+                button.AddThemeConstantOverride("icon_max_width", BlockWorld.TileSize);
             }
             button.AddThemeFontSizeOverride("font_size", 12);
             button.AddThemeStyleboxOverride("normal", normal);
